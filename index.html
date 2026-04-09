@@ -337,6 +337,7 @@
     let cloudSaveTimer = null;
     let cloudListenerStarted = false;
     let lastSerializedState = JSON.stringify(state);
+    let lastCloudError = "";
 
     function mergeRequiredUsers(inputState) {
       const nextState = inputState && typeof inputState === "object" ? inputState : {};
@@ -384,9 +385,15 @@
           if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
           const auth = firebase.auth();
           if (!auth.currentUser) await auth.signInAnonymously();
-          return { auth, db: firebase.firestore() };
+          const db = firebase.firestore();
+          db.settings({
+            experimentalAutoDetectLongPolling: true,
+            useFetchStreams: false
+          });
+          return { auth, db };
         })().catch(error => {
           console.error("Firebase init failed", error);
+          lastCloudError = "Firebase init failed: " + (error.code || error.message || String(error));
           firebaseReadyPromise = null;
           return null;
         });
@@ -403,10 +410,12 @@
           state = mergeRequiredUsers(snap.data().state);
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
           lastSerializedState = JSON.stringify(state);
+          lastCloudError = "";
           return true;
         }
       } catch (error) {
         console.error("Cloud load failed", error);
+        lastCloudError = "Cloud load failed: " + (error.code || error.message || String(error));
       }
       return false;
     }
@@ -426,9 +435,11 @@
           updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
           updatedBy: currentUser ? currentUser.username : "local-device"
         });
+        lastCloudError = "";
         return true;
       } catch (error) {
         console.error("Cloud save failed", error);
+        lastCloudError = "Cloud save failed: " + (error.code || error.message || String(error));
         return false;
       }
     }
@@ -1445,7 +1456,7 @@
 
     async function manualCloudSync() {
       const ok = await saveCloudState();
-      alert(ok ? "Latest local data pushed to Firebase." : "Firebase sync failed. Please check config and Firestore rules.");
+      alert(ok ? "Latest local data pushed to Firebase." : "Firebase sync failed.\n\n" + (lastCloudError || "Please check Firebase Authentication, Firestore rules, and Authorized Domains."));
     }
 
     async function manualCloudLoad() {
@@ -1454,7 +1465,7 @@
         renderApp();
         alert("Latest Firebase data loaded.");
       } else {
-        alert("No cloud data found yet or Firebase is not configured.");
+        alert((lastCloudError ? lastCloudError + "\n\n" : "") + "No cloud data found yet or Firebase is not configured.");
       }
     }
 
