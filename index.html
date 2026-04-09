@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RK Group System v2</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: rgba(255, 255, 255, 0.88);
+      --card-strong: #ffffff;
+      --text: #17324d;
+      --muted: #5f7288;
+      --line: rgba(23, 50, 77, 0.1);
+      --primary: #005f73;
+      --secondary: #0a9396;
+      --accent: #ee9b00;
+      --accent-2: #ca6702;
+      --danger: #bb3e03;
+      --success: #2a9d8f;
+      --info: #3a86ff;
+      --pink: #d62872;
+      --violet: #6c63ff;
+      --shadow: 0 18px 45px rgba(14, 29, 58, 0.12);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(58, 134, 255, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(238, 155, 0, 0.18), transparent 26%),
+        linear-gradient(180deg, #edf5ff 0%, #f4f7fb 40%, #ecf3f9 100%);
+      min-height: 100vh;
+    }
+
+    .shell { max-width: 1560px; margin: 0 auto; padding: 24px; }
+    .hero {
+      background: linear-gradient(135deg, rgba(0,95,115,0.95), rgba(58,134,255,0.92), rgba(214,40,114,0.88));
+      color: #fff; border-radius: 30px; padding: 24px 28px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .hero::after {
+      content: ""; position: absolute; inset: auto -40px -50px auto; width: 220px; height: 220px;
+      background: rgba(255,255,255,0.13); border-radius: 50%;
+    }
+    .hero-top, .section-head, .form-actions {
+      display: flex; justify-content: space-between; gap: 14px; align-items: center; flex-wrap: wrap;
+    }
+    .brand { display: flex; gap: 16px; align-items: center; }
+    .brand-badge {
+      width: 72px; height: 72px; border-radius: 22px; background: rgba(255,255,255,0.18); display: grid; place-items: center;
+      font-size: 34px; backdrop-filter: blur(8px);
+    }
+    h1, h2, h3, h4, p { margin: 0; }
+    .hero h1 { font-size: 30px; font-weight: 800; }
+    .hero p { margin-top: 8px; color: rgba(255,255,255,0.88); max-width: 740px; line-height: 1.5; }
+    .user-strip {
+      min-width: 280px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 20px; padding: 16px 18px; backdrop-filter: blur(12px);
+    }
+    .user-strip strong { display: block; margin-bottom: 6px; font-size: 16px; }
+    .nav { display: flex; gap: 12px; flex-wrap: wrap; margin: 22px 0 0; position: relative; z-index: 1; }
+    .nav button, .btn {
+      border: none; border-radius: 16px; padding: 12px 18px; cursor: pointer; font-weight: 700;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    }
+    .nav button:hover, .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(11, 31, 58, 0.15); }
+    .nav button.active { background: #fff; color: var(--primary); }
+    .nav button:not(.active) { background: rgba(255,255,255,0.12); color: #fff; }
+    .workspace { margin-top: 22px; }
+    .page { display: none; animation: fade 0.25s ease; }
+    .page.active { display: block; }
+    @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .grid { display: grid; gap: 18px; }
+    .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 18px; }
+    .card {
+      background: var(--card); border: 1px solid rgba(255,255,255,0.66); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 20px; backdrop-filter: blur(12px);
+    }
+    .card-title { font-size: 14px; color: var(--muted); font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.7px; }
+    .metric { padding: 20px; color: #fff; position: relative; overflow: hidden; }
+    .metric::before {
+      content: ""; position: absolute; width: 120px; height: 120px; border-radius: 50%;
+      background: rgba(255,255,255,0.12); right: -26px; bottom: -36px;
+    }
+    .metric h3, .metric .value, .metric .sub { position: relative; z-index: 1; }
+    .metric h3 { font-size: 14px; opacity: 0.92; }
+    .metric .value { font-size: 31px; margin: 10px 0 8px; font-weight: 800; }
+    .metric .sub { opacity: 0.92; font-size: 13px; }
+    .bg-a { background: linear-gradient(135deg, #005f73, #0a9396); }
+    .bg-b { background: linear-gradient(135deg, #3a86ff, #6c63ff); }
+    .bg-c { background: linear-gradient(135deg, #ee9b00, #ca6702); }
+    .bg-d { background: linear-gradient(135deg, #2a9d8f, #52b788); }
+    .bg-e { background: linear-gradient(135deg, #d62872, #f77f00); }
+    .bg-f { background: linear-gradient(135deg, #4c1d95, #7c3aed); }
+    .filters, .form-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); align-items: end; }
+    label { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
+    input, select, textarea {
+      width: 100%; border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; font: inherit;
+      color: var(--text); background: rgba(255,255,255,0.95);
+    }
+    textarea { min-height: 98px; resize: vertical; }
+    .btn { background: linear-gradient(135deg, var(--primary), var(--info)); color: #fff; }
+    .btn.secondary { background: linear-gradient(135deg, #64748b, #475569); }
+    .btn.warn { background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+    .btn.danger { background: linear-gradient(135deg, #d62828, #a4133c); }
+    .btn.ghost { background: #fff; color: var(--primary); border: 1px solid var(--line); }
+    .panel-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); margin-top: 18px; }
+    .split-grid { display: grid; gap: 18px; grid-template-columns: 1.2fr 1fr; }
+    .chart-wrap { height: 320px; }
+    .tile-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-top: 12px; }
+    .tile {
+      border-radius: 20px; padding: 18px; color: #fff; cursor: pointer; min-height: 118px; display: flex;
+      flex-direction: column; justify-content: space-between; box-shadow: 0 14px 28px rgba(31, 41, 55, 0.12); border: 2px solid transparent;
+    }
+    .tile.active { border-color: #fff; outline: 3px solid rgba(58, 134, 255, 0.18); transform: translateY(-2px); }
+    .tile small { font-size: 12px; opacity: 0.94; }
+    .tile strong { font-size: 28px; }
+    .table-wrap { overflow: auto; border-radius: 18px; border: 1px solid var(--line); }
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid rgba(23, 50, 77, 0.08); font-size: 13px; text-align: left; vertical-align: top; }
+    th { background: linear-gradient(135deg, #eff6ff, #f9fafb); color: var(--primary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.7px; position: sticky; top: 0; z-index: 1; }
+    tr:hover td { background: rgba(58, 134, 255, 0.03); }
+    .badge { display: inline-block; padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .badge.open { background: #fee2e2; color: #991b1b; }
+    .badge.progress { background: #fef3c7; color: #92400e; }
+    .badge.closed, .badge.good { background: #dcfce7; color: #166534; }
+    .badge.avg { background: #fef3c7; color: #92400e; }
+    .badge.low { background: #fee2e2; color: #991b1b; }
+    .section-head h2 { font-size: 26px; }
+    .section-head p, .inline-note, .footer-note { color: var(--muted); }
+    .inline-note { font-size: 12px; margin-top: 6px; }
+    .login-screen { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+    .login-card {
+      width: min(940px, 100%); display: grid; grid-template-columns: 1.1fr 0.9fr; background: rgba(255,255,255,0.92);
+      border-radius: 32px; box-shadow: var(--shadow); overflow: hidden; border: 1px solid rgba(255,255,255,0.8);
+    }
+    .login-art {
+      padding: 34px; background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18), transparent 24%),
+      radial-gradient(circle at 80% 25%, rgba(255,255,255,0.18), transparent 22%), linear-gradient(145deg, #005f73, #0a9396, #3a86ff); color: #fff;
+    }
+    .login-art ul { padding-left: 18px; line-height: 1.8; color: rgba(255,255,255,0.92); }
+    .login-box { padding: 34px; background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,247,251,0.98)); }
+    .pill-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    .pill { padding: 8px 12px; border-radius: 999px; background: #eff6ff; color: var(--primary); font-size: 12px; font-weight: 700; }
+    .hidden { display: none !important; }
+    .status-box { padding: 14px; border-radius: 16px; background: #fff8e8; color: #8a5a00; font-size: 13px; margin-top: 12px; }
+    .footer-note { margin-top: 18px; font-size: 12px; line-height: 1.6; }
+    .page-credit {
+      text-align: center;
+      color: #5f7288;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      margin-top: 18px;
+      padding: 10px 14px 4px;
+    }
+    @media (max-width: 1100px) { .split-grid, .login-card { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      .shell { padding: 14px; } .hero { padding: 20px; } .section-head h2 { font-size: 22px; } .metric .value { font-size: 27px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-art">
+        <div class="brand">
+          <div class="brand-badge">🚆</div>
+          <div>
+            <h1>RK Group System</h1>
+            <p>Sales, GP, complaint, cash collection, user role and super admin management in one single dashboard.</p>
+          </div>
+        </div>
+        <div class="pill-row">
+          <span class="pill">Sales Dashboard</span>
+          <span class="pill">Complaint Dashboard</span>
+          <span class="pill">Role Login</span>
+          <span class="pill">Backup Tools</span>
+        </div>
+        <div style="margin-top:24px;">
+          <h3 style="font-size:22px; margin-bottom:10px;">Demo login IDs</h3>
+          <ul>
+            <li>`superadmin / super123` for full control</li>
+            <li>`admin / admin123` for master, entry and dashboard</li>
+            <li>`ops.howrah / ops123` for dashboard</li>
+            <li>`collect.hwh / collect123` for sales entry</li>
+            <li>`csd.hwh / csd123` for complaint entry</li>
+            <li>`cash.hwh / cash123` for cash deposit entry</li>
+          </ul>
+        </div>
+      </div>
+      <div class="login-box">
+        <h2 style="font-size:28px; margin-bottom:8px;">Sign In</h2>
+        <p style="color:var(--muted); margin-bottom:18px;">Use yard-wise and role-wise login. Super admin can later create more users from inside the system.</p>
+        <div class="form-grid">
+          <div><label>User ID</label><input id="loginUser" placeholder="Enter login ID"></div>
+          <div><label>Password</label><input id="loginPass" type="password" placeholder="Enter password"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" onclick="login()">Login</button>
+          <button class="btn ghost" onclick="fillDemoLogin('superadmin','super123')">Use Super Admin Demo</button>
+        </div>
+        <div class="status-box">
+          Firebase web app configuration has been added. Complete Firestore setup and then publish this file on GitHub Pages for multi-device use.
+        </div>
+        <div class="page-credit">System developed by Sandip Nandi</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="appShell" class="shell hidden">
+    <div class="hero">
+      <div class="hero-top">
+        <div class="brand">
+          <div class="brand-badge">📊</div>
+          <div>
+            <h1>RK Group Railway Management System</h1>
+            <p>Sales target vs achievement, GP analysis, complaints, cash collection and bank deposit monitoring for Feb-Mar operations with role-based access.</p>
+          </div>
+        </div>
+        <div class="user-strip">
+          <strong id="userDisplay">Not logged in</strong>
+          <div id="userMeta">Role: - | Yard: -</div>
+          <div class="form-actions" style="margin-top:10px;">
+            <button class="btn ghost" onclick="downloadCurrentHtml()">Download Current HTML</button>
+            <button class="btn danger" onclick="logout()">Logout</button>
+          </div>
+        </div>
+      </div>
+      <div class="nav" id="topNav"></div>
+    </div>
+
+    <div class="workspace">
+      <section id="salesDashboardPage" class="page active"></section>
+      <section id="complaintDashboardPage" class="page"></section>
+      <section id="dataEntryPage" class="page"></section>
+      <section id="masterPage" class="page"></section>
+      <section id="userPage" class="page"></section>
+      <section id="superAdminPage" class="page"></section>
+    </div>
+    <div class="page-credit">System developed by Sandip Nandi</div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "rkGroupSystemV2";
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyD0oBzwC9Gedxro6tKB_gw9esQ9cKePoHE",
+      authDomain: "rk-group-integrated-dbms.firebaseapp.com",
+      projectId: "rk-group-integrated-dbms",
+      storageBucket: "rk-group-integrated-dbms.firebasestorage.app",
+      messagingSenderId: "599328785773",
+      appId: "1:599328785773:web:49d5555c0e7d7edc648664"
+    };
+    const CLOUD_COLLECTION = "rk_group_system";
+    const CLOUD_DOCUMENT = "production";
+    const ROLE_LABELS = {
+      super_admin: "Super Admin",
+      admin: "Admin",
+      ops_manager: "Ops Manager",
+      collecting_team: "Collecting Team",
+      csd_entry: "CSD Entry",
+      cash_team: "Cash Team"
+    };
+
+    const PAGE_CONFIG = [
+      { id: "salesDashboardPage", label: "Sales Dashboard", roles: ["super_admin", "admin", "ops_manager"] },
+      { id: "complaintDashboardPage", label: "Complaint Dashboard", roles: ["super_admin", "admin", "ops_manager", "csd_entry"] },
+      { id: "dataEntryPage", label: "Data Entry", roles: ["super_admin", "admin", "collecting_team", "csd_entry", "cash_team"] },
+      { id: "masterPage", label: "Master Data", roles: ["super_admin", "admin"] },
+      { id: "userPage", label: "User Login Setup", roles: ["super_admin", "admin"] },
+      { id: "superAdminPage", label: "Super Admin", roles: ["super_admin"] }
+    ];
+
+    const defaultData = {
+      users: [
+        { id: 1, username: "superadmin", password: "super123", name: "Super Admin", role: "super_admin", yard: "ALL", active: true },
+        { id: 2, username: "admin", password: "admin123", name: "Admin User", role: "admin", yard: "ALL", active: true },
+        { id: 3, username: "ops.howrah", password: "ops123", name: "Howrah Ops", role: "ops_manager", yard: "Howrah", active: true },
+        { id: 4, username: "collect.hwh", password: "collect123", name: "Howrah Collecting", role: "collecting_team", yard: "Howrah", active: true },
+        { id: 5, username: "csd.hwh", password: "csd123", name: "Howrah CSD", role: "csd_entry", yard: "Howrah", active: true },
+        { id: 6, username: "cash.hwh", password: "cash123", name: "Howrah Cash", role: "cash_team", yard: "Howrah", active: true }
+      ],
+      masters: {
+        yards: ["Howrah", "GUWAHATI", "AGARTALA", "DBRT"],
+        clusterManagers: ["Rabindra", "Azizur", "Jitendra"],
+        trainManagers: ["Saqlain", "Munna", "Brajesh", "Rajnish", "Bittu", "Amarjeet", "Alkesh", "Ratan"],
+        complaintStatuses: ["Open", "In Progress", "Closed"],
+        complaintSources: ["Helpline-139", "Social Media", "Customer Desk", "Rail Madad", "Manual Entry"]
+      },
+      trainMasters: [
+        { id: 1, trainName: "Ahamedabad Sf Express", trainNumber: "12833-834", yard: "Howrah", clusterManager: "Rabindra", trainManager: "Munna", rakeManager: "DEEPAK SINGH", trainType: "WCB", salesTarget: 538540, gpTarget: 248974 },
+        { id: 2, trainName: "Azad Hind", trainNumber: "12129-130", yard: "Howrah", clusterManager: "Azizur", trainManager: "Brajesh", rakeManager: "DHARMENDER", trainType: "WCB", salesTarget: 600509, gpTarget: 278041 },
+        { id: 3, trainName: "Gitanjali Exp", trainNumber: "12859-860", yard: "Howrah", clusterManager: "Rabindra", trainManager: "Munna", rakeManager: "VIKASH SINGH TOMAR", trainType: "WCB", salesTarget: 613956, gpTarget: 284087 },
+        { id: 4, trainName: "Hwh -Mds", trainNumber: "12839-840", yard: "Howrah", clusterManager: "Rabindra", trainManager: "Munna", rakeManager: "CH. SIMADRI RAO", trainType: "WCB", salesTarget: 514757, gpTarget: 237252 },
+        { id: 5, trainName: "HWH-BARABIL JANSHATABDI EXPRESS", trainNumber: "12021-022", yard: "HOWRAH", clusterManager: "Azizur", trainManager: "Saqlain", rakeManager: "ANIL MALLICK", trainType: "TSV", salesTarget: 50000, gpTarget: 20749 },
+        { id: 6, trainName: "Ghy Banglore", trainNumber: "12509-510", yard: "GUWAHATI", clusterManager: "Jitendra", trainManager: "Rajnish", rakeManager: "MD AFSAR", trainType: "WCB", salesTarget: 1177652, gpTarget: 548484 },
+        { id: 7, trainName: "Vivek Exp", trainNumber: "22503-504", yard: "DBRT", clusterManager: "Jitendra", trainManager: "Bittu", rakeManager: "PANKAJ OJHA", trainType: "WCB", salesTarget: 1397056, gpTarget: 650405 },
+        { id: 8, trainName: "Agartla smvt humsafar exp", trainNumber: "12504", yard: "AGARTALA", clusterManager: "Jitendra", trainManager: "Ratan", rakeManager: "SONU SINGH", trainType: "WCB", salesTarget: 325000, gpTarget: 145000 }
+      ],
+      salesEntries: [
+        { id: 1, month: "Feb", date: "2026-02-01", trainNumber: "12833-834", clusterManager: "Rabindra", trainManager: "Munna", rakeManager: "DEEPAK SINGH", trainType: "WCB", trainName: "Ahamedabad Sf Express", salesTarget: 538540, salesAchievement: 460076, yard: "Howrah", gpTarget: 248974, gpAchievement: 185703, remarks: "Good first day response." },
+        { id: 2, month: "Feb", date: "2026-02-01", trainNumber: "12129-130", clusterManager: "Azizur", trainManager: "Brajesh", rakeManager: "DHARMENDER", trainType: "WCB", trainName: "Azad Hind", salesTarget: 600509, salesAchievement: 525006, yard: "Howrah", gpTarget: 278041, gpAchievement: 218308, remarks: "Target nearly achieved." },
+        { id: 3, month: "Feb", date: "2026-02-01", trainNumber: "12839-840", clusterManager: "Rabindra", trainManager: "Munna", rakeManager: "CH. SIMADRI RAO", trainType: "WCB", trainName: "Hwh -Mds", salesTarget: 514757, salesAchievement: 450110, yard: "Howrah", gpTarget: 237252, gpAchievement: 181874, remarks: "Stable pantry performance." },
+        { id: 4, month: "Feb", date: "2026-02-01", trainNumber: "12859-860", clusterManager: "Rabindra", trainManager: "Munna", rakeManager: "VIKASH SINGH TOMAR", trainType: "WCB", trainName: "Gitanjali Exp", salesTarget: 613956, salesAchievement: 520046, yard: "Howrah", gpTarget: 284087, gpAchievement: 215002, remarks: "Slight gap in GP." },
+        { id: 5, month: "Feb", date: "2026-02-01", trainNumber: "12021-022", clusterManager: "Azizur", trainManager: "Saqlain", rakeManager: "ANIL MALLICK", trainType: "TSV", trainName: "HWH-BARABIL JANSHATABDI EXPRESS", salesTarget: 50000, salesAchievement: 12124, yard: "HOWRAH", gpTarget: 20749, gpAchievement: 1149, remarks: "Very low achievement, review needed." },
+        { id: 6, month: "Feb", date: "2026-02-01", trainNumber: "12509-510", clusterManager: "Jitendra", trainManager: "Rajnish", rakeManager: "MD AFSAR", trainType: "WCB", trainName: "Ghy Banglore", salesTarget: 1177652, salesAchievement: 950297, yard: "GUWAHATI", gpTarget: 548484, gpAchievement: 421445, remarks: "Healthy route performance." },
+        { id: 7, month: "Mar", date: "2026-03-10", trainNumber: "22503-504", clusterManager: "Jitendra", trainManager: "Bittu", rakeManager: "PANKAJ OJHA", trainType: "WCB", trainName: "Vivek Exp", salesTarget: 1397056, salesAchievement: 1120000, yard: "DBRT", gpTarget: 650405, gpAchievement: 491000, remarks: "Strong March cash sales." },
+        { id: 8, month: "Mar", date: "2026-03-15", trainNumber: "12504", clusterManager: "Jitendra", trainManager: "Ratan", rakeManager: "SONU SINGH", trainType: "WCB", trainName: "Agartla smvt humsafar exp", salesTarget: 325000, salesAchievement: 274500, yard: "AGARTALA", gpTarget: 145000, gpAchievement: 111200, remarks: "Regular performance." }
+      ],
+      complaints: [
+        { id: 1, date: "2026-02-01", complaintId: "202602013772", source: "Helpline-139", complaintType: "Overcharging", complaintRefNo: "2026020110941", complainantName: "Customer 1", incidentDate: "2026-02-01", complaintDate: "2026-02-01", trainNo: "12555", trainName: "GORAKHDHAM EXP", trainType: "Superfast", licenseeName: "Brandavan Food Products", mobileNo: "8080746825", emailId: "", pnrNo: "XOE1EA3020", complainNature: "Overcharging", details: "Customer raised complaint due to over charging of food.", yard: "ALL INDIA", status: "Open", resolutionRemarks: "", entryRemarks: "Imported from Feb complaint sheet." },
+        { id: 2, date: "2026-02-01", complaintId: "202602013715", source: "Helpline-139", complaintType: "Others", complaintRefNo: "2026020109926", complainantName: "Customer 2", incidentDate: "2026-02-01", complaintDate: "2026-02-01", trainNo: "12504", trainName: "SMVT Bengaluru - Agartala Humsafar Express", trainType: "Humsafar", licenseeName: "Brandavan Food Products", mobileNo: "8798637828", emailId: "", pnrNo: "6762816667", complainNature: "Others", details: "Catering staff misbehaved with passenger.", yard: "AGARTALA", status: "In Progress", resolutionRemarks: "Investigation started.", entryRemarks: "Customer service follow up pending." },
+        { id: 3, date: "2026-02-01", complaintId: "202602013680", source: "Helpline-139", complaintType: "Service", complaintRefNo: "2026020109521", complainantName: "Customer 3", incidentDate: "2026-02-01", complaintDate: "2026-02-01", trainNo: "12809", trainName: "HOWRAH MAIL (cst - hwh)", trainType: "Mail/Express", licenseeName: "Brandavan Food Products", mobileNo: "9699176214", emailId: "", pnrNo: "8243965078", complainNature: "Food & Water Not Available", details: "Pantry staff not delivering water as expected.", yard: "Howrah", status: "Closed", resolutionRemarks: "Resolved and confirmed to passenger.", entryRemarks: "Closed by help desk." },
+        { id: 4, date: "2026-03-12", complaintId: "202603120041", source: "Social Media", complaintType: "Quality", complaintRefNo: "SM20260312", complainantName: "Customer 4", incidentDate: "2026-03-12", complaintDate: "2026-03-12", trainNo: "12129-130", trainName: "Azad Hind", trainType: "WCB", licenseeName: "RK Group", mobileNo: "9000000000", emailId: "", pnrNo: "2233445566", complainNature: "Food Quality & Quantity", details: "Food quality feedback received from onboard customer.", yard: "Howrah", status: "Open", resolutionRemarks: "", entryRemarks: "Manual sample complaint." }
+      ],
+      cashDeposits: [
+        { id: 1, date: "2026-03-10", yard: "Howrah", trainName: "Azad Hind", trainNumber: "12129-130", cashCollected: 180000, cashDepositCounter: 175000, bankDeposit: 175000, remarks: "Short cash adjusted next day." },
+        { id: 2, date: "2026-03-10", yard: "GUWAHATI", trainName: "Ghy Banglore", trainNumber: "12509-510", cashCollected: 255000, cashDepositCounter: 255000, bankDeposit: 240000, remarks: "Balance kept for next morning banking." }
+      ]
+    };
+
+    let state = loadState();
+    let currentUser = null;
+    let charts = {};
+    let salesTileFilter = null;
+    let gpTileFilter = null;
+    let firebaseReadyPromise = null;
+    let cloudSaveTimer = null;
+    let cloudListenerStarted = false;
+    let lastSerializedState = JSON.stringify(state);
+
+    function mergeRequiredUsers(inputState) {
+      const nextState = inputState && typeof inputState === "object" ? inputState : {};
+      if (!Array.isArray(nextState.users)) nextState.users = [];
+      defaultData.users.forEach(requiredUser => {
+        const existing = nextState.users.find(user => user.username === requiredUser.username);
+        if (!existing) {
+          nextState.users.push({ ...requiredUser });
+        } else {
+          existing.name = requiredUser.name;
+          existing.role = requiredUser.role;
+          existing.yard = requiredUser.yard;
+          existing.active = true;
+          existing.password = requiredUser.password;
+        }
+      });
+      return nextState;
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try { return mergeRequiredUsers(JSON.parse(saved)); } catch (error) {}
+      }
+      const cloned = mergeRequiredUsers(JSON.parse(JSON.stringify(defaultData)));
+      saveState(cloned);
+      return cloned;
+    }
+
+    function saveState(newState = state) {
+      newState = mergeRequiredUsers(newState);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
+      lastSerializedState = JSON.stringify(newState);
+      scheduleCloudSave();
+    }
+
+    function hasFirebaseConfig() {
+      return FIREBASE_CONFIG.apiKey && !FIREBASE_CONFIG.apiKey.startsWith("PASTE_");
+    }
+
+    async function ensureFirebaseReady() {
+      if (!hasFirebaseConfig() || !window.firebase) return null;
+      if (!firebaseReadyPromise) {
+        firebaseReadyPromise = (async () => {
+          if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+          const auth = firebase.auth();
+          if (!auth.currentUser) await auth.signInAnonymously();
+          return { auth, db: firebase.firestore() };
+        })().catch(error => {
+          console.error("Firebase init failed", error);
+          firebaseReadyPromise = null;
+          return null;
+        });
+      }
+      return firebaseReadyPromise;
+    }
+
+    async function loadCloudState() {
+      const fb = await ensureFirebaseReady();
+      if (!fb) return false;
+      try {
+        const snap = await fb.db.collection(CLOUD_COLLECTION).doc(CLOUD_DOCUMENT).get();
+        if (snap.exists && snap.data() && snap.data().state) {
+          state = mergeRequiredUsers(snap.data().state);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          lastSerializedState = JSON.stringify(state);
+          return true;
+        }
+      } catch (error) {
+        console.error("Cloud load failed", error);
+      }
+      return false;
+    }
+
+    function scheduleCloudSave() {
+      if (!hasFirebaseConfig()) return;
+      clearTimeout(cloudSaveTimer);
+      cloudSaveTimer = setTimeout(saveCloudState, 500);
+    }
+
+    async function saveCloudState() {
+      const fb = await ensureFirebaseReady();
+      if (!fb) return false;
+      try {
+        await fb.db.collection(CLOUD_COLLECTION).doc(CLOUD_DOCUMENT).set({
+          state,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedBy: currentUser ? currentUser.username : "local-device"
+        });
+        return true;
+      } catch (error) {
+        console.error("Cloud save failed", error);
+        return false;
+      }
+    }
+
+    async function startCloudListener() {
+      if (cloudListenerStarted) return;
+      const fb = await ensureFirebaseReady();
+      if (!fb) return;
+      cloudListenerStarted = true;
+      fb.db.collection(CLOUD_COLLECTION).doc(CLOUD_DOCUMENT).onSnapshot(snapshot => {
+        if (!snapshot.exists || !snapshot.data() || !snapshot.data().state) return;
+        const mergedCloudState = mergeRequiredUsers(snapshot.data().state);
+        const nextSerialized = JSON.stringify(mergedCloudState);
+        if (nextSerialized === lastSerializedState) return;
+        state = mergedCloudState;
+        lastSerializedState = nextSerialized;
+        localStorage.setItem(STORAGE_KEY, nextSerialized);
+        if (currentUser) {
+          const refreshedUser = state.users.find(user => user.username === currentUser.username && user.active);
+          if (refreshedUser) currentUser = refreshedUser;
+          renderApp();
+        }
+      });
+    }
+    function fillDemoLogin(username, password) { document.getElementById("loginUser").value = username; document.getElementById("loginPass").value = password; }
+
+    async function login() {
+      const username = document.getElementById("loginUser").value.trim();
+      const password = document.getElementById("loginPass").value.trim();
+      state = mergeRequiredUsers(state);
+      const protectedFallback = defaultData.users.find(user => user.username === username && user.password === password);
+      const found = state.users.find(user => user.active && user.username === username && user.password === password);
+      if (!found && !protectedFallback) return alert("Invalid login ID or password.");
+      const cloudLoaded = await loadCloudState();
+      state = mergeRequiredUsers(state);
+      const cloudUser = state.users.find(user => user.active && user.username === username && user.password === password);
+      if (cloudLoaded && !cloudUser) {
+        currentUser = protectedFallback || found;
+      } else {
+        currentUser = cloudUser || found || protectedFallback;
+      }
+      if (!currentUser) return alert("Login failed. Please reopen the latest file and try again.");
+      await startCloudListener();
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("appShell").classList.remove("hidden");
+      renderApp();
+    }
+
+    function logout() {
+      currentUser = null;
+      Object.values(charts).forEach(chart => chart && chart.destroy && chart.destroy());
+      charts = {};
+      document.getElementById("appShell").classList.add("hidden");
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("loginPass").value = "";
+    }
+
+    function renderApp() {
+      document.getElementById("userDisplay").textContent = currentUser.name;
+      document.getElementById("userMeta").textContent = "Role: " + ROLE_LABELS[currentUser.role] + " | Yard: " + currentUser.yard;
+      renderNav();
+      renderSalesDashboard();
+      renderComplaintDashboard();
+      renderDataEntryPage();
+      renderMasterPage();
+      renderUserPage();
+      renderSuperAdminPage();
+      activateFirstAllowedPage();
+    }
+
+    function allowedPages() { return PAGE_CONFIG.filter(page => page.roles.includes(currentUser.role)); }
+
+    function renderNav() {
+      const nav = document.getElementById("topNav");
+      nav.innerHTML = allowedPages().map((page, index) => `<button class="${index === 0 ? "active" : ""}" onclick="showPage('${page.id}', this)">${page.label}</button>`).join("");
+    }
+
+    function activateFirstAllowedPage() {
+      const first = allowedPages()[0];
+      if (first) showPage(first.id, document.querySelector("#topNav button"));
+    }
+
+    function showPage(pageId, btn) {
+      document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+      document.getElementById(pageId).classList.add("active");
+      document.querySelectorAll("#topNav button").forEach(button => button.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      if (pageId === "salesDashboardPage") renderSalesDashboard();
+      if (pageId === "complaintDashboardPage") renderComplaintDashboard();
+      if (pageId === "dataEntryPage") renderDataEntryPage();
+      if (pageId === "masterPage") renderMasterPage();
+      if (pageId === "userPage") renderUserPage();
+      if (pageId === "superAdminPage") renderSuperAdminPage();
+    }
+
+    function normalizeYard(yard) { return String(yard || "").trim().toUpperCase(); }
+    function userScopedSales() { return state.salesEntries.filter(entry => currentUser.yard === "ALL" || normalizeYard(entry.yard) === normalizeYard(currentUser.yard)); }
+    function userScopedComplaints() { return state.complaints.filter(item => currentUser.yard === "ALL" || item.yard === "ALL INDIA" || normalizeYard(item.yard) === normalizeYard(currentUser.yard)); }
+    function userScopedCash() { return state.cashDeposits.filter(entry => currentUser.yard === "ALL" || normalizeYard(entry.yard) === normalizeYard(currentUser.yard)); }
+    function formatCurrency(value) { return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Number(value || 0)); }
+    function formatPct(value) { return Number(value || 0).toFixed(1) + "%"; }
+    function computeSalesPct(entry) { return entry.salesTarget ? (Number(entry.salesAchievement) / Number(entry.salesTarget)) * 100 : 0; }
+    function computeGpPct(entry) { return entry.gpTarget ? (Number(entry.gpAchievement) / Number(entry.gpTarget)) * 100 : 0; }
+    function bucketFromPct(pct) { if (pct >= 90) return "90_plus"; if (pct >= 80) return "80_89"; if (pct >= 70) return "70_79"; return "below_70"; }
+    function bucketLabel(key) { return { "90_plus": "90% and above", "80_89": "80% to 89.99%", "70_79": "70% to 79.99%", "below_70": "Below 70%" }[key]; }
+
+    function salesDashboardFilters() {
+      return {
+        fromDate: document.getElementById("salesFromDate")?.value || "",
+        toDate: document.getElementById("salesToDate")?.value || "",
+        singleDate: document.getElementById("salesSingleDate")?.value || "",
+        trainName: document.getElementById("salesTrainFilter")?.value || "",
+        trainManager: document.getElementById("salesTrainManagerFilter")?.value || "",
+        yard: document.getElementById("salesYardFilter")?.value || ""
+      };
+    }
+
+    function filteredSalesEntries() {
+      const filters = salesDashboardFilters();
+      return userScopedSales().filter(entry => {
+        if (filters.singleDate && entry.date !== filters.singleDate) return false;
+        if (!filters.singleDate && filters.fromDate && entry.date < filters.fromDate) return false;
+        if (!filters.singleDate && filters.toDate && entry.date > filters.toDate) return false;
+        if (filters.trainName && entry.trainName !== filters.trainName) return false;
+        if (filters.trainManager && entry.trainManager !== filters.trainManager) return false;
+        if (filters.yard && normalizeYard(entry.yard) !== normalizeYard(filters.yard)) return false;
+        if (salesTileFilter && bucketFromPct(computeSalesPct(entry)) !== salesTileFilter) return false;
+        if (gpTileFilter && bucketFromPct(computeGpPct(entry)) !== gpTileFilter) return false;
+        return true;
+      });
+    }
+
+    function renderSalesDashboard() {
+      const page = document.getElementById("salesDashboardPage");
+      const salesEntries = userScopedSales();
+      const trains = [...new Set(salesEntries.map(item => item.trainName))].sort();
+      const managers = [...new Set(salesEntries.map(item => item.trainManager))].sort();
+      const yards = [...new Set(salesEntries.map(item => item.yard))].sort();
+      page.innerHTML = `
+        <div class="section-head">
+          <div>
+            <h2>Sales Dashboard</h2>
+            <p>Use date, train, train manager and yard filters. Click any sales or GP achievement tile to refresh the entire dashboard on that basis.</p>
+          </div>
+          <div class="form-actions">
+            <button class="btn warn" onclick="clearSalesFilters()">Clear Filters</button>
+            <button class="btn ghost" onclick="downloadTableAsCsv(filteredSalesEntries(), 'sales_dashboard_export.csv')">Export Filtered Sales</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Dashboard Filters</div>
+          <div class="filters">
+            <div><label>From Date</label><input type="date" id="salesFromDate" onchange="rememberSalesFilters(); renderSalesDashboard()"></div>
+            <div><label>To Date</label><input type="date" id="salesToDate" onchange="rememberSalesFilters(); renderSalesDashboard()"></div>
+            <div><label>Single Date</label><input type="date" id="salesSingleDate" onchange="rememberSalesFilters(); renderSalesDashboard()"></div>
+            <div><label>Train Name</label><select id="salesTrainFilter" onchange="rememberSalesFilters(); renderSalesDashboard()"><option value="">All Trains</option>${trains.map(item => `<option>${item}</option>`).join("")}</select></div>
+            <div><label>Train Manager</label><select id="salesTrainManagerFilter" onchange="rememberSalesFilters(); renderSalesDashboard()"><option value="">All Managers</option>${managers.map(item => `<option>${item}</option>`).join("")}</select></div>
+            <div><label>Yard</label><select id="salesYardFilter" onchange="rememberSalesFilters(); renderSalesDashboard()"><option value="">All Yards</option>${yards.map(item => `<option>${item}</option>`).join("")}</select></div>
+          </div>
+        </div>
+
+        <div class="grid kpi-grid">
+          <div class="card metric bg-a"><h3>Total Sales Target</h3><div class="value" id="kpiSalesTarget"></div><div class="sub" id="kpiSalesTargetSub"></div></div>
+          <div class="card metric bg-b"><h3>Total Sales Achievement</h3><div class="value" id="kpiSalesAchievement"></div><div class="sub" id="kpiSalesAchievementSub"></div></div>
+          <div class="card metric bg-c"><h3>Total GP Target</h3><div class="value" id="kpiGpTarget"></div><div class="sub" id="kpiGpTargetSub"></div></div>
+          <div class="card metric bg-d"><h3>Total GP Achievement</h3><div class="value" id="kpiGpAchievement"></div><div class="sub" id="kpiGpAchievementSub"></div></div>
+          <div class="card metric bg-e"><h3>Complaint Status</h3><div class="value" id="kpiComplaint"></div><div class="sub" id="kpiComplaintSub"></div></div>
+          <div class="card metric bg-f"><h3>Cash to Bank</h3><div class="value" id="kpiCashBank"></div><div class="sub" id="kpiCashBankSub"></div></div>
+        </div>
+
+        <div class="panel-grid">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h3>Sales Achievement Distribution</h3>
+                <p class="inline-note">Click a tile to apply interactive dashboard filtering.</p>
+              </div>
+              <button class="btn ghost" onclick="toggleBucket('sales', null)">Reset Sales Tile</button>
+            </div>
+            <div class="tile-grid" id="salesTileGrid"></div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h3>GP Achievement Distribution</h3>
+                <p class="inline-note">Tile filter works together with main filters.</p>
+              </div>
+              <button class="btn ghost" onclick="toggleBucket('gp', null)">Reset GP Tile</button>
+            </div>
+            <div class="tile-grid" id="gpTileGrid"></div>
+          </div>
+        </div>
+
+        <div class="split-grid" style="margin-top:18px;">
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Daily Sales vs GP Trend</h3>
+            <div class="chart-wrap"><canvas id="salesTrendChart"></canvas></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Yard-wise Sales Achievement</h3>
+            <div class="chart-wrap"><canvas id="yardSalesChart"></canvas></div>
+          </div>
+        </div>
+
+        <div class="split-grid" style="margin-top:18px;">
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Train Performance</h3>
+            <div class="chart-wrap"><canvas id="trainPerformanceChart"></canvas></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Train Manager Comparison</h3>
+            <div class="chart-wrap"><canvas id="managerContributionChart"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <h3 style="margin-bottom:12px;">Filtered Sales Detail</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Train</th>
+                  <th>Yard</th>
+                  <th>Train Manager</th>
+                  <th>Sales Target</th>
+                  <th>Sales Achievement</th>
+                  <th>Sales %</th>
+                  <th>GP Target</th>
+                  <th>GP Achievement</th>
+                  <th>GP %</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody id="salesDetailBody"></tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      restoreSalesFilters();
+      const filtered = filteredSalesEntries();
+      const complaints = userScopedComplaints();
+      const cash = userScopedCash();
+      const salesTarget = filtered.reduce((sum, item) => sum + Number(item.salesTarget || 0), 0);
+      const salesAchievement = filtered.reduce((sum, item) => sum + Number(item.salesAchievement || 0), 0);
+      const gpTarget = filtered.reduce((sum, item) => sum + Number(item.gpTarget || 0), 0);
+      const gpAchievement = filtered.reduce((sum, item) => sum + Number(item.gpAchievement || 0), 0);
+      const complaintOpen = complaints.filter(item => item.status === "Open").length;
+      const complaintClosed = complaints.filter(item => item.status === "Closed").length;
+      const bankDeposit = cash.reduce((sum, item) => sum + Number(item.bankDeposit || 0), 0);
+      const cashCounter = cash.reduce((sum, item) => sum + Number(item.cashDepositCounter || 0), 0);
+
+      document.getElementById("kpiSalesTarget").textContent = formatCurrency(salesTarget);
+      document.getElementById("kpiSalesTargetSub").textContent = filtered.length + " filtered sales records";
+      document.getElementById("kpiSalesAchievement").textContent = formatCurrency(salesAchievement);
+      document.getElementById("kpiSalesAchievementSub").textContent = formatPct(salesTarget ? (salesAchievement / salesTarget) * 100 : 0) + " achievement";
+      document.getElementById("kpiGpTarget").textContent = formatCurrency(gpTarget);
+      document.getElementById("kpiGpTargetSub").textContent = filtered.length + " GP-linked records";
+      document.getElementById("kpiGpAchievement").textContent = formatCurrency(gpAchievement);
+      document.getElementById("kpiGpAchievementSub").textContent = formatPct(gpTarget ? (gpAchievement / gpTarget) * 100 : 0) + " achievement";
+      document.getElementById("kpiComplaint").textContent = complaintOpen + " Open";
+      document.getElementById("kpiComplaintSub").textContent = complaintClosed + " closed | " + complaints.length + " total";
+      document.getElementById("kpiCashBank").textContent = formatCurrency(bankDeposit);
+      document.getElementById("kpiCashBankSub").textContent = "Counter: " + formatCurrency(cashCounter);
+
+      renderBucketTiles(filtered, "sales");
+      renderBucketTiles(filtered, "gp");
+      renderSalesCharts(filtered);
+      renderSalesTable(filtered);
+    }
+
+    function restoreSalesFilters() {
+      const last = window.__salesFilterMemory || {};
+      ["salesFromDate","salesToDate","salesSingleDate","salesTrainFilter","salesTrainManagerFilter","salesYardFilter"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && last[id]) el.value = last[id];
+      });
+    }
+
+    function rememberSalesFilters() {
+      window.__salesFilterMemory = {
+        salesFromDate: document.getElementById("salesFromDate")?.value || "",
+        salesToDate: document.getElementById("salesToDate")?.value || "",
+        salesSingleDate: document.getElementById("salesSingleDate")?.value || "",
+        salesTrainFilter: document.getElementById("salesTrainFilter")?.value || "",
+        salesTrainManagerFilter: document.getElementById("salesTrainManagerFilter")?.value || "",
+        salesYardFilter: document.getElementById("salesYardFilter")?.value || ""
+      };
+    }
+
+    function clearSalesFilters() {
+      window.__salesFilterMemory = {};
+      salesTileFilter = null;
+      gpTileFilter = null;
+      renderSalesDashboard();
+    }
+
+    function renderBucketTiles(entries, kind) {
+      const ids = kind === "sales" ? "salesTileGrid" : "gpTileGrid";
+      const active = kind === "sales" ? salesTileFilter : gpTileFilter;
+      const colors = {
+        "90_plus": "linear-gradient(135deg,#2a9d8f,#52b788)",
+        "80_89": "linear-gradient(135deg,#3a86ff,#4361ee)",
+        "70_79": "linear-gradient(135deg,#ee9b00,#ca6702)",
+        "below_70": "linear-gradient(135deg,#d62828,#a4133c)"
+      };
+      const groups = { "90_plus": 0, "80_89": 0, "70_79": 0, "below_70": 0 };
+      entries.forEach(entry => {
+        const pct = kind === "sales" ? computeSalesPct(entry) : computeGpPct(entry);
+        groups[bucketFromPct(pct)]++;
+      });
+      document.getElementById(ids).innerHTML = Object.keys(groups).map(key => `
+        <div class="tile ${active === key ? "active" : ""}" style="background:${colors[key]}" onclick="toggleBucket('${kind}','${key}')">
+          <small>${kind === "sales" ? "Sales achievement" : "GP achievement"}</small>
+          <strong>${groups[key]}</strong>
+          <div>${bucketLabel(key)}</div>
+        </div>
+      `).join("");
+    }
+
+    function toggleBucket(kind, key) {
+      if (kind === "sales") salesTileFilter = salesTileFilter === key ? null : key;
+      if (kind === "gp") gpTileFilter = gpTileFilter === key ? null : key;
+      rememberSalesFilters();
+      renderSalesDashboard();
+    }
+
+    function summarizeBy(list, field) {
+      return list.reduce((acc, item) => {
+        const key = item[field] || "Unknown";
+        if (!acc[key]) acc[key] = { salesTarget: 0, salesAchievement: 0, gpTarget: 0, gpAchievement: 0, count: 0 };
+        acc[key].salesTarget += Number(item.salesTarget || 0);
+        acc[key].salesAchievement += Number(item.salesAchievement || 0);
+        acc[key].gpTarget += Number(item.gpTarget || 0);
+        acc[key].gpAchievement += Number(item.gpAchievement || 0);
+        acc[key].count += 1;
+        return acc;
+      }, {});
+    }
+
+    function destroyChart(key) { if (charts[key]) charts[key].destroy(); }
+    function baseChartOptions() { return { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } }, scales: { y: { beginAtZero: true } } }; }
+
+    function renderSalesCharts(filtered) {
+      destroyChart("salesTrend");
+      destroyChart("yardSales");
+      destroyChart("trainPerformance");
+      destroyChart("managerContribution");
+
+      const dayMap = {};
+      filtered.forEach(item => {
+        if (!dayMap[item.date]) dayMap[item.date] = { sales: 0, gp: 0 };
+        dayMap[item.date].sales += Number(item.salesAchievement || 0);
+        dayMap[item.date].gp += Number(item.gpAchievement || 0);
+      });
+      const dayLabels = Object.keys(dayMap).sort();
+      charts.salesTrend = new Chart(document.getElementById("salesTrendChart"), {
+        type: "line",
+        data: {
+          labels: dayLabels,
+          datasets: [
+            { label: "Sales Achievement", data: dayLabels.map(key => dayMap[key].sales), borderColor: "#3a86ff", backgroundColor: "rgba(58,134,255,0.12)", fill: true, tension: 0.35 },
+            { label: "GP Achievement", data: dayLabels.map(key => dayMap[key].gp), borderColor: "#2a9d8f", backgroundColor: "rgba(42,157,143,0.12)", fill: true, tension: 0.35 }
+          ]
+        },
+        options: baseChartOptions()
+      });
+
+      const yardMap = {};
+      filtered.forEach(item => {
+        const key = item.yard;
+        if (!yardMap[key]) yardMap[key] = { target: 0, achievement: 0 };
+        yardMap[key].target += Number(item.salesTarget || 0);
+        yardMap[key].achievement += Number(item.salesAchievement || 0);
+      });
+      const yardLabels = Object.keys(yardMap);
+      charts.yardSales = new Chart(document.getElementById("yardSalesChart"), {
+        type: "bar",
+        data: {
+          labels: yardLabels,
+          datasets: [
+            { label: "Sales Target", data: yardLabels.map(key => yardMap[key].target), backgroundColor: "rgba(238,155,0,0.75)", borderRadius: 10 },
+            { label: "Sales Achievement", data: yardLabels.map(key => yardMap[key].achievement), backgroundColor: "rgba(58,134,255,0.82)", borderRadius: 10 }
+          ]
+        },
+        options: baseChartOptions()
+      });
+
+      const byTrain = summarizeBy(filtered, "trainName");
+      const topTrains = Object.entries(byTrain).map(([label, item]) => ({ label, pct: item.salesTarget ? (item.salesAchievement / item.salesTarget) * 100 : 0 })).sort((a, b) => b.pct - a.pct).slice(0, 10);
+      charts.trainPerformance = new Chart(document.getElementById("trainPerformanceChart"), {
+        type: "bar",
+        data: {
+          labels: topTrains.map(item => item.label),
+          datasets: [{ label: "Sales Achievement %", data: topTrains.map(item => item.pct.toFixed(1)), backgroundColor: topTrains.map(item => item.pct >= 90 ? "#2a9d8f" : item.pct >= 80 ? "#3a86ff" : item.pct >= 70 ? "#ee9b00" : "#d62828"), borderRadius: 10 }]
+        },
+        options: { ...baseChartOptions(), scales: { y: { beginAtZero: true, max: 120 } } }
+      });
+
+      const byManager = summarizeBy(filtered, "trainManager");
+      const managerLabels = Object.keys(byManager);
+      charts.managerContribution = new Chart(document.getElementById("managerContributionChart"), {
+        type: "doughnut",
+        data: {
+          labels: managerLabels,
+          datasets: [{ data: managerLabels.map(key => byManager[key].salesAchievement), backgroundColor: ["#005f73","#0a9396","#3a86ff","#6c63ff","#ee9b00","#ca6702","#d62872","#2a9d8f"], borderWidth: 2, borderColor: "#fff" }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } }
+      });
+    }
+
+    function renderSalesTable(filtered) {
+      document.getElementById("salesDetailBody").innerHTML = filtered.length ? filtered.map(entry => `
+        <tr>
+          <td>${entry.date}</td>
+          <td>${entry.trainName}<br><span class="inline-note">${entry.trainNumber}</span></td>
+          <td>${entry.yard}</td>
+          <td>${entry.trainManager}</td>
+          <td>${formatCurrency(entry.salesTarget)}</td>
+          <td>${formatCurrency(entry.salesAchievement)}</td>
+          <td><span class="badge ${computeSalesPct(entry) >= 80 ? "good" : computeSalesPct(entry) >= 70 ? "avg" : "low"}">${formatPct(computeSalesPct(entry))}</span></td>
+          <td>${formatCurrency(entry.gpTarget)}</td>
+          <td>${formatCurrency(entry.gpAchievement)}</td>
+          <td><span class="badge ${computeGpPct(entry) >= 80 ? "good" : computeGpPct(entry) >= 70 ? "avg" : "low"}">${formatPct(computeGpPct(entry))}</span></td>
+          <td>${entry.remarks || ""}</td>
+        </tr>
+      `).join("") : `<tr><td colspan="11">No sales records found for selected filters.</td></tr>`;
+    }
+
+    function complaintDashboardFilters() {
+      return {
+        fromDate: document.getElementById("complaintFromDate")?.value || "",
+        toDate: document.getElementById("complaintToDate")?.value || "",
+        trainName: document.getElementById("complaintTrainFilter")?.value || "",
+        status: document.getElementById("complaintStatusFilter")?.value || "",
+        yard: document.getElementById("complaintYardFilter")?.value || ""
+      };
+    }
+
+    function filteredComplaints() {
+      const filters = complaintDashboardFilters();
+      return userScopedComplaints().filter(item => {
+        if (filters.fromDate && item.date < filters.fromDate) return false;
+        if (filters.toDate && item.date > filters.toDate) return false;
+        if (filters.trainName && item.trainName !== filters.trainName) return false;
+        if (filters.status && item.status !== filters.status) return false;
+        if (filters.yard && item.yard !== filters.yard) return false;
+        return true;
+      });
+    }
+
+    function renderComplaintDashboard() {
+      const page = document.getElementById("complaintDashboardPage");
+      const complaints = userScopedComplaints();
+      const trains = [...new Set(complaints.map(item => item.trainName))].sort();
+      const statuses = state.masters.complaintStatuses;
+      const yards = [...new Set(complaints.map(item => item.yard))].sort();
+      page.innerHTML = `
+        <div class="section-head">
+          <div>
+            <h2>Complaint Dashboard</h2>
+            <p>Separate dashboard for complaint status, source, train and yard analysis.</p>
+          </div>
+          <div class="form-actions">
+            <button class="btn warn" onclick="clearComplaintFilters()">Clear Filters</button>
+            <button class="btn ghost" onclick="downloadTableAsCsv(filteredComplaints(), 'complaints_export.csv')">Export Complaints</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Complaint Filters</div>
+          <div class="filters">
+            <div><label>From Date</label><input type="date" id="complaintFromDate" onchange="rememberComplaintFilters(); renderComplaintDashboard()"></div>
+            <div><label>To Date</label><input type="date" id="complaintToDate" onchange="rememberComplaintFilters(); renderComplaintDashboard()"></div>
+            <div><label>Train</label><select id="complaintTrainFilter" onchange="rememberComplaintFilters(); renderComplaintDashboard()"><option value="">All Trains</option>${trains.map(item => `<option>${item}</option>`).join("")}</select></div>
+            <div><label>Status</label><select id="complaintStatusFilter" onchange="rememberComplaintFilters(); renderComplaintDashboard()"><option value="">All Status</option>${statuses.map(item => `<option>${item}</option>`).join("")}</select></div>
+            <div><label>Yard</label><select id="complaintYardFilter" onchange="rememberComplaintFilters(); renderComplaintDashboard()"><option value="">All Yards</option>${yards.map(item => `<option>${item}</option>`).join("")}</select></div>
+          </div>
+        </div>
+        <div class="grid kpi-grid">
+          <div class="card metric bg-e"><h3>Total Complaints</h3><div class="value" id="complaintTotalKpi"></div><div class="sub">Filtered complaint records</div></div>
+          <div class="card metric bg-c"><h3>Open</h3><div class="value" id="complaintOpenKpi"></div><div class="sub">Pending immediate action</div></div>
+          <div class="card metric bg-b"><h3>In Progress</h3><div class="value" id="complaintProgressKpi"></div><div class="sub">Follow-up ongoing</div></div>
+          <div class="card metric bg-d"><h3>Closed</h3><div class="value" id="complaintClosedKpi"></div><div class="sub">Resolved cases</div></div>
+        </div>
+        <div class="split-grid" style="margin-top:18px;">
+          <div class="card"><h3 style="margin-bottom:12px;">Complaint Status Mix</h3><div class="chart-wrap"><canvas id="complaintStatusChart"></canvas></div></div>
+          <div class="card"><h3 style="margin-bottom:12px;">Complaint Source</h3><div class="chart-wrap"><canvas id="complaintSourceChart"></canvas></div></div>
+        </div>
+        <div class="split-grid" style="margin-top:18px;">
+          <div class="card"><h3 style="margin-bottom:12px;">Train-wise Complaint Count</h3><div class="chart-wrap"><canvas id="complaintTrainChart"></canvas></div></div>
+          <div class="card"><h3 style="margin-bottom:12px;">Yard-wise Complaint Count</h3><div class="chart-wrap"><canvas id="complaintYardChart"></canvas></div></div>
+        </div>
+        <div class="card" style="margin-top:18px;">
+          <h3 style="margin-bottom:12px;">Complaint Detail</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>ID</th><th>Train</th><th>Yard</th><th>Source</th><th>Nature</th><th>Status</th><th>Remarks</th></tr></thead>
+              <tbody id="complaintTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      `;
+      restoreComplaintFilters();
+      const filtered = filteredComplaints();
+      document.getElementById("complaintTotalKpi").textContent = filtered.length;
+      document.getElementById("complaintOpenKpi").textContent = filtered.filter(item => item.status === "Open").length;
+      document.getElementById("complaintProgressKpi").textContent = filtered.filter(item => item.status === "In Progress").length;
+      document.getElementById("complaintClosedKpi").textContent = filtered.filter(item => item.status === "Closed").length;
+      renderComplaintCharts(filtered);
+      renderComplaintTable(filtered);
+    }
+
+    function rememberComplaintFilters() {
+      window.__complaintFilterMemory = {
+        complaintFromDate: document.getElementById("complaintFromDate")?.value || "",
+        complaintToDate: document.getElementById("complaintToDate")?.value || "",
+        complaintTrainFilter: document.getElementById("complaintTrainFilter")?.value || "",
+        complaintStatusFilter: document.getElementById("complaintStatusFilter")?.value || "",
+        complaintYardFilter: document.getElementById("complaintYardFilter")?.value || ""
+      };
+    }
+
+    function restoreComplaintFilters() {
+      const last = window.__complaintFilterMemory || {};
+      ["complaintFromDate","complaintToDate","complaintTrainFilter","complaintStatusFilter","complaintYardFilter"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && last[id]) el.value = last[id];
+      });
+    }
+
+    function clearComplaintFilters() { window.__complaintFilterMemory = {}; renderComplaintDashboard(); }
+    function countBy(list, field) { return list.reduce((acc, item) => { const key = item[field] || "Blank"; acc[key] = (acc[key] || 0) + 1; return acc; }, {}); }
+
+    function renderComplaintCharts(filtered) {
+      destroyChart("complaintStatus"); destroyChart("complaintSource"); destroyChart("complaintTrain"); destroyChart("complaintYard");
+      const statusMap = countBy(filtered, "status");
+      const sourceMap = countBy(filtered, "source");
+      const trainMap = countBy(filtered, "trainName");
+      const yardMap = countBy(filtered, "yard");
+      charts.complaintStatus = new Chart(document.getElementById("complaintStatusChart"), { type: "doughnut", data: { labels: Object.keys(statusMap), datasets: [{ data: Object.values(statusMap), backgroundColor: ["#d62828","#ee9b00","#2a9d8f"], borderColor: "#fff", borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } } });
+      charts.complaintSource = new Chart(document.getElementById("complaintSourceChart"), { type: "pie", data: { labels: Object.keys(sourceMap), datasets: [{ data: Object.values(sourceMap), backgroundColor: ["#3a86ff","#6c63ff","#0a9396","#ca6702","#d62872"], borderColor: "#fff", borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } } });
+      const trainEntries = Object.entries(trainMap).sort((a, b) => b[1] - a[1]).slice(0, 10);
+      charts.complaintTrain = new Chart(document.getElementById("complaintTrainChart"), { type: "bar", data: { labels: trainEntries.map(item => item[0]), datasets: [{ label: "Complaints", data: trainEntries.map(item => item[1]), backgroundColor: "#d62872", borderRadius: 10 }] }, options: baseChartOptions() });
+      charts.complaintYard = new Chart(document.getElementById("complaintYardChart"), { type: "bar", data: { labels: Object.keys(yardMap), datasets: [{ label: "Complaints", data: Object.values(yardMap), backgroundColor: "#0a9396", borderRadius: 10 }] }, options: baseChartOptions() });
+    }
+
+    function renderComplaintTable(filtered) {
+      document.getElementById("complaintTableBody").innerHTML = filtered.length ? filtered.map(item => `
+        <tr>
+          <td>${item.date}</td>
+          <td>${item.complaintId}</td>
+          <td>${item.trainName}<br><span class="inline-note">${item.trainNo}</span></td>
+          <td>${item.yard}</td>
+          <td>${item.source}</td>
+          <td>${item.complainNature}</td>
+          <td><span class="badge ${item.status === "Open" ? "open" : item.status === "In Progress" ? "progress" : "closed"}">${item.status}</span></td>
+          <td>${item.resolutionRemarks || item.entryRemarks || ""}</td>
+        </tr>
+      `).join("") : `<tr><td colspan="8">No complaint records found.</td></tr>`;
+    }
+
+    function visibleTrainMasters() { return state.trainMasters.filter(item => currentUser.yard === "ALL" || normalizeYard(item.yard) === normalizeYard(currentUser.yard)); }
+    function visibleYards() { const list = currentUser.yard === "ALL" ? state.masters.yards : state.masters.yards.filter(item => normalizeYard(item) === normalizeYard(currentUser.yard)); return list.length ? list : state.masters.yards; }
+    function todayISO() { return new Date().toISOString().slice(0, 10); }
+    function getMonthName(date) { return date ? new Date(date).toLocaleString("en-US", { month: "short" }) : ""; }
+
+    function renderDataEntryPage() {
+      const canSales = ["super_admin", "admin", "collecting_team"].includes(currentUser.role);
+      const canComplaint = ["super_admin", "admin", "csd_entry"].includes(currentUser.role);
+      const canCash = ["super_admin", "admin", "cash_team"].includes(currentUser.role);
+      const defaultEntry = canSales ? "sales" : canComplaint ? "complaint" : "cash";
+      const page = document.getElementById("dataEntryPage");
+      page.innerHTML = `
+        <div class="section-head"><div><h2>Data Entry</h2><p>Select entry type. Complaint entry opens the complaint section directly inside data entry page.</p></div></div>
+        <div class="card">
+          <div class="card-title">Entry Type Filter</div>
+          <div class="filters">
+            <div><label>Entry Type</label><select id="entryTypeSelector" onchange="switchEntryType()">${canSales ? `<option value="sales">Sales Entry</option>` : ""}${canComplaint ? `<option value="complaint">Complaint Entry</option>` : ""}${canCash ? `<option value="cash">Cash & Bank Deposit Entry</option>` : ""}</select></div>
+            <div><label>Complaint Quick Filter</label><select id="entryComplaintStatusFilter" onchange="renderEntryComplaintList()"><option value="">All Complaint Status</option>${state.masters.complaintStatuses.map(item => `<option>${item}</option>`).join("")}</select></div>
+          </div>
+        </div>
+        <div id="entrySalesBlock" class="card" style="margin-top:18px;"></div>
+        <div id="entryComplaintBlock" class="card" style="margin-top:18px;"></div>
+        <div id="entryCashBlock" class="card" style="margin-top:18px;"></div>
+      `;
+      document.getElementById("entryTypeSelector").value = window.__entryType || defaultEntry;
+      renderSalesEntryBlock(canSales);
+      renderComplaintEntryBlock(canComplaint);
+      renderCashEntryBlock(canCash);
+      switchEntryType();
+    }
+
+    function switchEntryType() {
+      const value = document.getElementById("entryTypeSelector").value;
+      window.__entryType = value;
+      document.getElementById("entrySalesBlock").classList.toggle("hidden", value !== "sales");
+      document.getElementById("entryComplaintBlock").classList.toggle("hidden", value !== "complaint");
+      document.getElementById("entryCashBlock").classList.toggle("hidden", value !== "cash");
+    }
+
+    function renderSalesEntryBlock(canSales) {
+      const box = document.getElementById("entrySalesBlock");
+      if (!canSales) return box.innerHTML = `<h3>Sales Entry</h3><p class="inline-note">Your login does not have permission for sales entry.</p>`;
+      const trains = visibleTrainMasters();
+      box.innerHTML = `
+        <div class="section-head"><div><h3>Sales Entry</h3><p class="inline-note">Sales target and GP target fetch automatically from train master.</p></div></div>
+        <div class="form-grid">
+          <div><label>Train Name</label><select id="salesEntryTrain" onchange="fillTargetsFromMaster()"><option value="">Select Train</option>${trains.map(item => `<option value="${item.id}">${item.trainName}</option>`).join("")}</select></div>
+          <div><label>Date</label><input type="date" id="salesEntryDate" value="${todayISO()}"></div>
+          <div><label>Train Number</label><input id="salesEntryTrainNo" readonly></div>
+          <div><label>Yard</label><input id="salesEntryYard" readonly></div>
+          <div><label>Cluster Manager</label><input id="salesEntryCluster" readonly></div>
+          <div><label>Train Manager</label><input id="salesEntryManager" readonly></div>
+          <div><label>Rake Manager</label><input id="salesEntryRake" readonly></div>
+          <div><label>Train Type</label><input id="salesEntryType" readonly></div>
+          <div><label>Sales Target</label><input id="salesEntryTarget" type="number" readonly></div>
+          <div><label>Sales Achievement</label><input id="salesEntryAchievement" type="number" oninput="updateSalesEntryPct()"></div>
+          <div><label>Sales Achievement %</label><input id="salesEntryPct" readonly></div>
+          <div><label>GP Target</label><input id="salesEntryGpTarget" type="number" readonly></div>
+          <div><label>GP Achievement</label><input id="salesEntryGpAchievement" type="number" oninput="updateSalesEntryPct()"></div>
+          <div><label>GP Achievement %</label><input id="salesEntryGpPct" readonly></div>
+        </div>
+        <div style="margin-top:14px;"><label>Remarks</label><textarea id="salesEntryRemarks" placeholder="Write sales remarks here"></textarea></div>
+        <div class="form-actions"><button class="btn" onclick="saveSalesEntry()">Save Sales Entry</button><button class="btn ghost" onclick="clearSalesEntryForm()">Clear</button></div>
+      `;
+    }
+
+    function fillTargetsFromMaster() {
+      const train = state.trainMasters.find(item => item.id === Number(document.getElementById("salesEntryTrain").value));
+      if (!train) return;
+      document.getElementById("salesEntryTrainNo").value = train.trainNumber;
+      document.getElementById("salesEntryYard").value = train.yard;
+      document.getElementById("salesEntryCluster").value = train.clusterManager;
+      document.getElementById("salesEntryManager").value = train.trainManager;
+      document.getElementById("salesEntryRake").value = train.rakeManager;
+      document.getElementById("salesEntryType").value = train.trainType;
+      document.getElementById("salesEntryTarget").value = train.salesTarget;
+      document.getElementById("salesEntryGpTarget").value = train.gpTarget;
+      updateSalesEntryPct();
+    }
+
+    function updateSalesEntryPct() {
+      const salesTarget = Number(document.getElementById("salesEntryTarget").value || 0);
+      const salesAchievement = Number(document.getElementById("salesEntryAchievement").value || 0);
+      const gpTarget = Number(document.getElementById("salesEntryGpTarget").value || 0);
+      const gpAchievement = Number(document.getElementById("salesEntryGpAchievement").value || 0);
+      document.getElementById("salesEntryPct").value = salesTarget ? ((salesAchievement / salesTarget) * 100).toFixed(2) : "";
+      document.getElementById("salesEntryGpPct").value = gpTarget ? ((gpAchievement / gpTarget) * 100).toFixed(2) : "";
+    }
+
+    function saveSalesEntry() {
+      const train = state.trainMasters.find(item => item.id === Number(document.getElementById("salesEntryTrain").value));
+      if (!train) return alert("Please select train.");
+      const item = {
+        id: Date.now(),
+        month: getMonthName(document.getElementById("salesEntryDate").value),
+        date: document.getElementById("salesEntryDate").value,
+        trainNumber: train.trainNumber, clusterManager: train.clusterManager, trainManager: train.trainManager, rakeManager: train.rakeManager,
+        trainType: train.trainType, trainName: train.trainName, salesTarget: Number(document.getElementById("salesEntryTarget").value || 0),
+        salesAchievement: Number(document.getElementById("salesEntryAchievement").value || 0), yard: train.yard,
+        gpTarget: Number(document.getElementById("salesEntryGpTarget").value || 0), gpAchievement: Number(document.getElementById("salesEntryGpAchievement").value || 0),
+        remarks: document.getElementById("salesEntryRemarks").value.trim()
+      };
+      if (!item.date) return alert("Please select date.");
+      state.salesEntries.unshift(item); saveState(); alert("Sales entry saved."); clearSalesEntryForm(); renderSalesDashboard();
+    }
+
+    function clearSalesEntryForm() {
+      ["salesEntryTrain","salesEntryTrainNo","salesEntryYard","salesEntryCluster","salesEntryManager","salesEntryRake","salesEntryType","salesEntryTarget","salesEntryAchievement","salesEntryPct","salesEntryGpTarget","salesEntryGpAchievement","salesEntryGpPct","salesEntryRemarks"].forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
+      if (document.getElementById("salesEntryDate")) document.getElementById("salesEntryDate").value = todayISO();
+    }
+
+    function renderComplaintEntryBlock(canComplaint) {
+      const box = document.getElementById("entryComplaintBlock");
+      if (!canComplaint) return box.innerHTML = `<h3>Complaint Entry</h3><p class="inline-note">Your login does not have permission for complaint entry.</p>`;
+      box.innerHTML = `
+        <div class="section-head"><div><h3>Complaint Entry</h3><p class="inline-note">Complaint filter is available in data entry section and opens complaint page here.</p></div></div>
+        <div class="form-grid">
+          <div><label>Complaint Date</label><input type="date" id="compEntryDate" value="${todayISO()}"></div>
+          <div><label>Complaint ID</label><input id="compEntryId" placeholder="Auto or manual ID"></div>
+          <div><label>Source</label><select id="compEntrySource">${state.masters.complaintSources.map(item => `<option>${item}</option>`).join("")}</select></div>
+          <div><label>Complaint Type</label><input id="compEntryType" placeholder="Overcharging / Quality / Service"></div>
+          <div><label>Train No</label><input id="compEntryTrainNo"></div>
+          <div><label>Train Name</label><input id="compEntryTrainName"></div>
+          <div><label>Train Type</label><input id="compEntryTrainType"></div>
+          <div><label>Yard</label><select id="compEntryYard">${["ALL INDIA", ...state.masters.yards].map(item => `<option>${item}</option>`).join("")}</select></div>
+          <div><label>Complainant Name</label><input id="compEntryName"></div>
+          <div><label>Mobile No</label><input id="compEntryMobile"></div>
+          <div><label>PNR No</label><input id="compEntryPnr"></div>
+          <div><label>Status</label><select id="compEntryStatus">${state.masters.complaintStatuses.map(item => `<option>${item}</option>`).join("")}</select></div>
+        </div>
+        <div style="margin-top:14px;"><label>Complaint Nature</label><input id="compEntryNature" placeholder="Food quality / Overcharging / Water not available"></div>
+        <div style="margin-top:14px;"><label>Complaint Details</label><textarea id="compEntryDetails"></textarea></div>
+        <div style="margin-top:14px;"><label>Remarks</label><textarea id="compEntryRemarks" placeholder="Write internal remarks or resolution notes"></textarea></div>
+        <div class="form-actions"><button class="btn" onclick="saveComplaintEntry()">Save Complaint Entry</button><button class="btn ghost" onclick="clearComplaintEntryForm()">Clear</button></div>
+        <div class="table-wrap" style="margin-top:18px;">
+          <table><thead><tr><th>Date</th><th>ID</th><th>Train</th><th>Yard</th><th>Status</th><th>Remarks</th></tr></thead><tbody id="entryComplaintList"></tbody></table>
+        </div>
+      `;
+      renderEntryComplaintList();
+    }
+
+    function renderEntryComplaintList() {
+      const filter = document.getElementById("entryComplaintStatusFilter")?.value || "";
+      const rows = userScopedComplaints().filter(item => !filter || item.status === filter).slice(0, 12);
+      const body = document.getElementById("entryComplaintList");
+      if (!body) return;
+      body.innerHTML = rows.length ? rows.map(item => `<tr><td>${item.date}</td><td>${item.complaintId}</td><td>${item.trainName}</td><td>${item.yard}</td><td><span class="badge ${item.status === "Open" ? "open" : item.status === "In Progress" ? "progress" : "closed"}">${item.status}</span></td><td>${item.entryRemarks || item.resolutionRemarks || ""}</td></tr>`).join("") : `<tr><td colspan="6">No complaint records found for selected status.</td></tr>`;
+    }
+
+    function saveComplaintEntry() {
+      const item = {
+        id: Date.now(),
+        date: document.getElementById("compEntryDate").value,
+        complaintId: document.getElementById("compEntryId").value.trim() || String(Date.now()),
+        source: document.getElementById("compEntrySource").value,
+        complaintType: document.getElementById("compEntryType").value.trim(),
+        complaintRefNo: "",
+        complainantName: document.getElementById("compEntryName").value.trim(),
+        incidentDate: document.getElementById("compEntryDate").value,
+        complaintDate: document.getElementById("compEntryDate").value,
+        trainNo: document.getElementById("compEntryTrainNo").value.trim(),
+        trainName: document.getElementById("compEntryTrainName").value.trim(),
+        trainType: document.getElementById("compEntryTrainType").value.trim(),
+        licenseeName: "RK Group",
+        mobileNo: document.getElementById("compEntryMobile").value.trim(),
+        emailId: "", pnrNo: document.getElementById("compEntryPnr").value.trim(),
+        complainNature: document.getElementById("compEntryNature").value.trim(),
+        details: document.getElementById("compEntryDetails").value.trim(),
+        yard: document.getElementById("compEntryYard").value,
+        status: document.getElementById("compEntryStatus").value,
+        resolutionRemarks: "",
+        entryRemarks: document.getElementById("compEntryRemarks").value.trim()
+      };
+      if (!item.date || !item.trainName || !item.complainNature) return alert("Please fill complaint date, train name and complaint nature.");
+      state.complaints.unshift(item); saveState(); alert("Complaint entry saved."); clearComplaintEntryForm(); renderEntryComplaintList(); renderComplaintDashboard(); renderSalesDashboard();
+    }
+
+    function clearComplaintEntryForm() {
+      ["compEntryId","compEntryType","compEntryTrainNo","compEntryTrainName","compEntryTrainType","compEntryName","compEntryMobile","compEntryPnr","compEntryNature","compEntryDetails","compEntryRemarks"].forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
+      if (document.getElementById("compEntryDate")) document.getElementById("compEntryDate").value = todayISO();
+    }
+
+    function renderCashEntryBlock(canCash) {
+      const box = document.getElementById("entryCashBlock");
+      if (!canCash) return box.innerHTML = `<h3>Cash & Bank Deposit Entry</h3><p class="inline-note">Your login does not have permission for cash deposit entry.</p>`;
+      const trains = visibleTrainMasters();
+      box.innerHTML = `
+        <div class="section-head"><div><h3>Cash Collection & Bank Deposit Entry</h3><p class="inline-note">Capture final cash deposit to cash counter and same-day bank deposit with remarks.</p></div></div>
+        <div class="form-grid">
+          <div><label>Date</label><input type="date" id="cashEntryDate" value="${todayISO()}"></div>
+          <div><label>Yard</label><select id="cashEntryYard">${visibleYards().map(item => `<option>${item}</option>`).join("")}</select></div>
+          <div><label>Train Name</label><select id="cashEntryTrain">${trains.map(item => `<option value="${item.id}">${item.trainName}</option>`).join("")}</select></div>
+          <div><label>Train Number</label><input id="cashEntryTrainNo" readonly></div>
+          <div><label>Cash Collected</label><input id="cashEntryCollected" type="number"></div>
+          <div><label>Deposit to Cash Counter</label><input id="cashEntryCounter" type="number"></div>
+          <div><label>Deposit to Bank</label><input id="cashEntryBank" type="number"></div>
+        </div>
+        <div style="margin-top:14px;"><label>Remarks</label><textarea id="cashEntryRemarks"></textarea></div>
+        <div class="form-actions"><button class="btn" onclick="saveCashEntry()">Save Cash Deposit</button><button class="btn ghost" onclick="clearCashEntryForm()">Clear</button></div>
+        <div class="table-wrap" style="margin-top:18px;"><table><thead><tr><th>Date</th><th>Yard</th><th>Train</th><th>Counter Deposit</th><th>Bank Deposit</th><th>Remarks</th></tr></thead><tbody id="cashEntryTable"></tbody></table></div>
+      `;
+      document.getElementById("cashEntryTrain").addEventListener("change", syncCashTrainNo);
+      syncCashTrainNo();
+      renderCashTable();
+    }
+
+    function syncCashTrainNo() {
+      const train = state.trainMasters.find(item => item.id === Number(document.getElementById("cashEntryTrain").value));
+      document.getElementById("cashEntryTrainNo").value = train ? train.trainNumber : "";
+      if (train && document.getElementById("cashEntryYard")) document.getElementById("cashEntryYard").value = train.yard;
+    }
+
+    function saveCashEntry() {
+      const train = state.trainMasters.find(item => item.id === Number(document.getElementById("cashEntryTrain").value));
+      if (!train) return alert("Please select train.");
+      const item = {
+        id: Date.now(),
+        date: document.getElementById("cashEntryDate").value,
+        yard: document.getElementById("cashEntryYard").value,
+        trainName: train.trainName,
+        trainNumber: train.trainNumber,
+        cashCollected: Number(document.getElementById("cashEntryCollected").value || 0),
+        cashDepositCounter: Number(document.getElementById("cashEntryCounter").value || 0),
+        bankDeposit: Number(document.getElementById("cashEntryBank").value || 0),
+        remarks: document.getElementById("cashEntryRemarks").value.trim()
+      };
+      if (!item.date) return alert("Please select date.");
+      state.cashDeposits.unshift(item); saveState(); alert("Cash and bank deposit entry saved."); clearCashEntryForm(); renderCashTable(); renderSalesDashboard();
+    }
+
+    function clearCashEntryForm() {
+      ["cashEntryCollected","cashEntryCounter","cashEntryBank","cashEntryRemarks"].forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
+      if (document.getElementById("cashEntryDate")) document.getElementById("cashEntryDate").value = todayISO();
+    }
+
+    function renderCashTable() {
+      const body = document.getElementById("cashEntryTable");
+      if (!body) return;
+      const rows = userScopedCash().slice(0, 12);
+      body.innerHTML = rows.length ? rows.map(item => `<tr><td>${item.date}</td><td>${item.yard}</td><td>${item.trainName}</td><td>${formatCurrency(item.cashDepositCounter)}</td><td>${formatCurrency(item.bankDeposit)}</td><td>${item.remarks || ""}</td></tr>`).join("") : `<tr><td colspan="6">No cash deposit records yet.</td></tr>`;
+    }
+
+    function renderMasterPage() {
+      const page = document.getElementById("masterPage");
+      if (!["super_admin","admin"].includes(currentUser.role)) return page.innerHTML = "";
+      page.innerHTML = `
+        <div class="section-head"><div><h2>Master Data</h2><p>Create yard, train, manager and target master records. Sales target and GP target are fetched from here.</p></div></div>
+        <div class="panel-grid">
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Train Master</h3>
+            <div class="form-grid">
+              <div><label>Train Name</label><input id="masterTrainName"></div>
+              <div><label>Train Number</label><input id="masterTrainNo"></div>
+              <div><label>Yard</label><select id="masterTrainYard">${state.masters.yards.map(item => `<option>${item}</option>`).join("")}</select></div>
+              <div><label>Cluster Manager</label><select id="masterClusterManager">${state.masters.clusterManagers.map(item => `<option>${item}</option>`).join("")}</select></div>
+              <div><label>Train Manager</label><select id="masterTrainManager">${state.masters.trainManagers.map(item => `<option>${item}</option>`).join("")}</select></div>
+              <div><label>Rake Manager</label><input id="masterRakeManager"></div>
+              <div><label>Train Type</label><select id="masterTrainType"><option>WCB</option><option>TSV</option></select></div>
+              <div><label>Sales Target</label><input id="masterSalesTarget" type="number"></div>
+              <div><label>GP Target</label><input id="masterGpTarget" type="number"></div>
+            </div>
+            <div class="form-actions"><button class="btn" onclick="saveTrainMaster()">Save Train Master</button></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Manager & Yard Master</h3>
+            <div class="form-grid">
+              <div><label>New Yard</label><input id="newYardMaster"></div>
+              <div><label>New Cluster Manager</label><input id="newClusterMaster"></div>
+              <div><label>New Train Manager</label><input id="newTrainManagerMaster"></div>
+            </div>
+            <div class="form-actions"><button class="btn" onclick="saveSimpleMaster()">Save Master Values</button></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:18px;">
+          <h3 style="margin-bottom:12px;">Train Master List</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Train</th><th>No</th><th>Yard</th><th>Cluster Manager</th><th>Train Manager</th><th>Type</th><th>Sales Target</th><th>GP Target</th></tr></thead>
+              <tbody>${state.trainMasters.map(item => `<tr><td>${item.trainName}</td><td>${item.trainNumber}</td><td>${item.yard}</td><td>${item.clusterManager}</td><td>${item.trainManager}</td><td>${item.trainType}</td><td>${formatCurrency(item.salesTarget)}</td><td>${formatCurrency(item.gpTarget)}</td></tr>`).join("")}</tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveTrainMaster() {
+      const item = {
+        id: Date.now(),
+        trainName: document.getElementById("masterTrainName").value.trim(),
+        trainNumber: document.getElementById("masterTrainNo").value.trim(),
+        yard: document.getElementById("masterTrainYard").value,
+        clusterManager: document.getElementById("masterClusterManager").value,
+        trainManager: document.getElementById("masterTrainManager").value,
+        rakeManager: document.getElementById("masterRakeManager").value.trim(),
+        trainType: document.getElementById("masterTrainType").value,
+        salesTarget: Number(document.getElementById("masterSalesTarget").value || 0),
+        gpTarget: Number(document.getElementById("masterGpTarget").value || 0)
+      };
+      if (!item.trainName || !item.trainNumber) return alert("Please fill train name and number.");
+      state.trainMasters.unshift(item); saveState(); alert("Train master saved."); renderMasterPage(); renderDataEntryPage();
+    }
+
+    function saveSimpleMaster() {
+      const yard = document.getElementById("newYardMaster").value.trim();
+      const cluster = document.getElementById("newClusterMaster").value.trim();
+      const manager = document.getElementById("newTrainManagerMaster").value.trim();
+      if (yard && !state.masters.yards.includes(yard)) state.masters.yards.push(yard);
+      if (cluster && !state.masters.clusterManagers.includes(cluster)) state.masters.clusterManagers.push(cluster);
+      if (manager && !state.masters.trainManagers.includes(manager)) state.masters.trainManagers.push(manager);
+      saveState(); alert("Master values saved."); renderMasterPage(); renderDataEntryPage();
+    }
+
+    function renderUserPage() {
+      const page = document.getElementById("userPage");
+      if (!["super_admin","admin"].includes(currentUser.role)) return page.innerHTML = "";
+      page.innerHTML = `
+        <div class="section-head"><div><h2>User Login Setup</h2><p>Create different login for CSD entry, collecting team, cash team, ops manager, admin and super admin. Yard-wise login is also supported.</p></div></div>
+        <div class="panel-grid">
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Create / Reset User</h3>
+            <div class="form-grid">
+              <div><label>Name</label><input id="userName"></div>
+              <div><label>User ID</label><input id="userUsername"></div>
+              <div><label>Password</label><input id="userPassword"></div>
+              <div><label>Role</label><select id="userRole">${Object.keys(ROLE_LABELS).map(key => `<option value="${key}">${ROLE_LABELS[key]}</option>`).join("")}</select></div>
+              <div><label>Yard</label><select id="userYard">${["ALL", ...state.masters.yards].map(item => `<option>${item}</option>`).join("")}</select></div>
+            </div>
+            <div class="form-actions"><button class="btn" onclick="saveUser()">Save User</button></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Role Guidance</h3>
+            <div class="footer-note">
+              CSD Entry handles complaint entry.<br>
+              Collecting Team handles sales entry.<br>
+              Cash Team handles cash counter and bank deposit entry.<br>
+              Ops Manager gets dashboards.<br>
+              Admin gets master, entry and dashboard.<br>
+              Super Admin gets everything plus backup and password reset tools.
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:18px;">
+          <h3 style="margin-bottom:12px;">Existing Users</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>User ID</th><th>Role</th><th>Yard</th><th>Password</th><th>Status</th></tr></thead>
+              <tbody>${state.users.map(user => `<tr><td>${user.name}</td><td>${user.username}</td><td>${ROLE_LABELS[user.role]}</td><td>${user.yard}</td><td>${user.password}</td><td>${user.active ? "Active" : "Inactive"}</td></tr>`).join("")}</tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveUser() {
+      const user = {
+        id: Date.now(),
+        name: document.getElementById("userName").value.trim(),
+        username: document.getElementById("userUsername").value.trim(),
+        password: document.getElementById("userPassword").value.trim(),
+        role: document.getElementById("userRole").value,
+        yard: document.getElementById("userYard").value,
+        active: true
+      };
+      if (!user.name || !user.username || !user.password) return alert("Please fill name, user ID and password.");
+      const existing = state.users.find(item => item.username === user.username);
+      if (existing) {
+        existing.name = user.name; existing.password = user.password; existing.role = user.role; existing.yard = user.yard; existing.active = true;
+      } else {
+        state.users.unshift(user);
+      }
+      saveState(); alert("User saved or reset completed."); renderUserPage();
+    }
+
+    function renderSuperAdminPage() {
+      const page = document.getElementById("superAdminPage");
+      if (currentUser.role !== "super_admin") return page.innerHTML = "";
+      page.innerHTML = `
+        <div class="section-head"><div><h2>Super Admin</h2><p>System backup, restore, HTML code backup, Firebase sync and password reset tools.</p></div></div>
+        <div class="panel-grid">
+          <div class="card">
+            <h3 style="margin-bottom:12px;">System Backup</h3>
+            <div class="form-actions">
+              <button class="btn" onclick="downloadBackup()">Download System Backup</button>
+              <button class="btn ghost" onclick="downloadCurrentHtml()">Download HTML Code Backup</button>
+            </div>
+            <div style="margin-top:14px;"><label>Restore Backup JSON</label><input type="file" id="backupRestoreFile" accept=".json"></div>
+            <div class="form-actions">
+              <button class="btn warn" onclick="restoreBackup()">Restore Backup</button>
+              <button class="btn danger" onclick="resetDemoData()">Reset to Fresh Demo Data</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Firebase Cloud</h3>
+            <div class="footer-note">Cloud status: ${hasFirebaseConfig() ? "Configured" : "Not configured yet"}.</div>
+            <div class="footer-note" style="margin-top:8px;">If configured, all devices will read and save the same data through Firebase.</div>
+            <div class="form-actions" style="margin-top:12px;">
+              <button class="btn" onclick="manualCloudSync()">Push Latest Data To Firebase</button>
+              <button class="btn ghost" onclick="manualCloudLoad()">Load Latest Data From Firebase</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Password Reset</h3>
+            <div class="form-grid">
+              <div><label>Select User</label><select id="resetUserId">${state.users.map(item => `<option value="${item.id}">${item.username}</option>`).join("")}</select></div>
+              <div><label>New Password</label><input id="resetUserPassword"></div>
+            </div>
+            <div class="form-actions"><button class="btn" onclick="resetPassword()">Reset Password</button></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:18px;">
+          <h3 style="margin-bottom:12px;">System Summary</h3>
+          <div class="grid kpi-grid">
+            <div class="card metric bg-a"><h3>Total Users</h3><div class="value">${state.users.length}</div><div class="sub">Login IDs inside system</div></div>
+            <div class="card metric bg-b"><h3>Train Master</h3><div class="value">${state.trainMasters.length}</div><div class="sub">Master train records</div></div>
+            <div class="card metric bg-c"><h3>Sales Entries</h3><div class="value">${state.salesEntries.length}</div><div class="sub">Saved sales records</div></div>
+            <div class="card metric bg-d"><h3>Complaints</h3><div class="value">${state.complaints.length}</div><div class="sub">Saved complaint records</div></div>
+            <div class="card metric bg-e"><h3>Cash Deposits</h3><div class="value">${state.cashDeposits.length}</div><div class="sub">Cash/bank records</div></div>
+            <div class="card metric bg-f"><h3>Parameters</h3><div class="value">${state.masters.yards.length + state.masters.clusterManagers.length + state.masters.trainManagers.length}</div><div class="sub">Dropdown master values</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function resetPassword() {
+      const user = state.users.find(item => item.id === Number(document.getElementById("resetUserId").value));
+      const newPassword = document.getElementById("resetUserPassword").value.trim();
+      if (!user || !newPassword) return alert("Please select user and enter new password.");
+      user.password = newPassword; saveState(); alert("Password reset completed."); renderUserPage(); renderSuperAdminPage();
+    }
+
+    function downloadBackup() { downloadText(JSON.stringify(state, null, 2), "rk_group_system_backup_" + todayISO() + ".json", "application/json"); }
+
+    function restoreBackup() {
+      const file = document.getElementById("backupRestoreFile").files[0];
+      if (!file) return alert("Please choose backup file.");
+      const reader = new FileReader();
+      reader.onload = function() {
+        try {
+          state = JSON.parse(reader.result);
+          saveState(); alert("Backup restored."); renderApp();
+        } catch (error) { alert("Invalid backup file."); }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetDemoData() {
+      if (!confirm("Reset all current local data and reload fresh demo data?")) return;
+      state = JSON.parse(JSON.stringify(defaultData));
+      saveState(); salesTileFilter = null; gpTileFilter = null; alert("Demo data reset completed."); renderApp();
+    }
+
+    async function manualCloudSync() {
+      const ok = await saveCloudState();
+      alert(ok ? "Latest local data pushed to Firebase." : "Firebase sync failed. Please check config and Firestore rules.");
+    }
+
+    async function manualCloudLoad() {
+      const ok = await loadCloudState();
+      if (ok) {
+        renderApp();
+        alert("Latest Firebase data loaded.");
+      } else {
+        alert("No cloud data found yet or Firebase is not configured.");
+      }
+    }
+
+    function downloadCurrentHtml() { downloadText(document.documentElement.outerHTML, "RK_Group_System_Firebase_backup.html", "text/html"); }
+    function downloadText(content, fileName, type) { const blob = new Blob([content], { type }); const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = fileName; link.click(); URL.revokeObjectURL(url); }
+
+    function downloadTableAsCsv(rows, fileName) {
+      if (!rows.length) return alert("No data available for export.");
+      const headers = Object.keys(rows[0]);
+      const csv = [headers.join(",")].concat(rows.map(row => headers.map(key => `"${String(row[key] ?? "").replaceAll('"', '""')}"`).join(","))).join("\n");
+      downloadText(csv, fileName, "text/csv");
+    }
+
+    document.getElementById("loginPass").addEventListener("keydown", event => { if (event.key === "Enter") login(); });
+  </script>
+</body>
+</html>
