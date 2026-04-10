@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RK Group System v2</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
@@ -163,9 +164,55 @@
       margin-top: 18px;
       padding: 10px 14px 4px;
     }
+    .filter-chip-row, .action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #eff6ff;
+      color: var(--primary);
+      border: 1px solid rgba(58, 134, 255, 0.16);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .filter-chip button, .mini-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 7px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .mini-btn.edit { background: #e0f2fe; color: #075985; }
+    .mini-btn.delete { background: #fee2e2; color: #991b1b; }
+    .mini-btn.view { background: #ecfccb; color: #3f6212; }
+    .stack-card {
+      display: grid;
+      gap: 18px;
+    }
+    .mobile-note {
+      display: none;
+      color: var(--muted);
+      font-size: 12px;
+    }
     @media (max-width: 1100px) { .split-grid, .login-card { grid-template-columns: 1fr; } }
     @media (max-width: 768px) {
-      .shell { padding: 14px; } .hero { padding: 20px; } .section-head h2 { font-size: 22px; } .metric .value { font-size: 27px; }
+      .shell { padding: 14px; }
+      .hero { padding: 20px; }
+      .section-head h2 { font-size: 22px; }
+      .metric .value { font-size: 27px; }
+      .nav { gap: 8px; }
+      .nav button, .btn { width: 100%; justify-content: center; }
+      .filters, .form-grid, .panel-grid, .kpi-grid, .tile-grid { grid-template-columns: 1fr; }
+      th, td { padding: 10px; font-size: 12px; }
+      .mobile-note { display: block; }
     }
   </style>
 </head>
@@ -338,6 +385,14 @@
     let cloudListenerStarted = false;
     let lastSerializedState = JSON.stringify(state);
     let lastCloudError = "";
+    let dashboardSelection = { trainName: "", trainManager: "", yard: "" };
+    let complaintSelection = { trainName: "", yard: "", status: "" };
+    let editingSalesId = null;
+    let editingComplaintId = null;
+    let editingCashId = null;
+    let sessionTimer = null;
+    const SESSION_KEY = "rkGroupSessionV1";
+    const SESSION_TIMEOUT_MS = 45 * 60 * 1000;
 
     function mergeRequiredUsers(inputState) {
       const nextState = inputState && typeof inputState === "object" ? inputState : {};
@@ -372,6 +427,56 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
       lastSerializedState = JSON.stringify(newState);
       scheduleCloudSave();
+    }
+
+    function saveSession() {
+      if (!currentUser) return;
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ username: currentUser.username, lastActiveAt: Date.now() }));
+    }
+
+    function clearSession() {
+      sessionStorage.removeItem(SESSION_KEY);
+    }
+
+    function touchSession() {
+      if (!currentUser) return;
+      saveSession();
+      if (sessionTimer) clearTimeout(sessionTimer);
+      sessionTimer = setTimeout(() => {
+        alert("Session expired due to inactivity. Please login again.");
+        logout();
+      }, SESSION_TIMEOUT_MS);
+    }
+
+    function installActivityWatch() {
+      ["click","keydown","mousemove","touchstart"].forEach(eventName => {
+        document.addEventListener(eventName, () => touchSession(), { passive: true });
+      });
+    }
+
+    function tryRestoreSession() {
+      const raw = sessionStorage.getItem(SESSION_KEY);
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(raw);
+        if (!parsed.username || !parsed.lastActiveAt) return;
+        if (Date.now() - parsed.lastActiveAt > SESSION_TIMEOUT_MS) {
+          clearSession();
+          return;
+        }
+        state = mergeRequiredUsers(state);
+        const restored = state.users.find(user => user.username === parsed.username && user.active);
+        if (restored) {
+          currentUser = restored;
+          document.getElementById("loginScreen").classList.add("hidden");
+          document.getElementById("appShell").classList.remove("hidden");
+          renderApp();
+          touchSession();
+          startCloudListener();
+        }
+      } catch (error) {
+        clearSession();
+      }
     }
 
     function hasFirebaseConfig() {
@@ -485,11 +590,20 @@
       await startCloudListener();
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("appShell").classList.remove("hidden");
+      saveSession();
+      touchSession();
       renderApp();
     }
 
     function logout() {
       currentUser = null;
+      editingSalesId = null;
+      editingComplaintId = null;
+      editingCashId = null;
+      dashboardSelection = { trainName: "", trainManager: "", yard: "" };
+      complaintSelection = { trainName: "", yard: "", status: "" };
+      clearSession();
+      if (sessionTimer) clearTimeout(sessionTimer);
       Object.values(charts).forEach(chart => chart && chart.destroy && chart.destroy());
       charts = {};
       document.getElementById("appShell").classList.add("hidden");
@@ -551,9 +665,9 @@
         fromDate: document.getElementById("salesFromDate")?.value || "",
         toDate: document.getElementById("salesToDate")?.value || "",
         singleDate: document.getElementById("salesSingleDate")?.value || "",
-        trainName: document.getElementById("salesTrainFilter")?.value || "",
-        trainManager: document.getElementById("salesTrainManagerFilter")?.value || "",
-        yard: document.getElementById("salesYardFilter")?.value || ""
+        trainName: dashboardSelection.trainName || document.getElementById("salesTrainFilter")?.value || "",
+        trainManager: dashboardSelection.trainManager || document.getElementById("salesTrainManagerFilter")?.value || "",
+        yard: dashboardSelection.yard || document.getElementById("salesYardFilter")?.value || ""
       };
     }
 
@@ -570,6 +684,24 @@
         if (gpTileFilter && bucketFromPct(computeGpPct(entry)) !== gpTileFilter) return false;
         return true;
       });
+    }
+
+    function activeDashboardFiltersMarkup() {
+      const chips = [];
+      if (dashboardSelection.trainName) chips.push(`<span class="filter-chip">Train: ${dashboardSelection.trainName} <button class="mini-btn delete" onclick="setDashboardSelection('trainName','')">x</button></span>`);
+      if (dashboardSelection.trainManager) chips.push(`<span class="filter-chip">Manager: ${dashboardSelection.trainManager} <button class="mini-btn delete" onclick="setDashboardSelection('trainManager','')">x</button></span>`);
+      if (dashboardSelection.yard) chips.push(`<span class="filter-chip">Yard: ${dashboardSelection.yard} <button class="mini-btn delete" onclick="setDashboardSelection('yard','')">x</button></span>`);
+      return chips.length ? `<div class="filter-chip-row">${chips.join("")}<button class="btn ghost" onclick="clearDashboardSelections()">Clear Interactive Selection</button></div>` : "";
+    }
+
+    function setDashboardSelection(key, value) {
+      dashboardSelection[key] = value || "";
+      renderSalesDashboard();
+    }
+
+    function clearDashboardSelections() {
+      dashboardSelection = { trainName: "", trainManager: "", yard: "" };
+      renderSalesDashboard();
     }
 
     function renderSalesDashboard() {
@@ -589,6 +721,7 @@
             <button class="btn ghost" onclick="downloadTableAsCsv(filteredSalesEntries(), 'sales_dashboard_export.csv')">Export Filtered Sales</button>
           </div>
         </div>
+        ${activeDashboardFiltersMarkup()}
 
         <div class="card">
           <div class="card-title">Dashboard Filters</div>
@@ -658,6 +791,7 @@
 
         <div class="card" style="margin-top:18px;">
           <h3 style="margin-bottom:12px;">Filtered Sales Detail</h3>
+          <div class="mobile-note">Tip: tap chart bars or doughnut sections to apply interactive filtering.</div>
           <div class="table-wrap">
             <table>
               <thead>
@@ -673,6 +807,7 @@
                   <th>GP Achievement</th>
                   <th>GP %</th>
                   <th>Remarks</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="salesDetailBody"></tbody>
@@ -827,7 +962,14 @@
             { label: "Sales Achievement", data: yardLabels.map(key => yardMap[key].achievement), backgroundColor: "rgba(58,134,255,0.82)", borderRadius: 10 }
           ]
         },
-        options: baseChartOptions()
+        options: {
+          ...baseChartOptions(),
+          onClick: (_, elements) => {
+            if (!elements.length) return;
+            const label = yardLabels[elements[0].index];
+            setDashboardSelection("yard", label);
+          }
+        }
       });
 
       const byTrain = summarizeBy(filtered, "trainName");
@@ -838,7 +980,15 @@
           labels: topTrains.map(item => item.label),
           datasets: [{ label: "Sales Achievement %", data: topTrains.map(item => item.pct.toFixed(1)), backgroundColor: topTrains.map(item => item.pct >= 90 ? "#2a9d8f" : item.pct >= 80 ? "#3a86ff" : item.pct >= 70 ? "#ee9b00" : "#d62828"), borderRadius: 10 }]
         },
-        options: { ...baseChartOptions(), scales: { y: { beginAtZero: true, max: 120 } } }
+        options: {
+          ...baseChartOptions(),
+          scales: { y: { beginAtZero: true, max: 120 } },
+          onClick: (_, elements) => {
+            if (!elements.length) return;
+            const label = topTrains[elements[0].index]?.label;
+            if (label) setDashboardSelection("trainName", label);
+          }
+        }
       });
 
       const byManager = summarizeBy(filtered, "trainManager");
@@ -849,7 +999,16 @@
           labels: managerLabels,
           datasets: [{ data: managerLabels.map(key => byManager[key].salesAchievement), backgroundColor: ["#005f73","#0a9396","#3a86ff","#6c63ff","#ee9b00","#ca6702","#d62872","#2a9d8f"], borderWidth: 2, borderColor: "#fff" }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } },
+          onClick: (_, elements) => {
+            if (!elements.length) return;
+            const label = managerLabels[elements[0].index];
+            setDashboardSelection("trainManager", label);
+          }
+        }
       });
     }
 
@@ -867,8 +1026,11 @@
           <td>${formatCurrency(entry.gpAchievement)}</td>
           <td><span class="badge ${computeGpPct(entry) >= 80 ? "good" : computeGpPct(entry) >= 70 ? "avg" : "low"}">${formatPct(computeGpPct(entry))}</span></td>
           <td>${entry.remarks || ""}</td>
+          <td>
+            <button class="mini-btn view" onclick="setDashboardSelection('trainName','${escapeForJs(entry.trainName)}')">View</button>
+          </td>
         </tr>
-      `).join("") : `<tr><td colspan="11">No sales records found for selected filters.</td></tr>`;
+      `).join("") : `<tr><td colspan="12">No sales records found for selected filters.</td></tr>`;
     }
 
     function complaintDashboardFilters() {
@@ -1022,6 +1184,10 @@
             <div><label>Entry Type</label><select id="entryTypeSelector" onchange="switchEntryType()">${canSales ? `<option value="sales">Sales Entry</option>` : ""}${canComplaint ? `<option value="complaint">Complaint Entry</option>` : ""}${canCash ? `<option value="cash">Cash & Bank Deposit Entry</option>` : ""}</select></div>
             <div><label>Complaint Quick Filter</label><select id="entryComplaintStatusFilter" onchange="renderEntryComplaintList()"><option value="">All Complaint Status</option>${state.masters.complaintStatuses.map(item => `<option>${item}</option>`).join("")}</select></div>
           </div>
+          <div class="action-row">
+            ${(currentUser.role === "super_admin" || currentUser.role === "admin") ? `<div><label>Import Sales Excel</label><input type="file" id="salesImportFile" accept=".xlsx,.xls" onchange="importExcelData('sales', this.files[0])"></div>` : ""}
+            ${(currentUser.role === "super_admin" || currentUser.role === "admin" || currentUser.role === "csd_entry") ? `<div><label>Import Complaint Excel</label><input type="file" id="complaintImportFile" accept=".xlsx,.xls" onchange="importExcelData('complaints', this.files[0])"></div>` : ""}
+          </div>
         </div>
         <div id="entrySalesBlock" class="card" style="margin-top:18px;"></div>
         <div id="entryComplaintBlock" class="card" style="margin-top:18px;"></div>
@@ -1065,8 +1231,15 @@
           <div><label>GP Achievement %</label><input id="salesEntryGpPct" readonly></div>
         </div>
         <div style="margin-top:14px;"><label>Remarks</label><textarea id="salesEntryRemarks" placeholder="Write sales remarks here"></textarea></div>
-        <div class="form-actions"><button class="btn" onclick="saveSalesEntry()">Save Sales Entry</button><button class="btn ghost" onclick="clearSalesEntryForm()">Clear</button></div>
+        <div class="form-actions"><button class="btn" id="salesSaveBtn" onclick="saveSalesEntry()">Save Sales Entry</button><button class="btn ghost" onclick="clearSalesEntryForm()">Clear</button></div>
+        <div class="table-wrap" style="margin-top:18px;">
+          <table>
+            <thead><tr><th>Date</th><th>Train</th><th>Yard</th><th>Sales</th><th>GP</th><th>Remarks</th><th>Actions</th></tr></thead>
+            <tbody id="entrySalesList"></tbody>
+          </table>
+        </div>
       `;
+      renderEntrySalesList();
     }
 
     function fillTargetsFromMaster() {
@@ -1096,7 +1269,7 @@
       const train = state.trainMasters.find(item => item.id === Number(document.getElementById("salesEntryTrain").value));
       if (!train) return alert("Please select train.");
       const item = {
-        id: Date.now(),
+        id: editingSalesId || Date.now(),
         month: getMonthName(document.getElementById("salesEntryDate").value),
         date: document.getElementById("salesEntryDate").value,
         trainNumber: train.trainNumber, clusterManager: train.clusterManager, trainManager: train.trainManager, rakeManager: train.rakeManager,
@@ -1106,12 +1279,72 @@
         remarks: document.getElementById("salesEntryRemarks").value.trim()
       };
       if (!item.date) return alert("Please select date.");
-      state.salesEntries.unshift(item); saveState(); alert("Sales entry saved."); clearSalesEntryForm(); renderSalesDashboard();
+      if (editingSalesId) {
+        const index = state.salesEntries.findIndex(entry => entry.id === editingSalesId);
+        if (index >= 0) state.salesEntries[index] = item;
+      } else {
+        state.salesEntries.unshift(item);
+      }
+      saveState();
+      alert(editingSalesId ? "Sales entry updated." : "Sales entry saved.");
+      clearSalesEntryForm();
+      renderEntrySalesList();
+      renderSalesDashboard();
     }
 
     function clearSalesEntryForm() {
+      editingSalesId = null;
       ["salesEntryTrain","salesEntryTrainNo","salesEntryYard","salesEntryCluster","salesEntryManager","salesEntryRake","salesEntryType","salesEntryTarget","salesEntryAchievement","salesEntryPct","salesEntryGpTarget","salesEntryGpAchievement","salesEntryGpPct","salesEntryRemarks"].forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
       if (document.getElementById("salesEntryDate")) document.getElementById("salesEntryDate").value = todayISO();
+      const saveBtn = document.getElementById("salesSaveBtn");
+      if (saveBtn) saveBtn.textContent = "Save Sales Entry";
+    }
+
+    function renderEntrySalesList() {
+      const body = document.getElementById("entrySalesList");
+      if (!body) return;
+      const rows = userScopedSales().slice(0, 12);
+      body.innerHTML = rows.length ? rows.map(item => `
+        <tr>
+          <td>${item.date}</td>
+          <td>${item.trainName}</td>
+          <td>${item.yard}</td>
+          <td>${formatCurrency(item.salesAchievement)}</td>
+          <td>${formatCurrency(item.gpAchievement)}</td>
+          <td>${item.remarks || ""}</td>
+          <td>
+            <button class="mini-btn edit" onclick="editSalesEntry(${item.id})">Edit</button>
+            <button class="mini-btn delete" onclick="deleteSalesEntry(${item.id})">Delete</button>
+          </td>
+        </tr>
+      `).join("") : `<tr><td colspan="7">No sales records available.</td></tr>`;
+    }
+
+    function editSalesEntry(id) {
+      const entry = state.salesEntries.find(item => item.id === id);
+      if (!entry) return;
+      editingSalesId = id;
+      const train = state.trainMasters.find(item => item.trainName === entry.trainName && item.trainNumber === entry.trainNumber) || state.trainMasters.find(item => item.trainName === entry.trainName);
+      if (train) {
+        document.getElementById("salesEntryTrain").value = train.id;
+        fillTargetsFromMaster();
+      }
+      document.getElementById("salesEntryDate").value = entry.date;
+      document.getElementById("salesEntryAchievement").value = entry.salesAchievement;
+      document.getElementById("salesEntryGpAchievement").value = entry.gpAchievement;
+      document.getElementById("salesEntryRemarks").value = entry.remarks || "";
+      updateSalesEntryPct();
+      document.getElementById("salesSaveBtn").textContent = "Update Sales Entry";
+      window.scrollTo({ top: document.getElementById("entrySalesBlock").offsetTop - 40, behavior: "smooth" });
+    }
+
+    function deleteSalesEntry(id) {
+      if (!confirm("Delete this sales entry?")) return;
+      state.salesEntries = state.salesEntries.filter(item => item.id !== id);
+      saveState();
+      if (editingSalesId === id) clearSalesEntryForm();
+      renderEntrySalesList();
+      renderSalesDashboard();
     }
 
     function renderComplaintEntryBlock(canComplaint) {
@@ -1136,9 +1369,9 @@
         <div style="margin-top:14px;"><label>Complaint Nature</label><input id="compEntryNature" placeholder="Food quality / Overcharging / Water not available"></div>
         <div style="margin-top:14px;"><label>Complaint Details</label><textarea id="compEntryDetails"></textarea></div>
         <div style="margin-top:14px;"><label>Remarks</label><textarea id="compEntryRemarks" placeholder="Write internal remarks or resolution notes"></textarea></div>
-        <div class="form-actions"><button class="btn" onclick="saveComplaintEntry()">Save Complaint Entry</button><button class="btn ghost" onclick="clearComplaintEntryForm()">Clear</button></div>
+        <div class="form-actions"><button class="btn" id="complaintSaveBtn" onclick="saveComplaintEntry()">Save Complaint Entry</button><button class="btn ghost" onclick="clearComplaintEntryForm()">Clear</button></div>
         <div class="table-wrap" style="margin-top:18px;">
-          <table><thead><tr><th>Date</th><th>ID</th><th>Train</th><th>Yard</th><th>Status</th><th>Remarks</th></tr></thead><tbody id="entryComplaintList"></tbody></table>
+          <table><thead><tr><th>Date</th><th>ID</th><th>Train</th><th>Yard</th><th>Status</th><th>Remarks</th><th>Actions</th></tr></thead><tbody id="entryComplaintList"></tbody></table>
         </div>
       `;
       renderEntryComplaintList();
@@ -1149,12 +1382,12 @@
       const rows = userScopedComplaints().filter(item => !filter || item.status === filter).slice(0, 12);
       const body = document.getElementById("entryComplaintList");
       if (!body) return;
-      body.innerHTML = rows.length ? rows.map(item => `<tr><td>${item.date}</td><td>${item.complaintId}</td><td>${item.trainName}</td><td>${item.yard}</td><td><span class="badge ${item.status === "Open" ? "open" : item.status === "In Progress" ? "progress" : "closed"}">${item.status}</span></td><td>${item.entryRemarks || item.resolutionRemarks || ""}</td></tr>`).join("") : `<tr><td colspan="6">No complaint records found for selected status.</td></tr>`;
+      body.innerHTML = rows.length ? rows.map(item => `<tr><td>${item.date}</td><td>${item.complaintId}</td><td>${item.trainName}</td><td>${item.yard}</td><td><span class="badge ${item.status === "Open" ? "open" : item.status === "In Progress" ? "progress" : "closed"}">${item.status}</span></td><td>${item.entryRemarks || item.resolutionRemarks || ""}</td><td><button class="mini-btn edit" onclick="editComplaintEntry(${item.id})">Edit</button><button class="mini-btn delete" onclick="deleteComplaintEntry(${item.id})">Delete</button></td></tr>`).join("") : `<tr><td colspan="7">No complaint records found for selected status.</td></tr>`;
     }
 
     function saveComplaintEntry() {
       const item = {
-        id: Date.now(),
+        id: editingComplaintId || Date.now(),
         date: document.getElementById("compEntryDate").value,
         complaintId: document.getElementById("compEntryId").value.trim() || String(Date.now()),
         source: document.getElementById("compEntrySource").value,
@@ -1177,12 +1410,61 @@
         entryRemarks: document.getElementById("compEntryRemarks").value.trim()
       };
       if (!item.date || !item.trainName || !item.complainNature) return alert("Please fill complaint date, train name and complaint nature.");
-      state.complaints.unshift(item); saveState(); alert("Complaint entry saved."); clearComplaintEntryForm(); renderEntryComplaintList(); renderComplaintDashboard(); renderSalesDashboard();
+      if (editingComplaintId) {
+        const index = state.complaints.findIndex(row => row.id === editingComplaintId);
+        if (index >= 0) state.complaints[index] = item;
+      } else {
+        state.complaints.unshift(item);
+      }
+      saveState();
+      alert(editingComplaintId ? "Complaint entry updated." : "Complaint entry saved.");
+      clearComplaintEntryForm();
+      renderEntryComplaintList();
+      renderComplaintDashboard();
+      renderSalesDashboard();
     }
 
     function clearComplaintEntryForm() {
+      editingComplaintId = null;
       ["compEntryId","compEntryType","compEntryTrainNo","compEntryTrainName","compEntryTrainType","compEntryName","compEntryMobile","compEntryPnr","compEntryNature","compEntryDetails","compEntryRemarks"].forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
       if (document.getElementById("compEntryDate")) document.getElementById("compEntryDate").value = todayISO();
+      const btn = document.getElementById("complaintSaveBtn");
+      if (btn) btn.textContent = "Save Complaint Entry";
+    }
+
+    function editComplaintEntry(id) {
+      const item = state.complaints.find(row => row.id === id);
+      if (!item) return;
+      editingComplaintId = id;
+      document.getElementById("entryTypeSelector").value = "complaint";
+      switchEntryType();
+      document.getElementById("compEntryDate").value = item.date;
+      document.getElementById("compEntryId").value = item.complaintId;
+      document.getElementById("compEntrySource").value = item.source;
+      document.getElementById("compEntryType").value = item.complaintType || "";
+      document.getElementById("compEntryTrainNo").value = item.trainNo || "";
+      document.getElementById("compEntryTrainName").value = item.trainName || "";
+      document.getElementById("compEntryTrainType").value = item.trainType || "";
+      document.getElementById("compEntryYard").value = item.yard || "ALL INDIA";
+      document.getElementById("compEntryName").value = item.complainantName || "";
+      document.getElementById("compEntryMobile").value = item.mobileNo || "";
+      document.getElementById("compEntryPnr").value = item.pnrNo || "";
+      document.getElementById("compEntryStatus").value = item.status || "Open";
+      document.getElementById("compEntryNature").value = item.complainNature || "";
+      document.getElementById("compEntryDetails").value = item.details || "";
+      document.getElementById("compEntryRemarks").value = item.entryRemarks || item.resolutionRemarks || "";
+      document.getElementById("complaintSaveBtn").textContent = "Update Complaint Entry";
+      window.scrollTo({ top: document.getElementById("entryComplaintBlock").offsetTop - 40, behavior: "smooth" });
+    }
+
+    function deleteComplaintEntry(id) {
+      if (!confirm("Delete this complaint entry?")) return;
+      state.complaints = state.complaints.filter(item => item.id !== id);
+      saveState();
+      if (editingComplaintId === id) clearComplaintEntryForm();
+      renderEntryComplaintList();
+      renderComplaintDashboard();
+      renderSalesDashboard();
     }
 
     function renderCashEntryBlock(canCash) {
@@ -1201,8 +1483,8 @@
           <div><label>Deposit to Bank</label><input id="cashEntryBank" type="number"></div>
         </div>
         <div style="margin-top:14px;"><label>Remarks</label><textarea id="cashEntryRemarks"></textarea></div>
-        <div class="form-actions"><button class="btn" onclick="saveCashEntry()">Save Cash Deposit</button><button class="btn ghost" onclick="clearCashEntryForm()">Clear</button></div>
-        <div class="table-wrap" style="margin-top:18px;"><table><thead><tr><th>Date</th><th>Yard</th><th>Train</th><th>Counter Deposit</th><th>Bank Deposit</th><th>Remarks</th></tr></thead><tbody id="cashEntryTable"></tbody></table></div>
+        <div class="form-actions"><button class="btn" id="cashSaveBtn" onclick="saveCashEntry()">Save Cash Deposit</button><button class="btn ghost" onclick="clearCashEntryForm()">Clear</button></div>
+        <div class="table-wrap" style="margin-top:18px;"><table><thead><tr><th>Date</th><th>Yard</th><th>Train</th><th>Counter Deposit</th><th>Bank Deposit</th><th>Remarks</th><th>Actions</th></tr></thead><tbody id="cashEntryTable"></tbody></table></div>
       `;
       document.getElementById("cashEntryTrain").addEventListener("change", syncCashTrainNo);
       syncCashTrainNo();
@@ -1219,7 +1501,7 @@
       const train = state.trainMasters.find(item => item.id === Number(document.getElementById("cashEntryTrain").value));
       if (!train) return alert("Please select train.");
       const item = {
-        id: Date.now(),
+        id: editingCashId || Date.now(),
         date: document.getElementById("cashEntryDate").value,
         yard: document.getElementById("cashEntryYard").value,
         trainName: train.trainName,
@@ -1230,19 +1512,60 @@
         remarks: document.getElementById("cashEntryRemarks").value.trim()
       };
       if (!item.date) return alert("Please select date.");
-      state.cashDeposits.unshift(item); saveState(); alert("Cash and bank deposit entry saved."); clearCashEntryForm(); renderCashTable(); renderSalesDashboard();
+      if (editingCashId) {
+        const index = state.cashDeposits.findIndex(row => row.id === editingCashId);
+        if (index >= 0) state.cashDeposits[index] = item;
+      } else {
+        state.cashDeposits.unshift(item);
+      }
+      saveState();
+      alert(editingCashId ? "Cash deposit entry updated." : "Cash and bank deposit entry saved.");
+      clearCashEntryForm();
+      renderCashTable();
+      renderSalesDashboard();
     }
 
     function clearCashEntryForm() {
+      editingCashId = null;
       ["cashEntryCollected","cashEntryCounter","cashEntryBank","cashEntryRemarks"].forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
       if (document.getElementById("cashEntryDate")) document.getElementById("cashEntryDate").value = todayISO();
+      const btn = document.getElementById("cashSaveBtn");
+      if (btn) btn.textContent = "Save Cash Deposit";
     }
 
     function renderCashTable() {
       const body = document.getElementById("cashEntryTable");
       if (!body) return;
       const rows = userScopedCash().slice(0, 12);
-      body.innerHTML = rows.length ? rows.map(item => `<tr><td>${item.date}</td><td>${item.yard}</td><td>${item.trainName}</td><td>${formatCurrency(item.cashDepositCounter)}</td><td>${formatCurrency(item.bankDeposit)}</td><td>${item.remarks || ""}</td></tr>`).join("") : `<tr><td colspan="6">No cash deposit records yet.</td></tr>`;
+      body.innerHTML = rows.length ? rows.map(item => `<tr><td>${item.date}</td><td>${item.yard}</td><td>${item.trainName}</td><td>${formatCurrency(item.cashDepositCounter)}</td><td>${formatCurrency(item.bankDeposit)}</td><td>${item.remarks || ""}</td><td><button class="mini-btn edit" onclick="editCashEntry(${item.id})">Edit</button><button class="mini-btn delete" onclick="deleteCashEntry(${item.id})">Delete</button></td></tr>`).join("") : `<tr><td colspan="7">No cash deposit records yet.</td></tr>`;
+    }
+
+    function editCashEntry(id) {
+      const item = state.cashDeposits.find(row => row.id === id);
+      if (!item) return;
+      editingCashId = id;
+      document.getElementById("entryTypeSelector").value = "cash";
+      switchEntryType();
+      document.getElementById("cashEntryDate").value = item.date;
+      document.getElementById("cashEntryYard").value = item.yard;
+      const train = state.trainMasters.find(trainRow => trainRow.trainNumber === item.trainNumber) || state.trainMasters.find(trainRow => trainRow.trainName === item.trainName);
+      if (train) document.getElementById("cashEntryTrain").value = train.id;
+      syncCashTrainNo();
+      document.getElementById("cashEntryCollected").value = item.cashCollected || "";
+      document.getElementById("cashEntryCounter").value = item.cashDepositCounter || "";
+      document.getElementById("cashEntryBank").value = item.bankDeposit || "";
+      document.getElementById("cashEntryRemarks").value = item.remarks || "";
+      document.getElementById("cashSaveBtn").textContent = "Update Cash Deposit";
+      window.scrollTo({ top: document.getElementById("entryCashBlock").offsetTop - 40, behavior: "smooth" });
+    }
+
+    function deleteCashEntry(id) {
+      if (!confirm("Delete this cash deposit entry?")) return;
+      state.cashDeposits = state.cashDeposits.filter(item => item.id !== id);
+      saveState();
+      if (editingCashId === id) clearCashEntryForm();
+      renderCashTable();
+      renderSalesDashboard();
     }
 
     function renderMasterPage() {
@@ -1326,7 +1649,8 @@
             <div class="form-grid">
               <div><label>Name</label><input id="userName"></div>
               <div><label>User ID</label><input id="userUsername"></div>
-              <div><label>Password</label><input id="userPassword"></div>
+              <div><label>Password</label><input id="userPassword" type="password"></div>
+              <div><label>Confirm Password</label><input id="userPasswordConfirm" type="password"></div>
               <div><label>Role</label><select id="userRole">${Object.keys(ROLE_LABELS).map(key => `<option value="${key}">${ROLE_LABELS[key]}</option>`).join("")}</select></div>
               <div><label>Yard</label><select id="userYard">${["ALL", ...state.masters.yards].map(item => `<option>${item}</option>`).join("")}</select></div>
             </div>
@@ -1343,13 +1667,22 @@
               Super Admin gets everything plus backup and password reset tools.
             </div>
           </div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Change My Password</h3>
+            <div class="form-grid">
+              <div><label>Current Password</label><input id="selfCurrentPassword" type="password"></div>
+              <div><label>New Password</label><input id="selfNewPassword" type="password"></div>
+              <div><label>Confirm New Password</label><input id="selfConfirmPassword" type="password"></div>
+            </div>
+            <div class="form-actions"><button class="btn" onclick="changeOwnPassword()">Change Password</button></div>
+          </div>
         </div>
         <div class="card" style="margin-top:18px;">
           <h3 style="margin-bottom:12px;">Existing Users</h3>
           <div class="table-wrap">
             <table>
               <thead><tr><th>Name</th><th>User ID</th><th>Role</th><th>Yard</th><th>Password</th><th>Status</th></tr></thead>
-              <tbody>${state.users.map(user => `<tr><td>${user.name}</td><td>${user.username}</td><td>${ROLE_LABELS[user.role]}</td><td>${user.yard}</td><td>${user.password}</td><td>${user.active ? "Active" : "Inactive"}</td></tr>`).join("")}</tbody>
+              <tbody>${state.users.map(user => `<tr><td>${user.name}</td><td>${user.username}</td><td>${ROLE_LABELS[user.role]}</td><td>${user.yard}</td><td>Protected</td><td>${user.active ? "Active" : "Inactive"}</td></tr>`).join("")}</tbody>
             </table>
           </div>
         </div>
@@ -1366,7 +1699,10 @@
         yard: document.getElementById("userYard").value,
         active: true
       };
+      const confirmPassword = document.getElementById("userPasswordConfirm").value.trim();
       if (!user.name || !user.username || !user.password) return alert("Please fill name, user ID and password.");
+      if (user.password.length < 6) return alert("Password must be at least 6 characters.");
+      if (user.password !== confirmPassword) return alert("Password and confirm password do not match.");
       const existing = state.users.find(item => item.username === user.username);
       if (existing) {
         existing.name = user.name; existing.password = user.password; existing.role = user.role; existing.yard = user.yard; existing.active = true;
@@ -1374,6 +1710,24 @@
         state.users.unshift(user);
       }
       saveState(); alert("User saved or reset completed."); renderUserPage();
+    }
+
+    function changeOwnPassword() {
+      if (!currentUser) return;
+      const currentPassword = document.getElementById("selfCurrentPassword").value.trim();
+      const newPassword = document.getElementById("selfNewPassword").value.trim();
+      const confirmPassword = document.getElementById("selfConfirmPassword").value.trim();
+      if (currentPassword !== currentUser.password) return alert("Current password is incorrect.");
+      if (newPassword.length < 6) return alert("New password must be at least 6 characters.");
+      if (newPassword !== confirmPassword) return alert("New password and confirm password do not match.");
+      const user = state.users.find(item => item.username === currentUser.username);
+      if (!user) return alert("Current user not found.");
+      user.password = newPassword;
+      currentUser = user;
+      saveState();
+      saveSession();
+      alert("Your password has been changed successfully.");
+      renderUserPage();
     }
 
     function renderSuperAdminPage() {
@@ -1430,7 +1784,139 @@
       const user = state.users.find(item => item.id === Number(document.getElementById("resetUserId").value));
       const newPassword = document.getElementById("resetUserPassword").value.trim();
       if (!user || !newPassword) return alert("Please select user and enter new password.");
+      if (newPassword.length < 6) return alert("New password must be at least 6 characters.");
       user.password = newPassword; saveState(); alert("Password reset completed."); renderUserPage(); renderSuperAdminPage();
+    }
+
+    function escapeForJs(text) {
+      return String(text ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    function normalizeHeader(text) {
+      return String(text ?? "").trim().toLowerCase().replace(/[\s._/-]+/g, "");
+    }
+
+    function excelDateToISO(value) {
+      if (!value) return "";
+      if (typeof value === "number") {
+        const date = XLSX.SSF.parse_date_code(value);
+        if (!date) return "";
+        return `${date.y}-${String(date.m).padStart(2, "0")}-${String(date.d).padStart(2, "0")}`;
+      }
+      const parsed = new Date(value);
+      if (!Number.isNaN(parsed.getTime())) return parsed.toISOString().slice(0, 10);
+      return "";
+    }
+
+    function getMappedValue(row, map, keys) {
+      for (const key of keys) {
+        const column = map[key];
+        if (column && row[column] !== undefined && row[column] !== null && row[column] !== "") return row[column];
+      }
+      return "";
+    }
+
+    async function importExcelData(type, file) {
+      if (!file) return;
+      try {
+        const buffer = await file.arrayBuffer();
+        const workbook = XLSX.read(buffer, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+        if (!rows.length) return alert("No rows found in the selected Excel file.");
+        if (type === "sales") importSalesRows(rows);
+        if (type === "complaints") importComplaintRows(rows);
+      } catch (error) {
+        alert("Excel import failed. Please check file format.");
+      } finally {
+        if (type === "sales" && document.getElementById("salesImportFile")) document.getElementById("salesImportFile").value = "";
+        if (type === "complaints" && document.getElementById("complaintImportFile")) document.getElementById("complaintImportFile").value = "";
+      }
+    }
+
+    function importSalesRows(rows) {
+      const map = {};
+      Object.keys(rows[0]).forEach(key => { map[normalizeHeader(key)] = key; });
+      const imported = rows.map(row => {
+        const trainName = getMappedValue(row, map, ["trainname", "train"]);
+        const trainNumber = String(getMappedValue(row, map, ["trainnumber", "trainno"])).trim();
+        const yard = getMappedValue(row, map, ["yard"]);
+        return {
+          id: Date.now() + Math.floor(Math.random() * 100000),
+          month: getMappedValue(row, map, ["month"]) || getMonthName(excelDateToISO(getMappedValue(row, map, ["arrivaldate", "date"]))),
+          date: excelDateToISO(getMappedValue(row, map, ["arrivaldate", "date"])),
+          trainNumber,
+          clusterManager: getMappedValue(row, map, ["clustermanager"]),
+          trainManager: getMappedValue(row, map, ["trainmanager"]),
+          rakeManager: getMappedValue(row, map, ["rakemanager"]),
+          trainType: getMappedValue(row, map, ["traintype"]),
+          trainName,
+          salesTarget: Number(getMappedValue(row, map, ["salestarget"]) || 0),
+          salesAchievement: Number(getMappedValue(row, map, ["salesachievement", "achievement"]) || 0),
+          yard,
+          gpTarget: Number(getMappedValue(row, map, ["grossprofittarget", "gptarget"]) || 0),
+          gpAchievement: Number(getMappedValue(row, map, ["grossprofitachievement", "gpachievement", "grossprofit"]) || 0),
+          remarks: "Imported from Excel"
+        };
+      }).filter(item => item.trainName && item.date);
+      state.salesEntries = [...imported, ...state.salesEntries];
+      imported.forEach(item => {
+        const exists = state.trainMasters.find(train => train.trainName === item.trainName && train.trainNumber === item.trainNumber);
+        if (!exists) {
+          state.trainMasters.unshift({
+            id: Date.now() + Math.floor(Math.random() * 100000),
+            trainName: item.trainName,
+            trainNumber: item.trainNumber,
+            yard: item.yard || "Howrah",
+            clusterManager: item.clusterManager || "",
+            trainManager: item.trainManager || "",
+            rakeManager: item.rakeManager || "",
+            trainType: item.trainType || "",
+            salesTarget: item.salesTarget || 0,
+            gpTarget: item.gpTarget || 0
+          });
+        }
+      });
+      saveState();
+      alert(`${imported.length} sales rows imported successfully.`);
+      renderDataEntryPage();
+      renderSalesDashboard();
+      renderMasterPage();
+    }
+
+    function importComplaintRows(rows) {
+      const map = {};
+      Object.keys(rows[0]).forEach(key => { map[normalizeHeader(key)] = key; });
+      const imported = rows.map(row => ({
+        id: Date.now() + Math.floor(Math.random() * 100000),
+        date: excelDateToISO(getMappedValue(row, map, ["date", "complaintdate", "incidentdate"])),
+        complaintId: String(getMappedValue(row, map, ["complaintid"]) || Date.now()),
+        source: getMappedValue(row, map, ["complaintsource", "source"]),
+        complaintType: getMappedValue(row, map, ["complainttype"]),
+        complaintRefNo: getMappedValue(row, map, ["complaintrefno"]),
+        complainantName: getMappedValue(row, map, ["complainantname"]),
+        incidentDate: excelDateToISO(getMappedValue(row, map, ["incidentdate", "date"])),
+        complaintDate: excelDateToISO(getMappedValue(row, map, ["complaintdate", "date"])),
+        trainNo: String(getMappedValue(row, map, ["trainno", "trainnumber"])).trim(),
+        trainName: getMappedValue(row, map, ["trainname"]),
+        trainType: getMappedValue(row, map, ["traintype"]),
+        licenseeName: getMappedValue(row, map, ["licenseename", "licensee"]),
+        mobileNo: String(getMappedValue(row, map, ["mobileno", "mobile"])).trim(),
+        emailId: getMappedValue(row, map, ["emailid", "email"]),
+        pnrNo: String(getMappedValue(row, map, ["pnrno"])).trim(),
+        complainNature: getMappedValue(row, map, ["complainnature", "nature"]),
+        details: getMappedValue(row, map, ["details", "description"]),
+        yard: getMappedValue(row, map, ["yard"]) || "ALL INDIA",
+        status: getMappedValue(row, map, ["status"]) || "Open",
+        resolutionRemarks: "",
+        entryRemarks: "Imported from Excel"
+      })).filter(item => item.trainName && item.date);
+      state.complaints = [...imported, ...state.complaints];
+      saveState();
+      alert(`${imported.length} complaint rows imported successfully.`);
+      renderDataEntryPage();
+      renderComplaintDashboard();
+      renderSalesDashboard();
     }
 
     function downloadBackup() { downloadText(JSON.stringify(state, null, 2), "rk_group_system_backup_" + todayISO() + ".json", "application/json"); }
@@ -1479,6 +1965,8 @@
       downloadText(csv, fileName, "text/csv");
     }
 
+    installActivityWatch();
+    tryRestoreSession();
     document.getElementById("loginPass").addEventListener("keydown", event => { if (event.key === "Enter") login(); });
   </script>
 </body>
