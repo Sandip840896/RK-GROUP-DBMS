@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RK Group System v2</title>
+  <title>RK Group System v2 - Enhanced</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
@@ -102,6 +105,7 @@
     .bg-d { background: linear-gradient(135deg, #2a9d8f, #52b788); }
     .bg-e { background: linear-gradient(135deg, #d62872, #f77f00); }
     .bg-f { background: linear-gradient(135deg, #4c1d95, #7c3aed); }
+    .bg-danger { background: linear-gradient(135deg, #d62828, #a4133c) !important; }
     .filters, .form-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); align-items: end; }
     label { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
     input, select, textarea {
@@ -114,6 +118,7 @@
     .btn.warn { background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
     .btn.danger { background: linear-gradient(135deg, #d62828, #a4133c); }
     .btn.ghost { background: #fff; color: var(--primary); border: 1px solid var(--line); }
+    .btn.success { background: linear-gradient(135deg, #2a9d8f, #52b788); }
     .panel-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); margin-top: 18px; }
     .split-grid { display: grid; gap: 18px; grid-template-columns: 1.2fr 1fr; }
     .chart-wrap { height: 320px; }
@@ -202,6 +207,32 @@
       color: var(--muted);
       font-size: 12px;
     }
+    .sample-btn {
+      background: linear-gradient(135deg, #52b788, #2a9d8f);
+      color: #fff;
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    .sample-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(42, 157, 143, 0.25); }
+    .comparison-table { margin-top: 18px; }
+    .comparison-table th { background: linear-gradient(135deg, #dbeafe, #eff6ff); }
+    .comparison-table .positive { color: #166534; font-weight: 700; }
+    .comparison-table .negative { color: #991b1b; font-weight: 700; }
+    .chart-legend-custom {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 12px;
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-color { width: 16px; height: 16px; border-radius: 4px; }
     @media (max-width: 1100px) { .split-grid, .login-card { grid-template-columns: 1fr; } }
     @media (max-width: 768px) {
       .shell { padding: 14px; }
@@ -213,6 +244,7 @@
       .filters, .form-grid, .panel-grid, .kpi-grid, .tile-grid { grid-template-columns: 1fr; }
       th, td { padding: 10px; font-size: 12px; }
       .mobile-note { display: block; }
+      .sample-btn { margin-left: 0; margin-top: 8px; width: 100%; }
     }
   </style>
 </head>
@@ -298,6 +330,9 @@
   </div>
 
   <script>
+    // Register Chart.js plugins
+    Chart.register(ChartDataLabels);
+
     const STORAGE_KEY = "rkGroupSystemV2";
     const FIREBASE_CONFIG = {
       apiKey: "AIzaSyDDo8ZwC9Gedxro6tKB_gw9esQ9cKePoHE",
@@ -393,6 +428,14 @@
     let sessionTimer = null;
     const SESSION_KEY = "rkGroupSessionV1";
     const SESSION_TIMEOUT_MS = 45 * 60 * 1000;
+
+    // Data entry state preservation
+    let dataEntryState = {
+      entryType: 'sales',
+      sales: { trainId: '', date: todayISO(), yard: '' },
+      complaint: { date: todayISO(), yard: 'ALL INDIA', status: 'Open' },
+      cash: { date: todayISO(), yard: '' }
+    };
 
     function mergeRequiredUsers(inputState) {
       const nextState = inputState && typeof inputState === "object" ? inputState : {};
@@ -602,6 +645,7 @@
       editingCashId = null;
       dashboardSelection = { trainName: "", trainManager: "", yard: "" };
       complaintSelection = { trainName: "", yard: "", status: "" };
+      dataEntryState = { entryType: 'sales', sales: { trainId: '', date: todayISO(), yard: '' }, complaint: { date: todayISO(), yard: 'ALL INDIA', status: 'Open' }, cash: { date: todayISO(), yard: '' } };
       clearSession();
       if (sessionTimer) clearTimeout(sessionTimer);
       Object.values(charts).forEach(chart => chart && chart.destroy && chart.destroy());
@@ -741,7 +785,7 @@
           <div class="card metric bg-c"><h3>Total GP Target</h3><div class="value" id="kpiGpTarget"></div><div class="sub" id="kpiGpTargetSub"></div></div>
           <div class="card metric bg-d"><h3>Total GP Achievement</h3><div class="value" id="kpiGpAchievement"></div><div class="sub" id="kpiGpAchievementSub"></div></div>
           <div class="card metric bg-e"><h3>Complaint Status</h3><div class="value" id="kpiComplaint"></div><div class="sub" id="kpiComplaintSub"></div></div>
-          <div class="card metric bg-f"><h3>Cash to Bank</h3><div class="value" id="kpiCashBank"></div><div class="sub" id="kpiCashBankSub"></div></div>
+          <div class="card metric" id="kpiCashBankCard"><h3>Cash to Bank</h3><div class="value" id="kpiCashBank"></div><div class="sub" id="kpiCashBankSub"></div></div>
         </div>
 
         <div class="panel-grid">
@@ -780,12 +824,51 @@
 
         <div class="split-grid" style="margin-top:18px;">
           <div class="card">
-            <h3 style="margin-bottom:12px;">Train Performance</h3>
+            <h3 style="margin-bottom:12px;">Top & Bottom 7 Train Performance</h3>
             <div class="chart-wrap"><canvas id="trainPerformanceChart"></canvas></div>
           </div>
           <div class="card">
-            <h3 style="margin-bottom:12px;">Train Manager Comparison</h3>
+            <h3 style="margin-bottom:12px;">Train Manager GP Contribution %</h3>
             <div class="chart-wrap"><canvas id="managerContributionChart"></canvas></div>
+          </div>
+        </div>
+
+        <div class="split-grid" style="margin-top:18px;">
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Top 10 Train Business</h3>
+            <div class="table-wrap">
+              <table class="comparison-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Train Name</th>
+                    <th>Sales Achievement</th>
+                    <th>Sales %</th>
+                    <th>GP Achievement</th>
+                    <th>GP %</th>
+                  </tr>
+                </thead>
+                <tbody id="topTrainsTable"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Bottom 10 Train Business</h3>
+            <div class="table-wrap">
+              <table class="comparison-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Train Name</th>
+                    <th>Sales Achievement</th>
+                    <th>Sales %</th>
+                    <th>GP Achievement</th>
+                    <th>GP %</th>
+                  </tr>
+                </thead>
+                <tbody id="bottomTrainsTable"></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -842,10 +925,21 @@
       document.getElementById("kpiCashBank").textContent = formatCurrency(bankDeposit);
       document.getElementById("kpiCashBankSub").textContent = "Counter: " + formatCurrency(cashCounter);
 
+      // Check if cash to bank is less than GP achievement - change color to red
+      const kpiCashBankCard = document.getElementById("kpiCashBankCard");
+      if (bankDeposit < gpAchievement) {
+        kpiCashBankCard.classList.remove("bg-f");
+        kpiCashBankCard.classList.add("bg-danger");
+      } else {
+        kpiCashBankCard.classList.remove("bg-danger");
+        kpiCashBankCard.classList.add("bg-f");
+      }
+
       renderBucketTiles(filtered, "sales");
       renderBucketTiles(filtered, "gp");
       renderSalesCharts(filtered);
       renderSalesTable(filtered);
+      renderTopBottomTrains(filtered);
     }
 
     function restoreSalesFilters() {
@@ -918,7 +1012,7 @@
     }
 
     function destroyChart(key) { if (charts[key]) charts[key].destroy(); }
-    function baseChartOptions() { return { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } }, scales: { y: { beginAtZero: true } } }; }
+    function baseChartOptions() { return { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" }, datalabels: { display: false } }, scales: { y: { beginAtZero: true } } }; }
 
     function renderSalesCharts(filtered) {
       destroyChart("salesTrend");
@@ -942,7 +1036,18 @@
             { label: "GP Achievement", data: dayLabels.map(key => dayMap[key].gp), borderColor: "#2a9d8f", backgroundColor: "rgba(42,157,143,0.12)", fill: true, tension: 0.35 }
           ]
         },
-        options: baseChartOptions()
+        options: {
+          ...baseChartOptions(),
+          plugins: {
+            ...baseChartOptions().plugins,
+            datalabels: {
+              display: true,
+              align: 'top',
+              formatter: (value) => formatCurrency(value),
+              font: { size: 10 }
+            }
+          }
+        }
       });
 
       const yardMap = {};
@@ -964,6 +1069,16 @@
         },
         options: {
           ...baseChartOptions(),
+          plugins: {
+            ...baseChartOptions().plugins,
+            datalabels: {
+              display: true,
+              anchor: 'end',
+              align: 'top',
+              formatter: (value) => '₹' + (value/100000).toFixed(1) + 'L',
+              font: { size: 10 }
+            }
+          },
           onClick: (_, elements) => {
             if (!elements.length) return;
             const label = yardLabels[elements[0].index];
@@ -972,44 +1087,139 @@
         }
       });
 
+      // Top and Bottom 7 Train Performance
       const byTrain = summarizeBy(filtered, "trainName");
-      const topTrains = Object.entries(byTrain).map(([label, item]) => ({ label, pct: item.salesTarget ? (item.salesAchievement / item.salesTarget) * 100 : 0 })).sort((a, b) => b.pct - a.pct).slice(0, 10);
+      const trainPerformance = Object.entries(byTrain).map(([label, item]) => ({
+        label,
+        salesPct: item.salesTarget ? (item.salesAchievement / item.salesTarget) * 100 : 0,
+        gpPct: item.gpTarget ? (item.gpAchievement / item.gpTarget) * 100 : 0
+      })).sort((a, b) => b.salesPct - a.salesPct);
+
+      const top7 = trainPerformance.slice(0, 7);
+      const bottom7 = trainPerformance.slice(-7).reverse();
+      const combinedPerformance = [...top7, ...bottom7];
+
       charts.trainPerformance = new Chart(document.getElementById("trainPerformanceChart"), {
         type: "bar",
         data: {
-          labels: topTrains.map(item => item.label),
-          datasets: [{ label: "Sales Achievement %", data: topTrains.map(item => item.pct.toFixed(1)), backgroundColor: topTrains.map(item => item.pct >= 90 ? "#2a9d8f" : item.pct >= 80 ? "#3a86ff" : item.pct >= 70 ? "#ee9b00" : "#d62828"), borderRadius: 10 }]
+          labels: combinedPerformance.map(item => item.label),
+          datasets: [
+            {
+              label: "Sales Achievement %",
+              data: combinedPerformance.map(item => item.salesPct.toFixed(1)),
+              backgroundColor: combinedPerformance.map((item, idx) => idx < 7 ? "#2a9d8f" : "#d62828"),
+              borderRadius: 6
+            },
+            {
+              label: "GP Achievement %",
+              data: combinedPerformance.map(item => item.gpPct.toFixed(1)),
+              backgroundColor: combinedPerformance.map((item, idx) => idx < 7 ? "rgba(42,157,143,0.6)" : "rgba(214,40,40,0.6)"),
+              borderRadius: 6
+            }
+          ]
         },
         options: {
           ...baseChartOptions(),
-          scales: { y: { beginAtZero: true, max: 120 } },
-          onClick: (_, elements) => {
-            if (!elements.length) return;
-            const label = topTrains[elements[0].index]?.label;
-            if (label) setDashboardSelection("trainName", label);
+          indexAxis: 'y',
+          scales: {
+            x: { beginAtZero: true, max: 120 },
+            y: { ticks: { font: { size: 10 } } }
+          },
+          plugins: {
+            legend: { position: "bottom" },
+            datalabels: {
+              display: true,
+              anchor: 'end',
+              align: 'right',
+              formatter: (value) => value + '%',
+              font: { size: 9, weight: 'bold' }
+            }
           }
         }
       });
 
+      // Train Manager GP Contribution %
       const byManager = summarizeBy(filtered, "trainManager");
+      const totalGpAchievement = Object.values(byManager).reduce((sum, item) => sum + item.gpAchievement, 0);
       const managerLabels = Object.keys(byManager);
+      const managerGpData = managerLabels.map(key => ({
+        label: key,
+        value: byManager[key].gpAchievement,
+        pct: totalGpAchievement ? ((byManager[key].gpAchievement / totalGpAchievement) * 100).toFixed(1) : 0
+      }));
+
       charts.managerContribution = new Chart(document.getElementById("managerContributionChart"), {
-        type: "doughnut",
+        type: "pie",
         data: {
-          labels: managerLabels,
-          datasets: [{ data: managerLabels.map(key => byManager[key].salesAchievement), backgroundColor: ["#005f73","#0a9396","#3a86ff","#6c63ff","#ee9b00","#ca6702","#d62872","#2a9d8f"], borderWidth: 2, borderColor: "#fff" }]
+          labels: managerGpData.map(item => item.label),
+          datasets: [{
+            data: managerGpData.map(item => item.value),
+            backgroundColor: ["#005f73","#0a9396","#3a86ff","#6c63ff","#ee9b00","#ca6702","#d62872","#2a9d8f","#4c1d95","#7c3aed"],
+            borderWidth: 2,
+            borderColor: "#fff"
+          }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { position: "bottom" } },
-          onClick: (_, elements) => {
-            if (!elements.length) return;
-            const label = managerLabels[elements[0].index];
-            setDashboardSelection("trainManager", label);
+          plugins: {
+            legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 10 } } },
+            datalabels: {
+              display: true,
+              color: '#fff',
+              font: { weight: 'bold', size: 11 },
+              formatter: (value, ctx) => {
+                const pct = managerGpData[ctx.dataIndex].pct;
+                return pct + '%';
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const pct = managerGpData[context.dataIndex].pct;
+                  return context.label + ': ' + formatCurrency(context.raw) + ' (' + pct + '%)';
+                }
+              }
+            }
           }
         }
       });
+    }
+
+    function renderTopBottomTrains(filtered) {
+      const byTrain = summarizeBy(filtered, "trainName");
+      const trainData = Object.entries(byTrain).map(([label, item]) => ({
+        label,
+        salesAchievement: item.salesAchievement,
+        salesPct: item.salesTarget ? (item.salesAchievement / item.salesTarget) * 100 : 0,
+        gpAchievement: item.gpAchievement,
+        gpPct: item.gpTarget ? (item.gpAchievement / item.gpTarget) * 100 : 0
+      })).sort((a, b) => b.salesAchievement - a.salesAchievement);
+
+      const top10 = trainData.slice(0, 10);
+      const bottom10 = trainData.slice(-10).reverse();
+
+      document.getElementById("topTrainsTable").innerHTML = top10.map((item, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${item.label}</td>
+          <td>${formatCurrency(item.salesAchievement)}</td>
+          <td><span class="badge ${item.salesPct >= 80 ? 'good' : item.salesPct >= 70 ? 'avg' : 'low'}">${formatPct(item.salesPct)}</span></td>
+          <td>${formatCurrency(item.gpAchievement)}</td>
+          <td><span class="badge ${item.gpPct >= 80 ? 'good' : item.gpPct >= 70 ? 'avg' : 'low'}">${formatPct(item.gpPct)}</span></td>
+        </tr>
+      `).join("");
+
+      document.getElementById("bottomTrainsTable").innerHTML = bottom10.map((item, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${item.label}</td>
+          <td>${formatCurrency(item.salesAchievement)}</td>
+          <td><span class="badge ${item.salesPct >= 80 ? 'good' : item.salesPct >= 70 ? 'avg' : 'low'}">${formatPct(item.salesPct)}</span></td>
+          <td>${formatCurrency(item.gpAchievement)}</td>
+          <td><span class="badge ${item.gpPct >= 80 ? 'good' : item.gpPct >= 70 ? 'avg' : 'low'}">${formatPct(item.gpPct)}</span></td>
+        </tr>
+      `).join("");
     }
 
     function renderSalesTable(filtered) {
@@ -1033,10 +1243,42 @@
       `).join("") : `<tr><td colspan="12">No sales records found for selected filters.</td></tr>`;
     }
 
+    // ==================== COMPLAINT DASHBOARD ====================
+    
+    function getMonthDates(dateStr) {
+      const date = new Date(dateStr);
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      return {
+        firstDay: firstDay.toISOString().slice(0, 10),
+        lastDay: lastDay.toISOString().slice(0, 10),
+        year,
+        month,
+        monthName: date.toLocaleString('en-US', { month: 'short' })
+      };
+    }
+
+    function getLastMonthSamePeriod(todayStr) {
+      const today = new Date(todayStr);
+      const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+      const lastMonthStart = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1);
+      return {
+        currentMonthStart: new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0, 10),
+        currentMonthEnd: todayStr,
+        lastMonthStart: lastMonthStart.toISOString().slice(0, 10),
+        lastMonthEnd: lastMonth.toISOString().slice(0, 10),
+        currentMonthName: today.toLocaleString('en-US', { month: 'short' }),
+        lastMonthName: lastMonth.toLocaleString('en-US', { month: 'short' })
+      };
+    }
+
     function complaintDashboardFilters() {
       return {
         fromDate: document.getElementById("complaintFromDate")?.value || "",
         toDate: document.getElementById("complaintToDate")?.value || "",
+        comparisonDate: document.getElementById("complaintComparisonDate")?.value || todayISO(),
         trainName: document.getElementById("complaintTrainFilter")?.value || "",
         status: document.getElementById("complaintStatusFilter")?.value || "",
         yard: document.getElementById("complaintYardFilter")?.value || ""
@@ -1061,59 +1303,540 @@
       const trains = [...new Set(complaints.map(item => item.trainName))].sort();
       const statuses = state.masters.complaintStatuses;
       const yards = [...new Set(complaints.map(item => item.yard))].sort();
+      
+      const periods = getLastMonthSamePeriod(document.getElementById("complaintComparisonDate")?.value || todayISO());
+      
       page.innerHTML = `
         <div class="section-head">
           <div>
             <h2>Complaint Dashboard</h2>
-            <p>Separate dashboard for complaint status, source, train and yard analysis.</p>
+            <p>Comprehensive complaint analysis with month-to-month comparison and trend analysis.</p>
           </div>
           <div class="form-actions">
             <button class="btn warn" onclick="clearComplaintFilters()">Clear Filters</button>
-            <button class="btn ghost" onclick="downloadTableAsCsv(filteredComplaints(), 'complaints_export.csv')">Export Complaints</button>
+            <button class="btn ghost" onclick="exportComplaintDashboardExcel()">Export Excel</button>
+            <button class="btn secondary" onclick="exportComplaintDashboardPDF()">Export PDF</button>
           </div>
         </div>
+        
         <div class="card">
-          <div class="card-title">Complaint Filters</div>
+          <div class="card-title">Complaint Filters & Date Range</div>
           <div class="filters">
             <div><label>From Date</label><input type="date" id="complaintFromDate" onchange="rememberComplaintFilters(); renderComplaintDashboard()"></div>
             <div><label>To Date</label><input type="date" id="complaintToDate" onchange="rememberComplaintFilters(); renderComplaintDashboard()"></div>
+            <div><label>Comparison As Of Date</label><input type="date" id="complaintComparisonDate" value="${todayISO()}" onchange="renderComplaintDashboard()"></div>
             <div><label>Train</label><select id="complaintTrainFilter" onchange="rememberComplaintFilters(); renderComplaintDashboard()"><option value="">All Trains</option>${trains.map(item => `<option>${item}</option>`).join("")}</select></div>
             <div><label>Status</label><select id="complaintStatusFilter" onchange="rememberComplaintFilters(); renderComplaintDashboard()"><option value="">All Status</option>${statuses.map(item => `<option>${item}</option>`).join("")}</select></div>
             <div><label>Yard</label><select id="complaintYardFilter" onchange="rememberComplaintFilters(); renderComplaintDashboard()"><option value="">All Yards</option>${yards.map(item => `<option>${item}</option>`).join("")}</select></div>
           </div>
         </div>
+
         <div class="grid kpi-grid">
           <div class="card metric bg-e"><h3>Total Complaints</h3><div class="value" id="complaintTotalKpi"></div><div class="sub">Filtered complaint records</div></div>
           <div class="card metric bg-c"><h3>Open</h3><div class="value" id="complaintOpenKpi"></div><div class="sub">Pending immediate action</div></div>
           <div class="card metric bg-b"><h3>In Progress</h3><div class="value" id="complaintProgressKpi"></div><div class="sub">Follow-up ongoing</div></div>
           <div class="card metric bg-d"><h3>Closed</h3><div class="value" id="complaintClosedKpi"></div><div class="sub">Resolved cases</div></div>
         </div>
+
         <div class="split-grid" style="margin-top:18px;">
-          <div class="card"><h3 style="margin-bottom:12px;">Complaint Status Mix</h3><div class="chart-wrap"><canvas id="complaintStatusChart"></canvas></div></div>
-          <div class="card"><h3 style="margin-bottom:12px;">Complaint Source</h3><div class="chart-wrap"><canvas id="complaintSourceChart"></canvas></div></div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Complaint Status Mix</h3>
+            <div class="chart-wrap"><canvas id="complaintStatusChart"></canvas></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Complaint Source</h3>
+            <div class="chart-wrap"><canvas id="complaintSourceChart"></canvas></div>
+          </div>
         </div>
+
         <div class="split-grid" style="margin-top:18px;">
-          <div class="card"><h3 style="margin-bottom:12px;">Train-wise Complaint Count</h3><div class="chart-wrap"><canvas id="complaintTrainChart"></canvas></div></div>
-          <div class="card"><h3 style="margin-bottom:12px;">Yard-wise Complaint Count</h3><div class="chart-wrap"><canvas id="complaintYardChart"></canvas></div></div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Train-wise Complaint Count</h3>
+            <div class="chart-wrap"><canvas id="complaintTrainChart"></canvas></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Yard-wise Complaint Count</h3>
+            <div class="chart-wrap"><canvas id="complaintYardChart"></canvas></div>
+          </div>
         </div>
+
         <div class="card" style="margin-top:18px;">
-          <h3 style="margin-bottom:12px;">Complaint Detail</h3>
+          <h3 style="margin-bottom:12px;">Daily Complaint Trend - ${periods.currentMonthName} vs ${periods.lastMonthName} (Same Period)</h3>
+          <div class="chart-wrap"><canvas id="complaintTrendChart"></canvas></div>
+        </div>
+
+        <div class="split-grid" style="margin-top:18px;">
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Complaint Nature Distribution</h3>
+            <div class="chart-wrap"><canvas id="complaintNatureChart"></canvas></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:12px;">Resolution Time Analysis</h3>
+            <div class="chart-wrap"><canvas id="resolutionTimeChart"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <h3 style="margin-bottom:12px;">Train-wise Comparison: ${periods.currentMonthName} (MTD) vs ${periods.lastMonthName} (Same Period)</h3>
           <div class="table-wrap">
-            <table>
-              <thead><tr><th>Date</th><th>ID</th><th>Train</th><th>Yard</th><th>Source</th><th>Nature</th><th>Status</th><th>Remarks</th></tr></thead>
-              <tbody id="complaintTableBody"></tbody>
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Train Name</th>
+                  <th>${periods.lastMonthName} Count</th>
+                  <th>${periods.currentMonthName} Count</th>
+                  <th>Difference</th>
+                  <th>Change %</th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody id="trainComparisonTable"></tbody>
             </table>
           </div>
         </div>
+
+        <div class="card" style="margin-top:18px;">
+          <h3 style="margin-bottom:12px;">Complaint Nature Comparison: ${periods.currentMonthName} (MTD) vs ${periods.lastMonthName} (Same Period)</h3>
+          <div class="table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Complaint Nature</th>
+                  <th>${periods.lastMonthName} Count</th>
+                  <th>${periods.currentMonthName} Count</th>
+                  <th>Difference</th>
+                  <th>Change %</th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody id="natureComparisonTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <h3 style="margin-bottom:12px;">Source-wise Trend Analysis</h3>
+          <div class="chart-wrap"><canvas id="sourceTrendChart"></canvas></div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <h3 style="margin-bottom:12px;">Weekly Complaint Pattern</h3>
+          <div class="chart-wrap"><canvas id="weeklyPatternChart"></canvas></div>
+        </div>
       `;
+      
       restoreComplaintFilters();
       const filtered = filteredComplaints();
+      
+      // Update KPIs
       document.getElementById("complaintTotalKpi").textContent = filtered.length;
       document.getElementById("complaintOpenKpi").textContent = filtered.filter(item => item.status === "Open").length;
       document.getElementById("complaintProgressKpi").textContent = filtered.filter(item => item.status === "In Progress").length;
       document.getElementById("complaintClosedKpi").textContent = filtered.filter(item => item.status === "Closed").length;
-      renderComplaintCharts(filtered);
-      renderComplaintTable(filtered);
+      
+      renderComplaintCharts(filtered, periods);
+      renderComplaintComparisonTables(periods);
+    }
+
+    function renderComplaintCharts(filtered, periods) {
+      destroyChart("complaintStatus");
+      destroyChart("complaintSource");
+      destroyChart("complaintTrain");
+      destroyChart("complaintYard");
+      destroyChart("complaintTrend");
+      destroyChart("complaintNature");
+      destroyChart("resolutionTime");
+      destroyChart("sourceTrend");
+      destroyChart("weeklyPattern");
+
+      const statusMap = countBy(filtered, "status");
+      charts.complaintStatus = new Chart(document.getElementById("complaintStatusChart"), {
+        type: "doughnut",
+        data: {
+          labels: Object.keys(statusMap),
+          datasets: [{
+            data: Object.values(statusMap),
+            backgroundColor: ["#d62828","#ee9b00","#2a9d8f"],
+            borderColor: "#fff",
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom" },
+            datalabels: {
+              display: true,
+              color: '#fff',
+              font: { weight: 'bold' },
+              formatter: (value, ctx) => {
+                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                return ((value / total) * 100).toFixed(0) + '%';
+              }
+            }
+          }
+        }
+      });
+
+      const sourceMap = countBy(filtered, "source");
+      charts.complaintSource = new Chart(document.getElementById("complaintSourceChart"), {
+        type: "pie",
+        data: {
+          labels: Object.keys(sourceMap),
+          datasets: [{
+            data: Object.values(sourceMap),
+            backgroundColor: ["#3a86ff","#6c63ff","#0a9396","#ca6702","#d62872"],
+            borderColor: "#fff",
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom" },
+            datalabels: {
+              display: true,
+              font: { weight: 'bold', size: 10 },
+              formatter: (value, ctx) => {
+                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                return ((value / total) * 100).toFixed(0) + '%';
+              }
+            }
+          }
+        }
+      });
+
+      const trainMap = countBy(filtered, "trainName");
+      const trainEntries = Object.entries(trainMap).sort((a, b) => b[1] - a[1]).slice(0, 10);
+      charts.complaintTrain = new Chart(document.getElementById("complaintTrainChart"), {
+        type: "bar",
+        data: {
+          labels: trainEntries.map(item => item[0]),
+          datasets: [{
+            label: "Complaints",
+            data: trainEntries.map(item => item[1]),
+            backgroundColor: "#d62872",
+            borderRadius: 10
+          }]
+        },
+        options: {
+          ...baseChartOptions(),
+          plugins: {
+            ...baseChartOptions().plugins,
+            datalabels: {
+              display: true,
+              anchor: 'end',
+              align: 'top',
+              formatter: (value) => value
+            }
+          }
+        }
+      });
+
+      const yardMap = countBy(filtered, "yard");
+      charts.complaintYard = new Chart(document.getElementById("complaintYardChart"), {
+        type: "bar",
+        data: {
+          labels: Object.keys(yardMap),
+          datasets: [{
+            label: "Complaints",
+            data: Object.values(yardMap),
+            backgroundColor: "#0a9396",
+            borderRadius: 10
+          }]
+        },
+        options: {
+          ...baseChartOptions(),
+          plugins: {
+            ...baseChartOptions().plugins,
+            datalabels: {
+              display: true,
+              anchor: 'end',
+              align: 'top',
+              formatter: (value) => value
+            }
+          }
+        }
+      });
+
+      // Complaint Trend Comparison
+      const allComplaints = userScopedComplaints();
+      const currentMonthData = {};
+      const lastMonthData = {};
+      
+      // Group by day for both months
+      allComplaints.forEach(item => {
+        const itemDate = new Date(item.date);
+        const day = itemDate.getDate();
+        
+        if (item.date >= periods.currentMonthStart && item.date <= periods.currentMonthEnd) {
+          currentMonthData[day] = (currentMonthData[day] || 0) + 1;
+        }
+        if (item.date >= periods.lastMonthStart && item.date <= periods.lastMonthEnd) {
+          lastMonthData[day] = (lastMonthData[day] || 0) + 1;
+        }
+      });
+
+      const maxDay = Math.max(...Object.keys(currentMonthData).map(Number), 15);
+      const trendLabels = Array.from({length: maxDay}, (_, i) => (i + 1).toString());
+      
+      charts.complaintTrend = new Chart(document.getElementById("complaintTrendChart"), {
+        type: "line",
+        data: {
+          labels: trendLabels,
+          datasets: [
+            {
+              label: periods.currentMonthName,
+              data: trendLabels.map(d => currentMonthData[parseInt(d)] || 0),
+              borderColor: "#3a86ff",
+              backgroundColor: "rgba(58,134,255,0.1)",
+              fill: true,
+              tension: 0.4
+            },
+            {
+              label: periods.lastMonthName,
+              data: trendLabels.map(d => lastMonthData[parseInt(d)] || 0),
+              borderColor: "#ee9b00",
+              backgroundColor: "rgba(238,155,0,0.1)",
+              fill: true,
+              tension: 0.4
+            }
+          ]
+        },
+        options: {
+          ...baseChartOptions(),
+          plugins: {
+            legend: { position: "bottom" },
+            datalabels: { display: false }
+          }
+        }
+      });
+
+      // Complaint Nature Distribution
+      const natureMap = countBy(filtered, "complainNature");
+      const natureEntries = Object.entries(natureMap).sort((a, b) => b[1] - a[1]);
+      charts.complaintNature = new Chart(document.getElementById("complaintNatureChart"), {
+        type: "bar",
+        data: {
+          labels: natureEntries.map(item => item[0]),
+          datasets: [{
+            label: "Count",
+            data: natureEntries.map(item => item[1]),
+            backgroundColor: natureEntries.map((_, i) => {
+              const colors = ["#d62872", "#3a86ff", "#2a9d8f", "#ee9b00", "#6c63ff", "#ca6702"];
+              return colors[i % colors.length];
+            }),
+            borderRadius: 10
+          }]
+        },
+        options: {
+          ...baseChartOptions(),
+          plugins: {
+            ...baseChartOptions().plugins,
+            datalabels: {
+              display: true,
+              anchor: 'end',
+              align: 'top',
+              formatter: (value) => value
+            }
+          }
+        }
+      });
+
+      // Resolution Time Analysis (for closed complaints)
+      const closedComplaints = filtered.filter(c => c.status === "Closed");
+      const resolutionDays = closedComplaints.map(c => {
+        const incident = new Date(c.incidentDate || c.date);
+        const resolution = new Date(c.date); // Using complaint date as proxy
+        return Math.max(0, Math.floor((resolution - incident) / (1000 * 60 * 60 * 24)));
+      });
+      
+      const resolutionBuckets = { "Same Day": 0, "1-2 Days": 0, "3-7 Days": 0, "8+ Days": 0 };
+      resolutionDays.forEach(days => {
+        if (days === 0) resolutionBuckets["Same Day"]++;
+        else if (days <= 2) resolutionBuckets["1-2 Days"]++;
+        else if (days <= 7) resolutionBuckets["3-7 Days"]++;
+        else resolutionBuckets["8+ Days"]++;
+      });
+
+      charts.resolutionTime = new Chart(document.getElementById("resolutionTimeChart"), {
+        type: "bar",
+        data: {
+          labels: Object.keys(resolutionBuckets),
+          datasets: [{
+            label: "Closed Complaints",
+            data: Object.values(resolutionBuckets),
+            backgroundColor: ["#2a9d8f", "#3a86ff", "#ee9b00", "#d62828"],
+            borderRadius: 10
+          }]
+        },
+        options: {
+          ...baseChartOptions(),
+          plugins: {
+            ...baseChartOptions().plugins,
+            datalabels: {
+              display: true,
+              anchor: 'end',
+              align: 'top',
+              formatter: (value) => value
+            }
+          }
+        }
+      });
+
+      // Source-wise Trend
+      const sourceTrendData = {};
+      const last30Days = filtered.filter(c => {
+        const cDate = new Date(c.date);
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        return cDate >= thirtyDaysAgo;
+      });
+
+      state.masters.complaintSources.forEach(source => {
+        sourceTrendData[source] = last30Days.filter(c => c.source === source).length;
+      });
+
+      charts.sourceTrend = new Chart(document.getElementById("sourceTrendChart"), {
+        type: "line",
+        data: {
+          labels: Object.keys(sourceTrendData),
+          datasets: [{
+            label: "Last 30 Days",
+            data: Object.values(sourceTrendData),
+            borderColor: "#6c63ff",
+            backgroundColor: "rgba(108,99,255,0.1)",
+            fill: true,
+            tension: 0.4,
+            pointRadius: 6,
+            pointBackgroundColor: "#6c63ff"
+          }]
+        },
+        options: {
+          ...baseChartOptions(),
+          plugins: {
+            ...baseChartOptions().plugins,
+            datalabels: {
+              display: true,
+              anchor: 'end',
+              align: 'top',
+              formatter: (value) => value
+            }
+          }
+        }
+      });
+
+      // Weekly Pattern
+      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const weeklyData = {};
+      dayNames.forEach(d => weeklyData[d] = 0);
+      
+      filtered.forEach(c => {
+        const day = dayNames[new Date(c.date).getDay()];
+        weeklyData[day]++;
+      });
+
+      charts.weeklyPattern = new Chart(document.getElementById("weeklyPatternChart"), {
+        type: "bar",
+        data: {
+          labels: Object.keys(weeklyData),
+          datasets: [{
+            label: "Complaints by Day",
+            data: Object.values(weeklyData),
+            backgroundColor: "#0a9396",
+            borderRadius: 10
+          }]
+        },
+        options: {
+          ...baseChartOptions(),
+          plugins: {
+            ...baseChartOptions().plugins,
+            datalabels: {
+              display: true,
+              anchor: 'end',
+              align: 'top',
+              formatter: (value) => value
+            }
+          }
+        }
+      });
+    }
+
+    function renderComplaintComparisonTables(periods) {
+      const allComplaints = userScopedComplaints();
+      
+      // Train-wise comparison
+      const trainCurrent = {};
+      const trainLast = {};
+      
+      allComplaints.forEach(c => {
+        if (c.date >= periods.currentMonthStart && c.date <= periods.currentMonthEnd) {
+          trainCurrent[c.trainName] = (trainCurrent[c.trainName] || 0) + 1;
+        }
+        if (c.date >= periods.lastMonthStart && c.date <= periods.lastMonthEnd) {
+          trainLast[c.trainName] = (trainLast[c.trainName] || 0) + 1;
+        }
+      });
+
+      const allTrains = [...new Set([...Object.keys(trainCurrent), ...Object.keys(trainLast)])].sort();
+      
+      document.getElementById("trainComparisonTable").innerHTML = allTrains.map(train => {
+        const current = trainCurrent[train] || 0;
+        const last = trainLast[train] || 0;
+        const diff = current - last;
+        const changePct = last ? ((diff / last) * 100).toFixed(1) : (current ? 100 : 0);
+        const trend = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
+        const trendClass = diff > 0 ? 'negative' : diff < 0 ? 'positive' : '';
+        
+        return `
+          <tr>
+            <td>${train}</td>
+            <td>${last}</td>
+            <td>${current}</td>
+            <td class="${trendClass}">${diff > 0 ? '+' : ''}${diff}</td>
+            <td class="${trendClass}">${changePct}%</td>
+            <td class="${trendClass}">${trend}</td>
+          </tr>
+        `;
+      }).join("");
+
+      // Nature-wise comparison
+      const natureCurrent = {};
+      const natureLast = {};
+      
+      allComplaints.forEach(c => {
+        const nature = c.complainNature || "Unspecified";
+        if (c.date >= periods.currentMonthStart && c.date <= periods.currentMonthEnd) {
+          natureCurrent[nature] = (natureCurrent[nature] || 0) + 1;
+        }
+        if (c.date >= periods.lastMonthStart && c.date <= periods.lastMonthEnd) {
+          natureLast[nature] = (natureLast[nature] || 0) + 1;
+        }
+      });
+
+      const allNatures = [...new Set([...Object.keys(natureCurrent), ...Object.keys(natureLast)])].sort();
+      
+      document.getElementById("natureComparisonTable").innerHTML = allNatures.map(nature => {
+        const current = natureCurrent[nature] || 0;
+        const last = natureLast[nature] || 0;
+        const diff = current - last;
+        const changePct = last ? ((diff / last) * 100).toFixed(1) : (current ? 100 : 0);
+        const trend = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
+        const trendClass = diff > 0 ? 'negative' : diff < 0 ? 'positive' : '';
+        
+        return `
+          <tr>
+            <td>${nature}</td>
+            <td>${last}</td>
+            <td>${current}</td>
+            <td class="${trendClass}">${diff > 0 ? '+' : ''}${diff}</td>
+            <td class="${trendClass}">${changePct}%</td>
+            <td class="${trendClass}">${trend}</td>
+          </tr>
+        `;
+      }).join("");
     }
 
     function rememberComplaintFilters() {
@@ -1134,78 +1857,160 @@
       });
     }
 
-    function clearComplaintFilters() { window.__complaintFilterMemory = {}; renderComplaintDashboard(); }
-    function countBy(list, field) { return list.reduce((acc, item) => { const key = item[field] || "Blank"; acc[key] = (acc[key] || 0) + 1; return acc; }, {}); }
-
-    function renderComplaintCharts(filtered) {
-      destroyChart("complaintStatus"); destroyChart("complaintSource"); destroyChart("complaintTrain"); destroyChart("complaintYard");
-      const statusMap = countBy(filtered, "status");
-      const sourceMap = countBy(filtered, "source");
-      const trainMap = countBy(filtered, "trainName");
-      const yardMap = countBy(filtered, "yard");
-      charts.complaintStatus = new Chart(document.getElementById("complaintStatusChart"), { type: "doughnut", data: { labels: Object.keys(statusMap), datasets: [{ data: Object.values(statusMap), backgroundColor: ["#d62828","#ee9b00","#2a9d8f"], borderColor: "#fff", borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } } });
-      charts.complaintSource = new Chart(document.getElementById("complaintSourceChart"), { type: "pie", data: { labels: Object.keys(sourceMap), datasets: [{ data: Object.values(sourceMap), backgroundColor: ["#3a86ff","#6c63ff","#0a9396","#ca6702","#d62872"], borderColor: "#fff", borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } } });
-      const trainEntries = Object.entries(trainMap).sort((a, b) => b[1] - a[1]).slice(0, 10);
-      charts.complaintTrain = new Chart(document.getElementById("complaintTrainChart"), { type: "bar", data: { labels: trainEntries.map(item => item[0]), datasets: [{ label: "Complaints", data: trainEntries.map(item => item[1]), backgroundColor: "#d62872", borderRadius: 10 }] }, options: baseChartOptions() });
-      charts.complaintYard = new Chart(document.getElementById("complaintYardChart"), { type: "bar", data: { labels: Object.keys(yardMap), datasets: [{ label: "Complaints", data: Object.values(yardMap), backgroundColor: "#0a9396", borderRadius: 10 }] }, options: baseChartOptions() });
+    function clearComplaintFilters() {
+      window.__complaintFilterMemory = {};
+      renderComplaintDashboard();
     }
 
-    function renderComplaintTable(filtered) {
-      document.getElementById("complaintTableBody").innerHTML = filtered.length ? filtered.map(item => `
-        <tr>
-          <td>${item.date}</td>
-          <td>${item.complaintId}</td>
-          <td>${item.trainName}<br><span class="inline-note">${item.trainNo}</span></td>
-          <td>${item.yard}</td>
-          <td>${item.source}</td>
-          <td>${item.complainNature}</td>
-          <td><span class="badge ${item.status === "Open" ? "open" : item.status === "In Progress" ? "progress" : "closed"}">${item.status}</span></td>
-          <td>${item.resolutionRemarks || item.entryRemarks || ""}</td>
-        </tr>
-      `).join("") : `<tr><td colspan="8">No complaint records found.</td></tr>`;
+    function countBy(list, field) {
+      return list.reduce((acc, item) => {
+        const key = item[field] || "Blank";
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {});
     }
+
+    // ==================== DATA ENTRY PAGE ====================
 
     function visibleTrainMasters() { return state.trainMasters.filter(item => currentUser.yard === "ALL" || normalizeYard(item.yard) === normalizeYard(currentUser.yard)); }
     function visibleYards() { const list = currentUser.yard === "ALL" ? state.masters.yards : state.masters.yards.filter(item => normalizeYard(item) === normalizeYard(currentUser.yard)); return list.length ? list : state.masters.yards; }
     function todayISO() { return new Date().toISOString().slice(0, 10); }
     function getMonthName(date) { return date ? new Date(date).toLocaleString("en-US", { month: "short" }) : ""; }
 
+    function downloadSampleExcel(type) {
+      let headers, sampleData, filename;
+      
+      if (type === 'sales') {
+        headers = ["Month", "ArrivalDate", "TrainNumber", "ClusterManager", "TrainManager", "RakeManager", "TrainType", "TrainName", "SalesTarget", "SalesAchievement", "Yard", "GrossProfitTarget", "GrossProfitAchievement", "Remarks"];
+        sampleData = [["Feb", "2026-02-01", "12833-834", "Rabindra", "Munna", "DEEPAK SINGH", "WCB", "Ahamedabad Sf Express", "538540", "460076", "Howrah", "248974", "185703", "Good first day response."]];
+        filename = "sample_sales_import_format.xlsx";
+      } else if (type === 'complaint') {
+        headers = ["Date", "ComplaintId", "Source", "ComplaintType", "ComplaintRefNo", "ComplainantName", "IncidentDate", "ComplaintDate", "TrainNo", "TrainName", "TrainType", "LicenseeName", "MobileNo", "EmailId", "PnrNo", "ComplainNature", "Details", "Yard", "Status", "ResolutionRemarks", "EntryRemarks"];
+        sampleData = [["2026-02-01", "202602013772", "Helpline-139", "Overcharging", "2026020110941", "Customer 1", "2026-02-01", "2026-02-01", "12555", "GORAKHDHAM EXP", "Superfast", "Brandavan Food Products", "8080746825", "", "XOE1EA3020", "Overcharging", "Customer raised complaint due to over charging of food.", "ALL INDIA", "Open", "", "Imported from Feb complaint sheet."]];
+        filename = "sample_complaint_import_format.xlsx";
+      } else if (type === 'cash') {
+        headers = ["Date", "Yard", "TrainName", "TrainNumber", "CashCollected", "CashDepositCounter", "BankDeposit", "Remarks"];
+        sampleData = [["2026-03-10", "Howrah", "Azad Hind", "12129-130", "180000", "175000", "175000", "Short cash adjusted next day."]];
+        filename = "sample_cash_import_format.xlsx";
+      } else if (type === 'master') {
+        headers = ["TrainName", "TrainNumber", "Yard", "ClusterManager", "TrainManager", "RakeManager", "TrainType", "SalesTarget", "GpTarget"];
+        sampleData = [["Ahamedabad Sf Express", "12833-834", "Howrah", "Rabindra", "Munna", "DEEPAK SINGH", "WCB", "538540", "248974"]];
+        filename = "sample_master_import_format.xlsx";
+      }
+
+      const ws = XLSX.utils.aoa_to_sheet([headers, ...sampleData]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Sample");
+      XLSX.writeFile(wb, filename);
+    }
+
     function renderDataEntryPage() {
       const canSales = ["super_admin", "admin", "collecting_team"].includes(currentUser.role);
       const canComplaint = ["super_admin", "admin", "csd_entry"].includes(currentUser.role);
       const canCash = ["super_admin", "admin", "cash_team"].includes(currentUser.role);
-      const defaultEntry = canSales ? "sales" : canComplaint ? "complaint" : "cash";
+      const defaultEntry = dataEntryState.entryType || (canSales ? "sales" : canComplaint ? "complaint" : "cash");
+      
       const page = document.getElementById("dataEntryPage");
       page.innerHTML = `
-        <div class="section-head"><div><h2>Data Entry</h2><p>Select entry type. Complaint entry opens the complaint section directly inside data entry page.</p></div></div>
-        <div class="card">
-          <div class="card-title">Entry Type Filter</div>
-          <div class="filters">
-            <div><label>Entry Type</label><select id="entryTypeSelector" onchange="switchEntryType()">${canSales ? `<option value="sales">Sales Entry</option>` : ""}${canComplaint ? `<option value="complaint">Complaint Entry</option>` : ""}${canCash ? `<option value="cash">Cash & Bank Deposit Entry</option>` : ""}</select></div>
-            <div><label>Complaint Quick Filter</label><select id="entryComplaintStatusFilter" onchange="renderEntryComplaintList()"><option value="">All Complaint Status</option>${state.masters.complaintStatuses.map(item => `<option>${item}</option>`).join("")}</select></div>
-          </div>
-          <div class="action-row">
-            ${(currentUser.role === "super_admin" || currentUser.role === "admin") ? `<div><label>Import Sales Excel</label><input type="file" id="salesImportFile" accept=".xlsx,.xls" onchange="importExcelData('sales', this.files[0])"></div>` : ""}
-            ${(currentUser.role === "super_admin" || currentUser.role === "admin" || currentUser.role === "csd_entry") ? `<div><label>Import Complaint Excel</label><input type="file" id="complaintImportFile" accept=".xlsx,.xls" onchange="importExcelData('complaints', this.files[0])"></div>` : ""}
+        <div class="section-head">
+          <div>
+            <h2>Data Entry</h2>
+            <p>Select entry type. Download sample formats for Excel imports. All entries stay on this page after saving.</p>
           </div>
         </div>
+        
+        <div class="card">
+          <div class="card-title">Entry Type Filter & Import Options</div>
+          <div class="filters">
+            <div><label>Entry Type</label><select id="entryTypeSelector" onchange="saveEntryTypeState(); switchEntryType()">${canSales ? `<option value="sales">Sales Entry</option>` : ""}${canComplaint ? `<option value="complaint">Complaint Entry</option>` : ""}${canCash ? `<option value="cash">Cash & Bank Deposit Entry</option>` : ""}</select></div>
+            <div><label>Complaint Quick Filter</label><select id="entryComplaintStatusFilter" onchange="renderEntryComplaintList()"><option value="">All Complaint Status</option>${state.masters.complaintStatuses.map(item => `<option>${item}</option>`).join("")}</select></div>
+          </div>
+          <div class="action-row" style="margin-top:16px; gap:12px;">
+            ${(currentUser.role === "super_admin" || currentUser.role === "admin") ? `
+              <div style="flex:1;">
+                <label>Import Sales Excel <button class="sample-btn" onclick="downloadSampleExcel('sales')">Download Sample</button></label>
+                <input type="file" id="salesImportFile" accept=".xlsx,.xls" onchange="importExcelData('sales', this.files[0])">
+              </div>
+            ` : ""}
+            ${(currentUser.role === "super_admin" || currentUser.role === "admin" || currentUser.role === "csd_entry") ? `
+              <div style="flex:1;">
+                <label>Import Complaint Excel <button class="sample-btn" onclick="downloadSampleExcel('complaint')">Download Sample</button></label>
+                <input type="file" id="complaintImportFile" accept=".xlsx,.xls" onchange="importExcelData('complaints', this.files[0])">
+              </div>
+            ` : ""}
+            ${(currentUser.role === "super_admin" || currentUser.role === "admin" || currentUser.role === "cash_team") ? `
+              <div style="flex:1;">
+                <label>Import Cash Deposit Excel <button class="sample-btn" onclick="downloadSampleExcel('cash')">Download Sample</button></label>
+                <input type="file" id="cashImportFile" accept=".xlsx,.xls" onchange="importExcelData('cash', this.files[0])">
+              </div>
+            ` : ""}
+          </div>
+        </div>
+        
         <div id="entrySalesBlock" class="card" style="margin-top:18px;"></div>
         <div id="entryComplaintBlock" class="card" style="margin-top:18px;"></div>
         <div id="entryCashBlock" class="card" style="margin-top:18px;"></div>
       `;
-      document.getElementById("entryTypeSelector").value = window.__entryType || defaultEntry;
+      
+      document.getElementById("entryTypeSelector").value = defaultEntry;
       renderSalesEntryBlock(canSales);
       renderComplaintEntryBlock(canComplaint);
       renderCashEntryBlock(canCash);
       switchEntryType();
+      
+      // Restore saved state
+      if (dataEntryState.entryType === 'sales' && canSales) {
+        setTimeout(() => restoreSalesEntryState(), 100);
+      } else if (dataEntryState.entryType === 'complaint' && canComplaint) {
+        setTimeout(() => restoreComplaintEntryState(), 100);
+      } else if (dataEntryState.entryType === 'cash' && canCash) {
+        setTimeout(() => restoreCashEntryState(), 100);
+      }
+    }
+
+    function saveEntryTypeState() {
+      dataEntryState.entryType = document.getElementById("entryTypeSelector").value;
     }
 
     function switchEntryType() {
       const value = document.getElementById("entryTypeSelector").value;
-      window.__entryType = value;
+      dataEntryState.entryType = value;
       document.getElementById("entrySalesBlock").classList.toggle("hidden", value !== "sales");
       document.getElementById("entryComplaintBlock").classList.toggle("hidden", value !== "complaint");
       document.getElementById("entryCashBlock").classList.toggle("hidden", value !== "cash");
+    }
+
+    function restoreSalesEntryState() {
+      if (dataEntryState.sales.trainId) {
+        const trainSelect = document.getElementById("salesEntryTrain");
+        if (trainSelect) trainSelect.value = dataEntryState.sales.trainId;
+      }
+      if (dataEntryState.sales.date) {
+        const dateInput = document.getElementById("salesEntryDate");
+        if (dateInput) dateInput.value = dataEntryState.sales.date;
+      }
+    }
+
+    function restoreComplaintEntryState() {
+      if (dataEntryState.complaint.date) {
+        const dateInput = document.getElementById("compEntryDate");
+        if (dateInput) dateInput.value = dataEntryState.complaint.date;
+      }
+      if (dataEntryState.complaint.yard) {
+        const yardSelect = document.getElementById("compEntryYard");
+        if (yardSelect) yardSelect.value = dataEntryState.complaint.yard;
+      }
+    }
+
+    function restoreCashEntryState() {
+      if (dataEntryState.cash.date) {
+        const dateInput = document.getElementById("cashEntryDate");
+        if (dateInput) dateInput.value = dataEntryState.cash.date;
+      }
+      if (dataEntryState.cash.yard) {
+        const yardSelect = document.getElementById("cashEntryYard");
+        if (yardSelect) yardSelect.value = dataEntryState.cash.yard;
+      }
     }
 
     function renderSalesEntryBlock(canSales) {
@@ -1215,8 +2020,8 @@
       box.innerHTML = `
         <div class="section-head"><div><h3>Sales Entry</h3><p class="inline-note">Sales target and GP target fetch automatically from train master.</p></div></div>
         <div class="form-grid">
-          <div><label>Train Name</label><select id="salesEntryTrain" onchange="fillTargetsFromMaster()"><option value="">Select Train</option>${trains.map(item => `<option value="${item.id}">${item.trainName}</option>`).join("")}</select></div>
-          <div><label>Date</label><input type="date" id="salesEntryDate" value="${todayISO()}"></div>
+          <div><label>Train Name</label><select id="salesEntryTrain" onchange="saveSalesEntryState(); fillTargetsFromMaster()"><option value="">Select Train</option>${trains.map(item => `<option value="${item.id}">${item.trainName}</option>`).join("")}</select></div>
+          <div><label>Date</label><input type="date" id="salesEntryDate" value="${dataEntryState.sales.date || todayISO()}" onchange="saveSalesEntryState()"></div>
           <div><label>Train Number</label><input id="salesEntryTrainNo" readonly></div>
           <div><label>Yard</label><input id="salesEntryYard" readonly></div>
           <div><label>Cluster Manager</label><input id="salesEntryCluster" readonly></div>
@@ -1240,6 +2045,11 @@
         </div>
       `;
       renderEntrySalesList();
+    }
+
+    function saveSalesEntryState() {
+      dataEntryState.sales.trainId = document.getElementById("salesEntryTrain")?.value || '';
+      dataEntryState.sales.date = document.getElementById("salesEntryDate")?.value || todayISO();
     }
 
     function fillTargetsFromMaster() {
@@ -1289,7 +2099,7 @@
       alert(editingSalesId ? "Sales entry updated." : "Sales entry saved.");
       clearSalesEntryForm();
       renderEntrySalesList();
-      renderSalesDashboard();
+      // Stay on data entry page, don't redirect
     }
 
     function clearSalesEntryForm() {
@@ -1298,6 +2108,9 @@
       if (document.getElementById("salesEntryDate")) document.getElementById("salesEntryDate").value = todayISO();
       const saveBtn = document.getElementById("salesSaveBtn");
       if (saveBtn) saveBtn.textContent = "Save Sales Entry";
+      
+      // Preserve date in state
+      dataEntryState.sales.date = document.getElementById("salesEntryDate")?.value || todayISO();
     }
 
     function renderEntrySalesList() {
@@ -1344,7 +2157,6 @@
       saveState();
       if (editingSalesId === id) clearSalesEntryForm();
       renderEntrySalesList();
-      renderSalesDashboard();
     }
 
     function renderComplaintEntryBlock(canComplaint) {
@@ -1353,14 +2165,14 @@
       box.innerHTML = `
         <div class="section-head"><div><h3>Complaint Entry</h3><p class="inline-note">Complaint filter is available in data entry section and opens complaint page here.</p></div></div>
         <div class="form-grid">
-          <div><label>Complaint Date</label><input type="date" id="compEntryDate" value="${todayISO()}"></div>
+          <div><label>Complaint Date</label><input type="date" id="compEntryDate" value="${dataEntryState.complaint.date || todayISO()}" onchange="saveComplaintEntryState()"></div>
           <div><label>Complaint ID</label><input id="compEntryId" placeholder="Auto or manual ID"></div>
           <div><label>Source</label><select id="compEntrySource">${state.masters.complaintSources.map(item => `<option>${item}</option>`).join("")}</select></div>
           <div><label>Complaint Type</label><input id="compEntryType" placeholder="Overcharging / Quality / Service"></div>
           <div><label>Train No</label><input id="compEntryTrainNo"></div>
           <div><label>Train Name</label><input id="compEntryTrainName"></div>
           <div><label>Train Type</label><input id="compEntryTrainType"></div>
-          <div><label>Yard</label><select id="compEntryYard">${["ALL INDIA", ...state.masters.yards].map(item => `<option>${item}</option>`).join("")}</select></div>
+          <div><label>Yard</label><select id="compEntryYard" onchange="saveComplaintEntryState()">${["ALL INDIA", ...state.masters.yards].map(item => `<option>${item}</option>`).join("")}</select></div>
           <div><label>Complainant Name</label><input id="compEntryName"></div>
           <div><label>Mobile No</label><input id="compEntryMobile"></div>
           <div><label>PNR No</label><input id="compEntryPnr"></div>
@@ -1375,6 +2187,11 @@
         </div>
       `;
       renderEntryComplaintList();
+    }
+
+    function saveComplaintEntryState() {
+      dataEntryState.complaint.date = document.getElementById("compEntryDate")?.value || todayISO();
+      dataEntryState.complaint.yard = document.getElementById("compEntryYard")?.value || 'ALL INDIA';
     }
 
     function renderEntryComplaintList() {
@@ -1420,8 +2237,7 @@
       alert(editingComplaintId ? "Complaint entry updated." : "Complaint entry saved.");
       clearComplaintEntryForm();
       renderEntryComplaintList();
-      renderComplaintDashboard();
-      renderSalesDashboard();
+      // Stay on data entry page
     }
 
     function clearComplaintEntryForm() {
@@ -1430,6 +2246,9 @@
       if (document.getElementById("compEntryDate")) document.getElementById("compEntryDate").value = todayISO();
       const btn = document.getElementById("complaintSaveBtn");
       if (btn) btn.textContent = "Save Complaint Entry";
+      
+      // Preserve state
+      dataEntryState.complaint.date = document.getElementById("compEntryDate")?.value || todayISO();
     }
 
     function editComplaintEntry(id) {
@@ -1463,8 +2282,6 @@
       saveState();
       if (editingComplaintId === id) clearComplaintEntryForm();
       renderEntryComplaintList();
-      renderComplaintDashboard();
-      renderSalesDashboard();
     }
 
     function renderCashEntryBlock(canCash) {
@@ -1474,8 +2291,8 @@
       box.innerHTML = `
         <div class="section-head"><div><h3>Cash Collection & Bank Deposit Entry</h3><p class="inline-note">Capture final cash deposit to cash counter and same-day bank deposit with remarks.</p></div></div>
         <div class="form-grid">
-          <div><label>Date</label><input type="date" id="cashEntryDate" value="${todayISO()}"></div>
-          <div><label>Yard</label><select id="cashEntryYard">${visibleYards().map(item => `<option>${item}</option>`).join("")}</select></div>
+          <div><label>Date</label><input type="date" id="cashEntryDate" value="${dataEntryState.cash.date || todayISO()}" onchange="saveCashEntryState()"></div>
+          <div><label>Yard</label><select id="cashEntryYard" onchange="saveCashEntryState()">${visibleYards().map(item => `<option>${item}</option>`).join("")}</select></div>
           <div><label>Train Name</label><select id="cashEntryTrain">${trains.map(item => `<option value="${item.id}">${item.trainName}</option>`).join("")}</select></div>
           <div><label>Train Number</label><input id="cashEntryTrainNo" readonly></div>
           <div><label>Cash Collected</label><input id="cashEntryCollected" type="number"></div>
@@ -1489,6 +2306,11 @@
       document.getElementById("cashEntryTrain").addEventListener("change", syncCashTrainNo);
       syncCashTrainNo();
       renderCashTable();
+    }
+
+    function saveCashEntryState() {
+      dataEntryState.cash.date = document.getElementById("cashEntryDate")?.value || todayISO();
+      dataEntryState.cash.yard = document.getElementById("cashEntryYard")?.value || '';
     }
 
     function syncCashTrainNo() {
@@ -1522,7 +2344,7 @@
       alert(editingCashId ? "Cash deposit entry updated." : "Cash and bank deposit entry saved.");
       clearCashEntryForm();
       renderCashTable();
-      renderSalesDashboard();
+      // Stay on data entry page
     }
 
     function clearCashEntryForm() {
@@ -1531,6 +2353,8 @@
       if (document.getElementById("cashEntryDate")) document.getElementById("cashEntryDate").value = todayISO();
       const btn = document.getElementById("cashSaveBtn");
       if (btn) btn.textContent = "Save Cash Deposit";
+      
+      dataEntryState.cash.date = document.getElementById("cashEntryDate")?.value || todayISO();
     }
 
     function renderCashTable() {
@@ -1565,14 +2389,34 @@
       saveState();
       if (editingCashId === id) clearCashEntryForm();
       renderCashTable();
-      renderSalesDashboard();
     }
+
+    // ==================== MASTER PAGE ====================
 
     function renderMasterPage() {
       const page = document.getElementById("masterPage");
       if (!["super_admin","admin"].includes(currentUser.role)) return page.innerHTML = "";
       page.innerHTML = `
-        <div class="section-head"><div><h2>Master Data</h2><p>Create yard, train, manager and target master records. Sales target and GP target are fetched from here.</p></div></div>
+        <div class="section-head">
+          <div>
+            <h2>Master Data</h2>
+            <p>Create yard, train, manager and target master records. Sales target and GP target are fetched from here.</p>
+          </div>
+          <div class="form-actions">
+            <button class="btn success" onclick="downloadMasterDataExcel()">Download Master Data</button>
+          </div>
+        </div>
+        
+        <div class="card" style="margin-bottom:18px;">
+          <div class="card-title">Import Master Data</div>
+          <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+            <div style="flex:1; min-width:250px;">
+              <label>Upload Master Data Excel <button class="sample-btn" onclick="downloadSampleExcel('master')">Download Sample</button></label>
+              <input type="file" id="masterImportFile" accept=".xlsx,.xls" onchange="importMasterExcel(this.files[0])">
+            </div>
+          </div>
+        </div>
+
         <div class="panel-grid">
           <div class="card">
             <h3 style="margin-bottom:12px;">Train Master</h3>
@@ -1611,6 +2455,80 @@
       `;
     }
 
+    function downloadMasterDataExcel() {
+      const headers = ["TrainName", "TrainNumber", "Yard", "ClusterManager", "TrainManager", "RakeManager", "TrainType", "SalesTarget", "GpTarget"];
+      const data = state.trainMasters.map(item => [
+        item.trainName, item.trainNumber, item.yard, item.clusterManager, 
+        item.trainManager, item.rakeManager, item.trainType, 
+        item.salesTarget, item.gpTarget
+      ]);
+      
+      const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Master Data");
+      XLSX.writeFile(wb, "rk_group_master_data_" + todayISO() + ".xlsx");
+    }
+
+    function importMasterExcel(file) {
+      if (!file) return;
+      try {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+          
+          if (rows.length < 2) {
+            alert("No data found in file");
+            return;
+          }
+          
+          const headers = rows[0].map(h => normalizeHeader(String(h)));
+          const imported = [];
+          
+          for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            if (!row[0]) continue;
+            
+            const getValue = (possibleNames) => {
+              for (let name of possibleNames) {
+                const idx = headers.indexOf(normalizeHeader(name));
+                if (idx !== -1 && row[idx] !== undefined) return row[idx];
+              }
+              return '';
+            };
+            
+            imported.push({
+              id: Date.now() + i,
+              trainName: getValue(['trainname', 'train']),
+              trainNumber: String(getValue(['trainnumber', 'trainno']) || ''),
+              yard: getValue(['yard']) || 'Howrah',
+              clusterManager: getValue(['clustermanager', 'cluster']),
+              trainManager: getValue(['trainmanager', 'manager']),
+              rakeManager: getValue(['rakemanager', 'rake']),
+              trainType: getValue(['traintype', 'type']) || 'WCB',
+              salesTarget: Number(getValue(['salestarget', 'sales'])) || 0,
+              gpTarget: Number(getValue(['gptarget', 'grosstarget', 'grossprofittarget'])) || 0
+            });
+          }
+          
+          if (imported.length > 0) {
+            state.trainMasters = [...imported, ...state.trainMasters];
+            saveState();
+            alert(`${imported.length} master records imported successfully`);
+            renderMasterPage();
+            renderDataEntryPage();
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      } catch (error) {
+        alert("Error importing file: " + error.message);
+      } finally {
+        document.getElementById("masterImportFile").value = "";
+      }
+    }
+
     function saveTrainMaster() {
       const item = {
         id: Date.now(),
@@ -1637,6 +2555,8 @@
       if (manager && !state.masters.trainManagers.includes(manager)) state.masters.trainManagers.push(manager);
       saveState(); alert("Master values saved."); renderMasterPage(); renderDataEntryPage();
     }
+
+    // ==================== USER PAGE ====================
 
     function renderUserPage() {
       const page = document.getElementById("userPage");
@@ -1729,6 +2649,8 @@
       alert("Your password has been changed successfully.");
       renderUserPage();
     }
+
+    // ==================== SUPER ADMIN PAGE ====================
 
     function renderSuperAdminPage() {
       const page = document.getElementById("superAdminPage");
@@ -1826,11 +2748,13 @@
         if (!rows.length) return alert("No rows found in the selected Excel file.");
         if (type === "sales") importSalesRows(rows);
         if (type === "complaints") importComplaintRows(rows);
+        if (type === "cash") importCashRows(rows);
       } catch (error) {
         alert("Excel import failed. Please check file format.");
       } finally {
         if (type === "sales" && document.getElementById("salesImportFile")) document.getElementById("salesImportFile").value = "";
         if (type === "complaints" && document.getElementById("complaintImportFile")) document.getElementById("complaintImportFile").value = "";
+        if (type === "cash" && document.getElementById("cashImportFile")) document.getElementById("cashImportFile").value = "";
       }
     }
 
@@ -1916,7 +2840,153 @@
       alert(`${imported.length} complaint rows imported successfully.`);
       renderDataEntryPage();
       renderComplaintDashboard();
+    }
+
+    function importCashRows(rows) {
+      const map = {};
+      Object.keys(rows[0]).forEach(key => { map[normalizeHeader(key)] = key; });
+      const imported = rows.map(row => ({
+        id: Date.now() + Math.floor(Math.random() * 100000),
+        date: excelDateToISO(getMappedValue(row, map, ["date"])),
+        yard: getMappedValue(row, map, ["yard"]) || "Howrah",
+        trainName: getMappedValue(row, map, ["trainname"]),
+        trainNumber: String(getMappedValue(row, map, ["trainnumber", "trainno"]) || ''),
+        cashCollected: Number(getMappedValue(row, map, ["cashcollected", "collected"]) || 0),
+        cashDepositCounter: Number(getMappedValue(row, map, ["cashdepositcounter", "counter", "deposit"]) || 0),
+        bankDeposit: Number(getMappedValue(row, map, ["bankdeposit", "bank"]) || 0),
+        remarks: getMappedValue(row, map, ["remarks"]) || "Imported from Excel"
+      })).filter(item => item.trainName && item.date);
+      state.cashDeposits = [...imported, ...state.cashDeposits];
+      saveState();
+      alert(`${imported.length} cash deposit rows imported successfully.`);
+      renderDataEntryPage();
       renderSalesDashboard();
+    }
+
+    // ==================== EXPORT FUNCTIONS ====================
+
+    function exportComplaintDashboardExcel() {
+      const periods = getLastMonthSamePeriod(document.getElementById("complaintComparisonDate")?.value || todayISO());
+      const wb = XLSX.utils.book_new();
+      
+      // Sheet 1: Summary
+      const summaryData = [
+        ["Complaint Dashboard Summary"],
+        ["Generated:", new Date().toLocaleString()],
+        ["Period:", periods.currentMonthName + " vs " + periods.lastMonthName],
+        [],
+        ["Status", "Count"],
+        ["Open", userScopedComplaints().filter(c => c.status === "Open").length],
+        ["In Progress", userScopedComplaints().filter(c => c.status === "In Progress").length],
+        ["Closed", userScopedComplaints().filter(c => c.status === "Closed").length],
+        ["Total", userScopedComplaints().length]
+      ];
+      const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
+      XLSX.utils.book_append_sheet(wb, ws1, "Summary");
+      
+      // Sheet 2: Train Comparison
+      const allComplaints = userScopedComplaints();
+      const trainCurrent = {};
+      const trainLast = {};
+      
+      allComplaints.forEach(c => {
+        if (c.date >= periods.currentMonthStart && c.date <= periods.currentMonthEnd) {
+          trainCurrent[c.trainName] = (trainCurrent[c.trainName] || 0) + 1;
+        }
+        if (c.date >= periods.lastMonthStart && c.date <= periods.lastMonthEnd) {
+          trainLast[c.trainName] = (trainLast[c.trainName] || 0) + 1;
+        }
+      });
+      
+      const trainData = [["Train Name", periods.lastMonthName, periods.currentMonthName, "Difference", "Change %"]];
+      Object.keys({...trainCurrent, ...trainLast}).sort().forEach(train => {
+        const current = trainCurrent[train] || 0;
+        const last = trainLast[train] || 0;
+        const diff = current - last;
+        const changePct = last ? ((diff / last) * 100).toFixed(1) : (current ? 100 : 0);
+        trainData.push([train, last, current, diff, changePct + "%"]);
+      });
+      const ws2 = XLSX.utils.aoa_to_sheet(trainData);
+      XLSX.utils.book_append_sheet(wb, ws2, "Train Comparison");
+      
+      // Sheet 3: Nature Comparison
+      const natureCurrent = {};
+      const natureLast = {};
+      
+      allComplaints.forEach(c => {
+        const nature = c.complainNature || "Unspecified";
+        if (c.date >= periods.currentMonthStart && c.date <= periods.currentMonthEnd) {
+          natureCurrent[nature] = (natureCurrent[nature] || 0) + 1;
+        }
+        if (c.date >= periods.lastMonthStart && c.date <= periods.lastMonthEnd) {
+          natureLast[nature] = (natureLast[nature] || 0) + 1;
+        }
+      });
+      
+      const natureData = [["Complaint Nature", periods.lastMonthName, periods.currentMonthName, "Difference", "Change %"]];
+      Object.keys({...natureCurrent, ...natureLast}).sort().forEach(nature => {
+        const current = natureCurrent[nature] || 0;
+        const last = natureLast[nature] || 0;
+        const diff = current - last;
+        const changePct = last ? ((diff / last) * 100).toFixed(1) : (current ? 100 : 0);
+        natureData.push([nature, last, current, diff, changePct + "%"]);
+      });
+      const ws3 = XLSX.utils.aoa_to_sheet(natureData);
+      XLSX.utils.book_append_sheet(wb, ws3, "Nature Comparison");
+      
+      XLSX.writeFile(wb, "complaint_dashboard_" + todayISO() + ".xlsx");
+    }
+
+    function exportComplaintDashboardPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('l', 'mm', 'a4');
+      const periods = getLastMonthSamePeriod(document.getElementById("complaintComparisonDate")?.value || todayISO());
+      
+      // Title
+      doc.setFontSize(16);
+      doc.text("Complaint Dashboard Report", 14, 20);
+      doc.setFontSize(10);
+      doc.text("Generated: " + new Date().toLocaleString(), 14, 28);
+      doc.text("Period: " + periods.currentMonthName + " vs " + periods.lastMonthName, 14, 34);
+      
+      // KPI Summary
+      const allComplaints = userScopedComplaints();
+      doc.setFontSize(12);
+      doc.text("Summary", 14, 45);
+      doc.setFontSize(10);
+      doc.text("Total: " + allComplaints.length, 14, 52);
+      doc.text("Open: " + allComplaints.filter(c => c.status === "Open").length, 60, 52);
+      doc.text("In Progress: " + allComplaints.filter(c => c.status === "In Progress").length, 110, 52);
+      doc.text("Closed: " + allComplaints.filter(c => c.status === "Closed").length, 170, 52);
+      
+      // Train Comparison Table
+      const trainCurrent = {};
+      const trainLast = {};
+      
+      allComplaints.forEach(c => {
+        if (c.date >= periods.currentMonthStart && c.date <= periods.currentMonthEnd) {
+          trainCurrent[c.trainName] = (trainCurrent[c.trainName] || 0) + 1;
+        }
+        if (c.date >= periods.lastMonthStart && c.date <= periods.lastMonthEnd) {
+          trainLast[c.trainName] = (trainLast[c.trainName] || 0) + 1;
+        }
+      });
+      
+      const trainTableData = Object.keys({...trainCurrent, ...trainLast}).sort().map(train => {
+        const current = trainCurrent[train] || 0;
+        const last = trainLast[train] || 0;
+        return [train, last.toString(), current.toString(), (current - last).toString()];
+      });
+      
+      doc.autoTable({
+        startY: 60,
+        head: [["Train Name", periods.lastMonthName, periods.currentMonthName, "Difference"]],
+        body: trainTableData,
+        theme: 'grid',
+        headStyles: { fillColor: [0, 95, 115] }
+      });
+      
+      doc.save("complaint_dashboard_" + todayISO() + ".pdf");
     }
 
     function downloadBackup() { downloadText(JSON.stringify(state, null, 2), "rk_group_system_backup_" + todayISO() + ".json", "application/json"); }
