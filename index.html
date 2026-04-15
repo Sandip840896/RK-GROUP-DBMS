@@ -14,16 +14,31 @@
   <style>
     * { box-sizing: border-box; }
     body { font-family: 'Inter', sans-serif; margin: 0; background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #e0f2fe 100%); min-height: 100vh; color: #1e293b; }
+    
+    /* Train Animation Background */
     .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%); position: relative; overflow: hidden; }
     .login-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>'); background-size: 50px 50px; animation: moveBackground 20s linear infinite; }
     @keyframes moveBackground { 0% { transform: translate(0, 0); } 100% { transform: translate(50px, 50px); } }
+    
+    /* Moving Train Animation */
+    .train-animation { position: absolute; bottom: 50px; left: -300px; animation: trainMove 15s linear infinite; opacity: 0.3; }
+    @keyframes trainMove { 0% { left: -300px; } 100% { left: 100%; } }
+    .train-icon-anim { font-size: 80px; color: rgba(255,255,255,0.4); }
+    
+    /* Track Lines */
+    .track-lines { position: absolute; bottom: 30px; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 30px, transparent 30px, transparent 40px); }
+    
     .login-box { background: rgba(255, 255, 255, 0.98); border-radius: 20px; padding: 40px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.3); position: relative; z-index: 1; }
     .login-logo { text-align: center; margin-bottom: 30px; }
-    .login-logo .train-icon { font-size: 56px; color: #0284c7; margin-bottom: 15px; }
+    .login-logo .train-icon { font-size: 56px; color: #0284c7; margin-bottom: 15px; animation: trainBounce 2s ease-in-out infinite; }
+    @keyframes trainBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
     .login-logo h1 { font-size: 32px; font-weight: 700; color: #0369a1; margin: 0; letter-spacing: -0.5px; }
     .login-logo p { color: #64748b; margin-top: 8px; font-size: 14px; }
     .login-logo .developer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; }
     .login-logo .developer strong { color: #0284c7; }
+    .login-logo .support { margin-top: 10px; font-size: 11px; color: #94a3b8; }
+    .login-logo .support i { color: #22c55e; }
+    
     .form-group { margin-bottom: 20px; }
     .form-group label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: #475569; }
     .form-group input, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; background: #fff; color: #1e293b; transition: all 0.3s; }
@@ -44,7 +59,7 @@
     .sidebar { width: 260px; background: #fff; border-right: 1px solid #e2e8f0; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 100; box-shadow: 4px 0 20px rgba(0,0,0,0.05); }
     .sidebar-header { padding: 20px; border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); }
     .sidebar-header .logo { display: flex; align-items: center; gap: 12px; }
-    .sidebar-header .logo i { font-size: 28px; color: #fff; }
+    .sidebar-header .logo i { font-size: 28px; color: #fff; animation: trainBounce 2s ease-in-out infinite; }
     .sidebar-header .logo span { font-size: 18px; font-weight: 700; color: #fff; }
     .sidebar-header .user-info { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); }
     .sidebar-header .user-info .name { font-size: 14px; font-weight: 600; color: #fff; }
@@ -159,6 +174,43 @@
     .shortage-alert { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px; margin: 16px 0; }
     .shortage-alert h4 { color: #dc2626; margin: 0 0 8px 0; }
     .shortage-alert p { color: #7f1d1d; margin: 0; font-size: 14px; }
+    
+    /* GP Warning Modal Styles */
+    .gp-warning-modal { max-width: 450px; }
+    .gp-warning-icon { font-size: 48px; color: #f59e0b; text-align: center; margin-bottom: 16px; }
+    .gp-warning-text { text-align: center; color: #92400e; margin-bottom: 20px; }
+    .gp-warning-text strong { color: #dc2626; font-size: 18px; }
+    
+    /* High complaint highlighting */
+    .high-complaint { background: #fef2f2 !important; }
+    .high-complaint td { color: #dc2626; font-weight: 600; }
+    
+    /* Nature tag styles */
+    .nature-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+    .nature-food { background: #fef3c7; color: #92400e; }
+    .nature-service { background: #e0f2fe; color: #075985; }
+    .nature-billing { background: #fee2e2; color: #991b1b; }
+    .nature-cleanliness { background: #dcfce7; color: #166534; }
+    .nature-other { background: #f1f5f9; color: #475569; }
+    
+    /* Footer styles */
+    .app-footer { background: #fff; border-top: 1px solid #e2e8f0; padding: 16px 24px; margin-top: 40px; text-align: center; font-size: 12px; color: #64748b; }
+    .app-footer .developer-credit { font-weight: 600; color: #0284c7; }
+    .app-footer .support-info { margin-top: 4px; }
+    .app-footer .support-info i { color: #22c55e; }
+    
+    /* Master data warning */
+    .master-warning { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+    .master-warning i { color: #f59e0b; font-size: 20px; }
+    
+    /* Current month target display */
+    .current-target-display { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1px solid #7dd3fc; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+    .current-target-display h4 { margin: 0 0 12px 0; color: #0369a1; font-size: 14px; }
+    .target-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .target-item { text-align: center; }
+    .target-value { font-size: 20px; font-weight: 700; color: #0284c7; }
+    .target-label { font-size: 11px; color: #64748b; }
+    
     @media (max-width: 1024px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 768px) { .sidebar { width: 100%; transform: translateX(-100%); transition: transform 0.3s; } .sidebar.open { transform: translateX(0); } .main-content { margin-left: 0; } .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
   </style>
@@ -167,6 +219,12 @@
 <body>
   <!-- Login Screen -->
   <div id="loginScreen" class="login-container">
+    <!-- Animated Train -->
+    <div class="train-animation">
+      <i class="fas fa-train train-icon-anim"></i>
+    </div>
+    <div class="track-lines"></div>
+    
     <div class="login-box">
       <div class="login-logo">
         <div class="train-icon"><i class="fas fa-train"></i></div>
@@ -175,6 +233,9 @@
         <p style="font-size: 11px; color: #64748b; margin-top: 4px;">Serving Indian Railways Since 1964</p>
         <div class="developer">
           <i class="fas fa-code"></i> Developed by <strong>Sandip Nandi</strong>
+        </div>
+        <div class="support">
+          <i class="fas fa-headset"></i> Support: <strong>+91 98765 43210</strong> | <strong>sandipnandi2000@gmail.com</strong>
         </div>
       </div>
       <div id="loginError" class="alert alert-error hidden"></div>
@@ -453,7 +514,12 @@
           <!-- Top/Bottom 10 Tables -->
           <div class="grid grid-2" style="margin-top: 20px;">
             <div class="card">
-              <h3 class="card-title">Top 10 Train Performance</h3>
+              <div class="card-header">
+                <h3 class="card-title">Top 10 Train Performance</h3>
+                <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('topTrainTable', 'top_trains')">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+              </div>
               <div class="table-container">
                 <table id="topTrainTable">
                   <thead>
@@ -470,7 +536,12 @@
               </div>
             </div>
             <div class="card">
-              <h3 class="card-title">Bottom 10 Train Performance</h3>
+              <div class="card-header">
+                <h3 class="card-title">Bottom 10 Train Performance</h3>
+                <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('bottomTrainTable', 'bottom_trains')">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+              </div>
               <div class="table-container">
                 <table id="bottomTrainTable">
                   <thead>
@@ -493,8 +564,11 @@
             <div class="card-header">
               <div>
                 <h3 class="card-title">Month-over-Month (MOM) Comparison</h3>
-                <p class="card-subtitle">Compare current month MTD vs previous month same period</p>
+                <p class="card-subtitle">Sorted by GP Growth (Highest to Lowest)</p>
               </div>
+              <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('momTable', 'mom_comparison')">
+                <i class="fas fa-file-excel"></i> Excel
+              </button>
             </div>
             <div class="table-container">
               <table id="momTable">
@@ -521,6 +595,9 @@
                 <h3 class="card-title">Train Rank Table</h3>
                 <p class="card-subtitle">Ranking based on: Sales Target % (Below 70%=1, 70-80%=2, 80-90%=3, Above 90%=4) + GP Target % (same scale) + Cash Deposit (0 or 1) + Complaints (0 or 1). Max 10 marks.</p>
               </div>
+              <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('rankTable', 'train_ranking')">
+                <i class="fas fa-file-excel"></i> Excel
+              </button>
             </div>
             <div class="table-container">
               <table id="rankTable">
@@ -565,7 +642,12 @@
                 </button>
               </div>
             </div>
-            <div class="filter-row">
+            
+            <!-- Current Period Filters -->
+            <div class="filter-row" style="background: #f0f9ff;">
+              <div style="width: 100%; margin-bottom: 8px; font-weight: 600; color: #0369a1;">
+                <i class="fas fa-calendar-alt"></i> Current Period
+              </div>
               <div class="filter-item">
                 <label>From Date</label>
                 <input type="date" id="compDashFromDate" onchange="loadComplaintDashboard()">
@@ -596,13 +678,18 @@
                 </select>
               </div>
             </div>
-            <div class="filter-row" style="margin-top: 12px; background: #fffbeb;">
+            
+            <!-- Comparison Period Filters -->
+            <div class="filter-row" style="background: #fffbeb; margin-top: 12px;">
+              <div style="width: 100%; margin-bottom: 8px; font-weight: 600; color: #92400e;">
+                <i class="fas fa-exchange-alt"></i> Comparison Period
+              </div>
               <div class="filter-item">
-                <label>Compare Range From</label>
+                <label>Compare From</label>
                 <input type="date" id="compCompareFrom" onchange="loadComplaintDashboard()">
               </div>
               <div class="filter-item">
-                <label>Compare Range To</label>
+                <label>Compare To</label>
                 <input type="date" id="compCompareTo" onchange="loadComplaintDashboard()">
               </div>
               <div class="filter-item" style="justify-content: flex-end; display: flex; align-items: flex-end;">
@@ -611,6 +698,7 @@
                 </button>
               </div>
             </div>
+            
             <div id="compChartFilterDisplay" style="margin-top: 8px; font-size: 12px; color: #0284c7; display: none;">
               <i class="fas fa-filter"></i> <span id="compChartFilterText"></span> 
               <button class="btn btn-sm" style="margin-left: 8px; padding: 2px 8px; font-size: 11px;" onclick="clearCompChartFilter()">Clear</button>
@@ -620,7 +708,7 @@
           <!-- KPI Cards -->
           <div class="grid grid-4">
             <div class="kpi-card info">
-              <div class="kpi-label">Total Complaints</div>
+              <div class="kpi-label">Total Complaints (Filtered)</div>
               <div class="kpi-value" id="compKpiTotal">0</div>
               <div class="kpi-sub">Filtered complaint records</div>
             </div>
@@ -630,21 +718,21 @@
               <div class="kpi-sub" id="compKpiCurrentRange">-</div>
             </div>
             <div class="kpi-card success">
-              <div class="kpi-label">Last Month Same Period</div>
+              <div class="kpi-label">Comparison Period</div>
               <div class="kpi-value" id="compKpiPrevious">0</div>
               <div class="kpi-sub" id="compKpiPreviousRange">-</div>
             </div>
             <div class="kpi-card" id="compKpiVarianceCard">
               <div class="kpi-label">Variance</div>
               <div class="kpi-value" id="compKpiVariance">0</div>
-              <div class="kpi-sub">Current minus previous</div>
+              <div class="kpi-sub">Current minus comparison</div>
             </div>
           </div>
 
-          <!-- Charts -->
+          <!-- Charts Row 1 -->
           <div class="grid grid-2" style="margin-top: 20px;">
             <div class="card" id="complaintTrendCard">
-              <h3 class="card-title">Daily Complaint Trend (Current vs Previous) <small style="font-size: 11px; color: #64748b;">- Click to filter</small></h3>
+              <h3 class="card-title">Daily Complaint Trend <small style="font-size: 11px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="complaintTrendChart"></canvas>
               </div>
@@ -657,6 +745,7 @@
             </div>
           </div>
 
+          <!-- Charts Row 2 -->
           <div class="grid grid-2" style="margin-top: 20px;">
             <div class="card" id="complaintTrainCard">
               <h3 class="card-title">Train-wise Comparison (Top 12) <small style="font-size: 11px; color: #64748b;">- Click to filter</small></h3>
@@ -672,17 +761,38 @@
             </div>
           </div>
 
+          <!-- Manager-wise Complaint % Chart -->
+          <div class="card" style="margin-top: 20px;">
+            <h3 class="card-title">Manager-wise Complaint Percentage <small style="font-size: 11px; color: #64748b;">- Shows complaint count as % of total</small></h3>
+            <div class="chart-container">
+              <canvas id="managerComplaintChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Nature-wise Analysis Chart -->
+          <div class="card" style="margin-top: 20px;">
+            <h3 class="card-title">Nature-wise Complaint Analysis <small style="font-size: 11px; color: #64748b;">- Current vs Comparison Period</small></h3>
+            <div class="chart-container">
+              <canvas id="natureAnalysisChart"></canvas>
+            </div>
+          </div>
+
           <!-- Comparison Tables -->
           <div class="grid grid-2" style="margin-top: 20px;">
             <div class="card">
-              <h3 class="card-title">Train-wise Complaint Count: Current vs Last Month Same Period</h3>
+              <div class="card-header">
+                <h3 class="card-title">Train-wise Complaint Count</h3>
+                <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('compTrainTable', 'train_complaint_comparison')">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+              </div>
               <div class="table-container">
                 <table id="compTrainTable" class="comparison-table">
                   <thead>
                     <tr>
                       <th>Train Name</th>
                       <th>Current Period</th>
-                      <th>Previous Period</th>
+                      <th>Comparison Period</th>
                       <th>Variance</th>
                     </tr>
                   </thead>
@@ -691,14 +801,19 @@
               </div>
             </div>
             <div class="card">
-              <h3 class="card-title">Complaint Nature Comparison</h3>
+              <div class="card-header">
+                <h3 class="card-title">Complaint Nature Comparison</h3>
+                <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('compNatureTable', 'nature_comparison')">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+              </div>
               <div class="table-container">
                 <table id="compNatureTable" class="comparison-table">
                   <thead>
                     <tr>
                       <th>Complaint Nature</th>
                       <th>Current Period</th>
-                      <th>Previous Period</th>
+                      <th>Comparison Period</th>
                       <th>Variance</th>
                     </tr>
                   </thead>
@@ -808,13 +923,13 @@
 
               <div class="form-row">
                 <div class="form-field" style="grid-column: 1 / -1;">
-                  <label>Remarks</label>
+                  <label>Remarks <span id="remarksRequired" style="color: #dc2626; display: none;">* Required (GP < 100%)</span></label>
                   <textarea id="salesRemarks" rows="2" placeholder="Enter any remarks..."></textarea>
                 </div>
               </div>
 
               <div style="display: flex; gap: 12px; margin-top: 20px;">
-                <button class="btn btn-primary" onclick="saveSalesEntry()">
+                <button class="btn btn-primary" onclick="validateAndSaveSalesEntry()">
                   <i class="fas fa-save"></i> Save Entry
                 </button>
                 <button class="btn btn-secondary" onclick="clearSalesForm()">
@@ -934,11 +1049,15 @@
                 </div>
                 <div class="form-field">
                   <label>Train Name *</label>
-                  <input type="text" id="complaintTrainName">
+                  <div class="searchable-select">
+                    <input type="text" id="complaintTrainSearch" placeholder="Search train..." oninput="filterComplaintTrains(this.value)" onfocus="showComplaintTrainDropdown()">
+                    <input type="hidden" id="complaintTrainName">
+                    <div class="searchable-dropdown" id="complaintTrainDropdown"></div>
+                  </div>
                 </div>
                 <div class="form-field">
                   <label>Train Type</label>
-                  <input type="text" id="complaintTrainType">
+                  <input type="text" id="complaintTrainType" readonly>
                 </div>
                 <div class="form-field">
                   <label>Yard</label>
@@ -960,15 +1079,39 @@
                   <input type="text" id="complaintPnr">
                 </div>
                 <div class="form-field">
-                  <label>Complaint Type</label>
-                  <input type="text" id="complaintType" placeholder="e.g., Overcharging, Quality">
+                  <label>Complaint Type *</label>
+                  <select id="complaintType">
+                    <option value="">Select Type</option>
+                    <option>Overcharging</option>
+                    <option>Food Quality</option>
+                    <option>Service Issue</option>
+                    <option>Cleanliness</option>
+                    <option>Staff Behavior</option>
+                    <option>Availability</option>
+                    <option>Other</option>
+                  </select>
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-field" style="grid-column: 1 / -1;">
                   <label>Complaint Nature *</label>
-                  <input type="text" id="complaintNature" placeholder="e.g., Food Quality, Service Issue">
+                  <select id="complaintNature">
+                    <option value="">Select Nature</option>
+                    <option>Food Quality - Stale Food</option>
+                    <option>Food Quality - Taste Issue</option>
+                    <option>Food Quality - Wrong Item</option>
+                    <option>Service - Delayed Service</option>
+                    <option>Service - Unavailable Items</option>
+                    <option>Service - Wrong Order</option>
+                    <option>Billing - Overcharged</option>
+                    <option>Billing - No Bill Provided</option>
+                    <option>Cleanliness - Unhygienic</option>
+                    <option>Cleanliness - Pest Issue</option>
+                    <option>Staff Behavior - Rude</option>
+                    <option>Staff Behavior - Unprofessional</option>
+                    <option>Other</option>
+                  </select>
                 </div>
               </div>
 
@@ -1148,6 +1291,9 @@
                 <h3 class="card-title">Manager-wise Cash Deposit Summary</h3>
                 <p class="card-subtitle">GP Achievement vs Cash Deposit comparison</p>
               </div>
+              <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('managerCashTable', 'manager_cash_summary')">
+                <i class="fas fa-file-excel"></i> Excel
+              </button>
             </div>
             <div class="table-container">
               <table id="managerCashTable">
@@ -1317,6 +1463,38 @@
 
         <!-- Master Data Page -->
         <div id="page-masters" class="page-content hidden">
+          <!-- Current Month Target Display -->
+          <div id="masterTargetDisplay" class="current-target-display">
+            <h4><i class="fas fa-bullseye"></i> Current Month Targets (<span id="currentMonthName"></span>)</h4>
+            <div class="target-grid">
+              <div class="target-item">
+                <div class="target-value" id="totalSalesTarget">₹0</div>
+                <div class="target-label">Total Sales Target</div>
+              </div>
+              <div class="target-item">
+                <div class="target-value" id="totalGpTarget">₹0</div>
+                <div class="target-label">Total GP Target</div>
+              </div>
+              <div class="target-item">
+                <div class="target-value" id="totalTrainsCount">0</div>
+                <div class="target-label">Total Trains</div>
+              </div>
+              <div class="target-item">
+                <div class="target-value" id="yardsCount">0</div>
+                <div class="target-label">Yards</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- No Data Warning -->
+          <div id="noMasterDataWarning" class="master-warning hidden">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+              <strong>No Master Data Found!</strong>
+              <p style="margin: 4px 0 0 0; font-size: 13px;">Please import or add train master data to start using the system.</p>
+            </div>
+          </div>
+
           <div class="card">
             <div class="card-header">
               <div>
@@ -1433,7 +1611,12 @@
           </div>
 
           <div class="card">
-            <h3 class="card-title">Train Master List</h3>
+            <div class="card-header">
+              <h3 class="card-title">Train Master List</h3>
+              <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('masterTable', 'train_master_list')">
+                <i class="fas fa-file-excel"></i> Excel
+              </button>
+            </div>
             <div class="table-container">
               <table id="masterTable">
                 <thead>
@@ -1638,6 +1821,19 @@
           </div>
         </div>
       </div>
+
+      <!-- Footer -->
+      <div class="app-footer">
+        <div class="developer-credit">
+          <i class="fas fa-code"></i> Developed by Sandip Nandi
+        </div>
+        <div class="support-info">
+          <i class="fas fa-headset"></i> Support: +91 98765 43210 | sandipnandi2000@gmail.com
+        </div>
+        <div style="margin-top: 8px; color: #94a3b8;">
+          © 2024 RK Group - Railway Catering Management System
+        </div>
+      </div>
     </main>
   </div>
 
@@ -1649,6 +1845,39 @@
         <button class="modal-close" onclick="closeModal()">&times;</button>
       </div>
       <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- GP Warning Modal -->
+  <div id="gpWarningModal" class="modal-overlay">
+    <div class="modal gp-warning-modal">
+      <div class="gp-warning-icon">
+        <i class="fas fa-exclamation-circle"></i>
+      </div>
+      <div class="gp-warning-text">
+        <p>GP Achievement is <strong id="gpWarningPct">0%</strong></p>
+        <p style="font-size: 14px; margin-top: 8px;">This is below the 95% threshold. Please provide approval details.</p>
+      </div>
+      <div class="form-row">
+        <div class="form-field" style="grid-column: 1 / -1;">
+          <label>Approved By *</label>
+          <input type="text" id="gpApprovedBy" placeholder="Enter approver name">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field" style="grid-column: 1 / -1;">
+          <label>Remarks *</label>
+          <textarea id="gpApprovalRemarks" rows="2" placeholder="Enter approval remarks..."></textarea>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <button class="btn btn-primary" onclick="confirmGpApproval()" style="flex: 1;">
+          <i class="fas fa-check"></i> Confirm & Save
+        </button>
+        <button class="btn btn-secondary" onclick="closeGpWarningModal()" style="flex: 1;">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1668,6 +1897,23 @@
       cash: []
     };
 
+    // Complaint nature categories for analysis
+    const COMPLAINT_NATURE_CATEGORIES = {
+      'Food Quality - Stale Food': 'Food Quality',
+      'Food Quality - Taste Issue': 'Food Quality',
+      'Food Quality - Wrong Item': 'Food Quality',
+      'Service - Delayed Service': 'Service',
+      'Service - Unavailable Items': 'Service',
+      'Service - Wrong Order': 'Service',
+      'Billing - Overcharged': 'Billing',
+      'Billing - No Bill Provided': 'Billing',
+      'Cleanliness - Unhygienic': 'Cleanliness',
+      'Cleanliness - Pest Issue': 'Cleanliness',
+      'Staff Behavior - Rude': 'Staff Behavior',
+      'Staff Behavior - Unprofessional': 'Staff Behavior',
+      'Other': 'Other'
+    };
+
     let appData = {};
     let currentUser = null;
     let editingId = null;
@@ -1677,6 +1923,7 @@
     let gpBucketFilter = null;
     let chartFilter = { type: null, value: null };
     let compChartFilter = { type: null, value: null };
+    let pendingSalesEntry = null;
 
     // Role permissions
     const ROLE_PERMISSIONS = {
@@ -1934,7 +2181,7 @@
     }
 
     function populateComplaintDashboardFilters() {
-      const trains = [...new Set(appData.complaints.map(c => c.trainName))].filter(Boolean).sort();
+      const trains = [...new Set(appData.trainMasters.map(t => t.trainName))].filter(Boolean).sort();
       const yards = appData.yards || [];
 
       const trainSelect = document.getElementById('compDashTrainFilter');
@@ -1994,8 +2241,14 @@
       const yesterday = new Date(now);
       yesterday.setDate(yesterday.getDate() - 1);
       
-      document.getElementById('compCompareFrom').value = currentMonthStart.toISOString().split('T')[0];
-      document.getElementById('compCompareTo').value = yesterday.toISOString().split('T')[0];
+      // Calculate same period last month
+      const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastMonthEnd = new Date(now.getFullYear(), now.getMonth() - 1, yesterday.getDate());
+      
+      document.getElementById('compDashFromDate').value = currentMonthStart.toISOString().split('T')[0];
+      document.getElementById('compDashToDate').value = yesterday.toISOString().split('T')[0];
+      document.getElementById('compCompareFrom').value = lastMonthStart.toISOString().split('T')[0];
+      document.getElementById('compCompareTo').value = lastMonthEnd.toISOString().split('T')[0];
       
       loadComplaintDashboard();
     }
@@ -2022,9 +2275,19 @@
       const salesAchievement = sales.reduce((sum, s) => sum + (Number(s.salesAchievement) || 0), 0);
       const gpTarget = sales.reduce((sum, s) => sum + (Number(s.gpTarget) || 0), 0);
       const gpAchievement = sales.reduce((sum, s) => sum + (Number(s.gpAchievement) || 0), 0);
-      const openComplaints = complaints.filter(c => c.status === 'Open').length;
-      const closedComplaints = complaints.filter(c => c.status === 'Closed').length;
-      const totalComplaints = complaints.length;
+      
+      // Get all complaints for the filtered date range (not just filtered by other criteria)
+      const dashFromDate = document.getElementById('dashFromDate')?.value;
+      const dashToDate = document.getElementById('dashToDate')?.value;
+      let allComplaints = [...(appData.complaints || [])];
+      if (dashFromDate) allComplaints = allComplaints.filter(c => c.date >= dashFromDate);
+      if (dashToDate) allComplaints = allComplaints.filter(c => c.date <= dashToDate);
+      if (currentUser.yard !== 'ALL') allComplaints = allComplaints.filter(c => c.yard === currentUser.yard);
+      
+      const openComplaints = allComplaints.filter(c => c.status === 'Open').length;
+      const closedComplaints = allComplaints.filter(c => c.status === 'Closed').length;
+      const totalComplaints = allComplaints.length;
+      
       const bankDeposit = cash.reduce((sum, c) => sum + (Number(c.totalDeposit) || 0), 0);
       const cashCounter = cash.reduce((sum, c) => sum + (Number(c.cashDepositCounter) || 0), 0);
       const onlineDeposit = cash.reduce((sum, c) => sum + (Number(c.onlineDeposit) || 0), 0);
@@ -2067,7 +2330,7 @@
       // Render tables
       renderTopBottomTables(sales);
       renderMOMTable(sales);
-      renderRankTable(sales, complaints, cash);
+      renderRankTable(sales, allComplaints, cash);
 
       // Update filter displays
       updateActiveFiltersDisplay();
@@ -2140,6 +2403,7 @@
         </div>
       `).join('');
     }
+
 
     // ==================== CHART RENDERING WITH INTERACTIVITY ====================
     function renderSalesTrendChart(sales) {
@@ -2469,12 +2733,16 @@
       currentMTD.forEach(s => { if (trainMap[s.trainName]) { trainMap[s.trainName].currentSales += Number(s.salesAchievement) || 0; trainMap[s.trainName].currentGP += Number(s.gpAchievement) || 0; }});
       prevMTD.forEach(s => { if (trainMap[s.trainName]) { trainMap[s.trainName].prevSales += Number(s.salesAchievement) || 0; trainMap[s.trainName].prevGP += Number(s.gpAchievement) || 0; }});
 
+      // Sort by GP variance (highest growth first)
       const rows = Object.entries(trainMap).map(([name, data]) => ({
-        name, currentSales: data.currentSales, prevSales: data.prevSales,
+        name, 
+        currentSales: data.currentSales, 
+        prevSales: data.prevSales,
         salesVariance: data.currentSales - data.prevSales,
-        currentGP: data.currentGP, prevGP: data.prevGP,
+        currentGP: data.currentGP, 
+        prevGP: data.prevGP,
         gpVariance: data.currentGP - data.prevGP
-      }));
+      })).sort((a, b) => b.gpVariance - a.gpVariance);
 
       document.getElementById('momTableBody').innerHTML = rows.map(r => `
         <tr>
@@ -2536,51 +2804,60 @@
       `).join('');
     }
 
+
     // ==================== COMPLAINT DASHBOARD ====================
     function loadComplaintDashboard() {
       const complaints = getFilteredComplaints();
       const compareFrom = document.getElementById('compCompareFrom')?.value;
       const compareTo = document.getElementById('compCompareTo')?.value;
+      const currentFrom = document.getElementById('compDashFromDate')?.value;
+      const currentTo = document.getElementById('compDashToDate')?.value;
 
-      let currentFrom, currentTo, prevFrom, prevTo;
+      let currentPeriod, comparisonPeriod;
       
-      if (compareFrom && compareTo) {
-        currentFrom = new Date(compareFrom);
-        currentTo = new Date(compareTo);
-        const daysDiff = Math.ceil((currentTo - currentFrom) / (1000 * 60 * 60 * 24));
-        prevFrom = new Date(currentFrom);
-        prevFrom.setMonth(prevFrom.getMonth() - 1);
-        prevTo = new Date(prevFrom);
-        prevTo.setDate(prevTo.getDate() + daysDiff);
+      // Use the two separate date ranges
+      if (currentFrom && currentTo) {
+        currentPeriod = complaints.filter(c => c.date >= currentFrom && c.date <= currentTo);
       } else {
+        // Default to current month MTD
         const now = new Date();
-        currentFrom = new Date(now.getFullYear(), now.getMonth(), 1);
-        currentTo = new Date(now);
-        currentTo.setDate(currentTo.getDate() - 1);
-        prevFrom = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        prevTo = new Date(now.getFullYear(), now.getMonth() - 1, currentTo.getDate());
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+        const yesterday = new Date(now);
+        yesterday.setDate(yesterday.getDate() - 1);
+        currentPeriod = complaints.filter(c => c.date >= monthStart && c.date <= yesterday.toISOString().split('T')[0]);
       }
 
-      const currentPeriod = complaints.filter(c => { const d = new Date(c.date); return d >= currentFrom && d <= currentTo; });
-      const prevPeriod = complaints.filter(c => { const d = new Date(c.date); return d >= prevFrom && d <= prevTo; });
+      if (compareFrom && compareTo) {
+        comparisonPeriod = complaints.filter(c => c.date >= compareFrom && c.date <= compareTo);
+      } else {
+        // Default to last month same period
+        const now = new Date();
+        const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString().split('T')[0];
+        const lastMonthEnd = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate() - 1).toISOString().split('T')[0];
+        comparisonPeriod = complaints.filter(c => c.date >= lastMonthStart && c.date <= lastMonthEnd);
+      }
 
-      const variance = currentPeriod.length - prevPeriod.length;
+      const variance = currentPeriod.length - comparisonPeriod.length;
 
       document.getElementById('compKpiTotal').textContent = complaints.length;
       document.getElementById('compKpiCurrent').textContent = currentPeriod.length;
-      document.getElementById('compKpiCurrentRange').textContent = currentFrom.toISOString().split('T')[0] + ' to ' + currentTo.toISOString().split('T')[0];
-      document.getElementById('compKpiPrevious').textContent = prevPeriod.length;
-      document.getElementById('compKpiPreviousRange').textContent = prevFrom.toISOString().split('T')[0] + ' to ' + prevTo.toISOString().split('T')[0];
+      document.getElementById('compKpiCurrentRange').textContent = currentFrom && currentTo ? 
+        `${currentFrom} to ${currentTo}` : 'Current Month MTD';
+      document.getElementById('compKpiPrevious').textContent = comparisonPeriod.length;
+      document.getElementById('compKpiPreviousRange').textContent = compareFrom && compareTo ? 
+        `${compareFrom} to ${compareTo}` : 'Last Month Same Period';
       document.getElementById('compKpiVariance').textContent = (variance >= 0 ? '+' : '') + variance;
       
       const varianceCard = document.getElementById('compKpiVarianceCard');
       varianceCard.className = 'kpi-card ' + (variance > 0 ? 'danger' : variance < 0 ? 'success' : 'info');
 
-      renderComplaintTrendChart(currentPeriod, prevPeriod);
-      renderComplaintStatusChart(currentPeriod, prevPeriod);
-      renderComplaintTrainChart(currentPeriod, prevPeriod);
+      renderComplaintTrendChart(currentPeriod, comparisonPeriod);
+      renderComplaintStatusChart(currentPeriod, comparisonPeriod);
+      renderComplaintTrainChart(currentPeriod, comparisonPeriod);
       renderComplaintSourceChart(complaints);
-      renderComplaintComparisonTables(currentPeriod, prevPeriod);
+      renderManagerComplaintChart(currentPeriod, comparisonPeriod);
+      renderNatureAnalysisChart(currentPeriod, comparisonPeriod);
+      renderComplaintComparisonTables(currentPeriod, comparisonPeriod);
       updateCompChartFilterDisplay();
     }
 
@@ -2610,7 +2887,7 @@
           labels: allDates,
           datasets: [
             { label: 'Current Period', data: allDates.map(d => currentByDate[d] || 0), borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.4 },
-            { label: 'Last Month Same Period', data: allDates.map(d => prevByDate[d] || 0), borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', fill: true, tension: 0.4 }
+            { label: 'Comparison Period', data: allDates.map(d => prevByDate[d] || 0), borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', fill: true, tension: 0.4 }
           ]
         },
         options: {
@@ -2647,7 +2924,7 @@
           labels: statuses,
           datasets: [
             { label: 'Current Period', data: currentCounts, backgroundColor: '#0ea5e9', borderRadius: 6 },
-            { label: 'Last Month Same Period', data: prevCounts, backgroundColor: '#f59e0b', borderRadius: 6 }
+            { label: 'Comparison Period', data: prevCounts, backgroundColor: '#f59e0b', borderRadius: 6 }
           ]
         },
         options: {
@@ -2687,7 +2964,7 @@
           labels: sorted.map(t => t[0]),
           datasets: [
             { label: 'Current', data: sorted.map(t => t[1].current), backgroundColor: '#ef4444', borderRadius: 6 },
-            { label: 'Previous', data: sorted.map(t => t[1].prev), backgroundColor: '#22c55e', borderRadius: 6 }
+            { label: 'Comparison', data: sorted.map(t => t[1].prev), backgroundColor: '#22c55e', borderRadius: 6 }
           ]
         },
         options: {
@@ -2743,16 +3020,140 @@
       });
     }
 
+    function renderManagerComplaintChart(current, prev) {
+      const ctx = document.getElementById('managerComplaintChart');
+      if (!ctx) return;
+
+      // Get manager-wise complaint counts
+      const managerMap = {};
+      const allComplaints = [...current, ...prev];
+      
+      allComplaints.forEach(c => {
+        // Find train manager from train master
+        const train = appData.trainMasters.find(t => t.trainName === c.trainName);
+        const manager = train?.trainManager || 'Unassigned';
+        if (!managerMap[manager]) managerMap[manager] = { current: 0, prev: 0 };
+      });
+
+      current.forEach(c => {
+        const train = appData.trainMasters.find(t => t.trainName === c.trainName);
+        const manager = train?.trainManager || 'Unassigned';
+        if (managerMap[manager]) managerMap[manager].current++;
+      });
+
+      prev.forEach(c => {
+        const train = appData.trainMasters.find(t => t.trainName === c.trainName);
+        const manager = train?.trainManager || 'Unassigned';
+        if (managerMap[manager]) managerMap[manager].prev++;
+      });
+
+      // Calculate percentages
+      const currentTotal = current.length || 1;
+      const prevTotal = prev.length || 1;
+      const managers = Object.keys(managerMap);
+
+      if (charts.managerComplaint) charts.managerComplaint.destroy();
+      charts.managerComplaint = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: managers,
+          datasets: [
+            { 
+              label: 'Current Period %', 
+              data: managers.map(m => Math.round((managerMap[m].current / currentTotal) * 100)), 
+              backgroundColor: '#0ea5e9', 
+              borderRadius: 6 
+            },
+            { 
+              label: 'Comparison Period %', 
+              data: managers.map(m => Math.round((managerMap[m].prev / prevTotal) * 100)), 
+              backgroundColor: '#f59e0b', 
+              borderRadius: 6 
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { 
+            legend: { labels: { color: '#64748b' } },
+            tooltip: {
+              callbacks: {
+                afterLabel: function(context) {
+                  const manager = managers[context.dataIndex];
+                  const count = context.datasetIndex === 0 ? managerMap[manager].current : managerMap[manager].prev;
+                  return `Count: ${count}`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', callback: v => v + '%' } },
+            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+          }
+        }
+      });
+    }
+
+    function renderNatureAnalysisChart(current, prev) {
+      const ctx = document.getElementById('natureAnalysisChart');
+      if (!ctx) return;
+
+      // Group by nature category
+      const natureMap = {};
+      [...current, ...prev].forEach(c => {
+        const category = COMPLAINT_NATURE_CATEGORIES[c.complainNature] || 'Other';
+        if (!natureMap[category]) natureMap[category] = { current: 0, prev: 0 };
+      });
+
+      current.forEach(c => {
+        const category = COMPLAINT_NATURE_CATEGORIES[c.complainNature] || 'Other';
+        if (natureMap[category]) natureMap[category].current++;
+      });
+
+      prev.forEach(c => {
+        const category = COMPLAINT_NATURE_CATEGORIES[c.complainNature] || 'Other';
+        if (natureMap[category]) natureMap[category].prev++;
+      });
+
+      const categories = Object.keys(natureMap);
+
+      if (charts.natureAnalysis) charts.natureAnalysis.destroy();
+      charts.natureAnalysis = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: categories,
+          datasets: [
+            { label: 'Current Period', data: categories.map(c => natureMap[c].current), backgroundColor: '#ef4444', borderRadius: 6 },
+            { label: 'Comparison Period', data: categories.map(c => natureMap[c].prev), backgroundColor: '#22c55e', borderRadius: 6 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#64748b' } } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
+            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+          }
+        }
+      });
+    }
+
     function renderComplaintComparisonTables(current, prev) {
+      // Train-wise comparison - sorted by current count descending, with red highlighting for high complaints
       const trainMap = {};
       [...current, ...prev].forEach(c => { if (!trainMap[c.trainName]) trainMap[c.trainName] = { current: 0, prev: 0 }; });
       current.forEach(c => { if (trainMap[c.trainName]) trainMap[c.trainName].current++; });
       prev.forEach(c => { if (trainMap[c.trainName]) trainMap[c.trainName].prev++; });
 
-      const trainRows = Object.entries(trainMap).map(([name, data]) => ({ name, ...data, diff: data.current - data.prev })).sort((a, b) => b.current - a.current);
+      const trainRows = Object.entries(trainMap)
+        .map(([name, data]) => ({ name, ...data, diff: data.current - data.prev }))
+        .sort((a, b) => b.current - a.current);
 
+      // Highlight rows with 3+ complaints in red
       document.getElementById('compTrainTableBody').innerHTML = trainRows.map(r => `
-        <tr>
+        <tr class="${r.current >= 3 ? 'high-complaint' : ''}">
           <td>${r.name}</td>
           <td>${r.current}</td>
           <td>${r.prev}</td>
@@ -2760,15 +3161,18 @@
         </tr>
       `).join('');
 
+      // Nature-wise comparison
       const natureMap = {};
       [...current, ...prev].forEach(c => { const nature = c.complainNature || 'Unknown'; if (!natureMap[nature]) natureMap[nature] = { current: 0, prev: 0 }; });
       current.forEach(c => { if (natureMap[c.complainNature]) natureMap[c.complainNature].current++; });
       prev.forEach(c => { if (natureMap[c.complainNature]) natureMap[c.complainNature].prev++; });
 
-      const natureRows = Object.entries(natureMap).map(([name, data]) => ({ name, ...data, diff: data.current - data.prev })).sort((a, b) => b.current - a.current);
+      const natureRows = Object.entries(natureMap)
+        .map(([name, data]) => ({ name, ...data, diff: data.current - data.prev }))
+        .sort((a, b) => b.current - a.current);
 
       document.getElementById('compNatureTableBody').innerHTML = natureRows.map(r => `
-        <tr>
+        <tr class="${r.current >= 3 ? 'high-complaint' : ''}">
           <td>${r.name}</td>
           <td>${r.current}</td>
           <td>${r.prev}</td>
@@ -2776,6 +3180,7 @@
         </tr>
       `).join('');
     }
+
 
     // ==================== CASH DASHBOARD ====================
     function loadCashDashboard() {
@@ -2994,18 +3399,90 @@
       const achievement = Number(document.getElementById('salesGpAchievement').value) || 0;
       const pct = target > 0 ? Math.round((achievement / target) * 100) : 0;
       document.getElementById('salesGpAchievementPct').value = pct + '%';
+      
+      // Show/hide remarks required message
+      const remarksRequired = document.getElementById('remarksRequired');
+      if (pct < 100) {
+        remarksRequired.style.display = 'inline';
+      } else {
+        remarksRequired.style.display = 'none';
+      }
     }
 
-    function saveSalesEntry() {
+    // ==================== GP WARNING MODAL ====================
+    function validateAndSaveSalesEntry() {
       const trainId = document.getElementById('salesTrainId').value;
       const date = document.getElementById('salesDate').value;
       const salesAchievement = document.getElementById('salesAchievement').value;
       const gpAchievement = document.getElementById('salesGpAchievement').value;
+      const gpTarget = Number(document.getElementById('salesGpTarget').value) || 0;
+      const remarks = document.getElementById('salesRemarks').value.trim();
 
       if (!trainId || !date || !salesAchievement || !gpAchievement) {
         showAlert('Please fill all required fields', 'error');
         return;
       }
+
+      const gpPct = gpTarget > 0 ? (Number(gpAchievement) / gpTarget) * 100 : 0;
+
+      // Check if GP < 95% - show warning modal
+      if (gpPct < 95) {
+        document.getElementById('gpWarningPct').textContent = Math.round(gpPct) + '%';
+        document.getElementById('gpApprovedBy').value = '';
+        document.getElementById('gpApprovalRemarks').value = '';
+        document.getElementById('gpWarningModal').classList.add('active');
+        
+        // Store pending entry data
+        const train = appData.trainMasters.find(t => t.id == trainId);
+        pendingSalesEntry = {
+          trainId, date, salesAchievement, gpAchievement, train, remarks
+        };
+        return;
+      }
+
+      // Check if GP < 100% - require remarks
+      if (gpPct < 100 && !remarks) {
+        showAlert('Remarks are required when GP Achievement is below 100%', 'error');
+        document.getElementById('salesRemarks').focus();
+        return;
+      }
+
+      saveSalesEntryDirect();
+    }
+
+    function confirmGpApproval() {
+      const approvedBy = document.getElementById('gpApprovedBy').value.trim();
+      const approvalRemarks = document.getElementById('gpApprovalRemarks').value.trim();
+
+      if (!approvedBy) {
+        showAlert('Please enter approver name', 'error');
+        return;
+      }
+      if (!approvalRemarks) {
+        showAlert('Please enter approval remarks', 'error');
+        return;
+      }
+
+      // Add approval info to remarks
+      const originalRemarks = pendingSalesEntry.remarks;
+      const combinedRemarks = originalRemarks + (originalRemarks ? ' | ' : '') + 
+        `Approved by: ${approvedBy} - ${approvalRemarks}`;
+      document.getElementById('salesRemarks').value = combinedRemarks;
+
+      closeGpWarningModal();
+      saveSalesEntryDirect();
+    }
+
+    function closeGpWarningModal() {
+      document.getElementById('gpWarningModal').classList.remove('active');
+      pendingSalesEntry = null;
+    }
+
+    function saveSalesEntryDirect() {
+      const trainId = document.getElementById('salesTrainId').value;
+      const date = document.getElementById('salesDate').value;
+      const salesAchievement = document.getElementById('salesAchievement').value;
+      const gpAchievement = document.getElementById('salesGpAchievement').value;
 
       const train = appData.trainMasters.find(t => t.id == trainId);
       if (!train) { showAlert('Train not found', 'error'); return; }
@@ -3023,9 +3500,9 @@
         rakeManager: train.rakeManager,
         trainType: train.trainType,
         salesTarget: Number(train.salesTarget) || 0,
-        salesAchievement: Number(salesAchievement),
+        salesAchievement: Math.round(Number(salesAchievement)),
         gpTarget: Number(train.gpTarget) || 0,
-        gpAchievement: Number(gpAchievement),
+        gpAchievement: Math.round(Number(gpAchievement)),
         remarks: document.getElementById('salesRemarks').value
       };
 
@@ -3046,6 +3523,7 @@
     function clearSalesForm() {
       editingId = null;
       editingType = null;
+      pendingSalesEntry = null;
       document.getElementById('salesTrainId').value = '';
       document.getElementById('salesTrainSearch').value = '';
       document.getElementById('salesTrainNo').value = '';
@@ -3061,6 +3539,7 @@
       document.getElementById('salesGpAchievement').value = '';
       document.getElementById('salesGpAchievementPct').value = '';
       document.getElementById('salesRemarks').value = '';
+      document.getElementById('remarksRequired').style.display = 'none';
     }
 
     function loadSalesList() {
@@ -3134,15 +3613,43 @@
       showAlert('Entry deleted', 'success');
     }
 
+
     // ==================== COMPLAINT PAGE FUNCTIONS ====================
     function loadComplaintsPage() {
       populateYardSelects();
+      populateComplaintTrainDropdown();
       
       const trains = [...new Set(appData.complaints.map(c => c.trainName))].filter(Boolean).sort();
       document.getElementById('complaintFilterTrain').innerHTML = '<option value="">All Trains</option>' + trains.map(t => `<option value="${t}">${t}</option>`).join('');
       document.getElementById('complaintFilterYard').innerHTML = '<option value="">All Yards</option>' + (appData.yards || []).map(y => `<option value="${y}">${y}</option>`).join('');
       
       loadComplaintList();
+    }
+
+    function populateComplaintTrainDropdown() {
+      const trains = appData.trainMasters || [];
+      const dropdown = document.getElementById('complaintTrainDropdown');
+      dropdown.innerHTML = trains.map(t => `
+        <div class="searchable-dropdown-item" onclick="selectComplaintTrain('${t.id}', '${t.trainName}', '${t.trainNumber}', '${t.trainType || ''}', '${t.yard || ''}')">
+          ${t.trainName} (${t.trainNumber})
+        </div>
+      `).join('');
+    }
+
+    function filterComplaintTrains(query) {
+      const items = document.querySelectorAll('#complaintTrainDropdown .searchable-dropdown-item');
+      items.forEach(item => { item.style.display = item.textContent.toLowerCase().includes(query.toLowerCase()) ? 'block' : 'none'; });
+    }
+
+    function showComplaintTrainDropdown() { document.getElementById('complaintTrainDropdown').classList.add('active'); }
+
+    function selectComplaintTrain(id, name, number, type, yard) {
+      document.getElementById('complaintTrainName').value = name;
+      document.getElementById('complaintTrainSearch').value = name;
+      document.getElementById('complaintTrainDropdown').classList.remove('active');
+      document.getElementById('complaintTrainNo').value = number;
+      document.getElementById('complaintTrainType').value = type;
+      if (yard) document.getElementById('complaintYard').value = yard;
     }
 
     function switchComplaintTab(tab) {
@@ -3202,6 +3709,7 @@
       document.getElementById('complaintStatus').value = 'Open';
       document.getElementById('complaintTrainNo').value = '';
       document.getElementById('complaintTrainName').value = '';
+      document.getElementById('complaintTrainSearch').value = '';
       document.getElementById('complaintTrainType').value = '';
       document.getElementById('complaintYard').value = appData.yards[0] || '';
       document.getElementById('complaintName').value = '';
@@ -3237,7 +3745,7 @@
           <td>${formatDate(c.date)}</td>
           <td>${c.complaintId}</td>
           <td>${c.trainName}</td>
-          <td>${c.complainNature}</td>
+          <td><span class="nature-tag nature-${getNatureCategory(c.complainNature)}">${c.complainNature}</span></td>
           <td><span class="badge badge-${c.status === 'Open' ? 'danger' : c.status === 'In Progress' ? 'warning' : 'success'}">${c.status}</span></td>
           <td>
             <button class="btn-icon edit" onclick="editComplaint(${c.id})"><i class="fas fa-edit"></i></button>
@@ -3245,6 +3753,11 @@
           </td>
         </tr>
       `).join('');
+    }
+
+    function getNatureCategory(nature) {
+      const category = COMPLAINT_NATURE_CATEGORIES[nature] || 'Other';
+      return category.toLowerCase().replace(/\s/g, '-');
     }
 
     function editComplaint(id) {
@@ -3260,6 +3773,7 @@
       document.getElementById('complaintStatus').value = c.status;
       document.getElementById('complaintTrainNo').value = c.trainNo || '';
       document.getElementById('complaintTrainName').value = c.trainName;
+      document.getElementById('complaintTrainSearch').value = c.trainName;
       document.getElementById('complaintTrainType').value = c.trainType || '';
       document.getElementById('complaintYard').value = c.yard;
       document.getElementById('complaintName').value = c.complainantName || '';
@@ -3358,7 +3872,7 @@
         trainName: train ? train.trainName : '',
         trainNumber: train ? train.trainNumber : '',
         gpFromSales: gpFromSales,
-        gpCollected: Number(document.getElementById('cashGpCollected').value) || 0,
+        gpCollected: Number(document.getElementById('cashGpCollected')?.value) || 0,
         cashDepositCounter: cashDeposit,
         onlineDeposit: onlineDeposit,
         totalDeposit: cashDeposit + onlineDeposit,
@@ -3390,7 +3904,7 @@
       document.getElementById('cashTrainSearch').value = '';
       document.getElementById('cashTrainNo').value = '';
       document.getElementById('cashGpFromSales').value = '';
-      document.getElementById('cashGpCollected').value = '';
+      document.getElementById('cashGpCollected') && (document.getElementById('cashGpCollected').value = '');
       document.getElementById('cashDepositCounter').value = '';
       document.getElementById('cashOnlineDeposit').value = '';
       document.getElementById('cashTotalDeposit').value = '';
@@ -3448,7 +3962,7 @@
       document.getElementById('cashTrainSearch').value = c.trainName || '';
       document.getElementById('cashTrainNo').value = c.trainNumber || '';
       document.getElementById('cashGpFromSales').value = c.gpFromSales || c.gpCollected || '';
-      document.getElementById('cashGpCollected').value = c.gpCollected || '';
+      if (document.getElementById('cashGpCollected')) document.getElementById('cashGpCollected').value = c.gpCollected || '';
       document.getElementById('cashDepositCounter').value = c.cashDepositCounter || '';
       document.getElementById('cashOnlineDeposit').value = c.onlineDeposit || '';
       document.getElementById('cashTotalDeposit').value = c.totalDeposit || '';
@@ -3469,12 +3983,35 @@
       showAlert('Entry deleted', 'success');
     }
 
+
     // ==================== MASTERS PAGE FUNCTIONS ====================
     function loadMastersPage() {
       populateYardSelects();
       document.getElementById('masterClusterManager').innerHTML = (appData.clusterManagers || []).map(m => `<option value="${m}">${m}</option>`).join('');
       document.getElementById('masterTrainManager').innerHTML = (appData.trainManagers || []).map(m => `<option value="${m}">${m}</option>`).join('');
+      
+      // Update current month target display
+      updateMasterTargetDisplay();
+      
+      // Show/hide no data warning
+      const hasData = appData.trainMasters && appData.trainMasters.length > 0;
+      document.getElementById('noMasterDataWarning').classList.toggle('hidden', hasData);
+      
       loadMasterTable();
+    }
+
+    function updateMasterTargetDisplay() {
+      const now = new Date();
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      document.getElementById('currentMonthName').textContent = monthNames[now.getMonth()] + ' ' + now.getFullYear();
+      
+      const totalSalesTarget = appData.trainMasters.reduce((sum, t) => sum + (Number(t.salesTarget) || 0), 0);
+      const totalGpTarget = appData.trainMasters.reduce((sum, t) => sum + (Number(t.gpTarget) || 0), 0);
+      
+      document.getElementById('totalSalesTarget').textContent = formatCurrency(totalSalesTarget);
+      document.getElementById('totalGpTarget').textContent = formatCurrency(totalGpTarget);
+      document.getElementById('totalTrainsCount').textContent = appData.trainMasters.length;
+      document.getElementById('yardsCount').textContent = appData.yards.length;
     }
 
     function saveTrainMaster() {
@@ -3493,8 +4030,8 @@
         clusterManager: document.getElementById('masterClusterManager').value,
         trainManager: document.getElementById('masterTrainManager').value,
         rakeManager: document.getElementById('masterRakeManager').value,
-        salesTarget: Number(document.getElementById('masterSalesTarget').value) || 0,
-        gpTarget: Number(document.getElementById('masterGpTarget').value) || 0
+        salesTarget: Math.round(Number(document.getElementById('masterSalesTarget').value)) || 0,
+        gpTarget: Math.round(Number(document.getElementById('masterGpTarget').value)) || 0
       };
 
       if (editingId && editingType === 'master') {
@@ -3508,6 +4045,8 @@
       clearMasterForm();
       showAlert('Train master saved successfully', 'success');
       loadMasterTable();
+      updateMasterTargetDisplay();
+      document.getElementById('noMasterDataWarning').classList.add('hidden');
     }
 
     function clearMasterForm() {
@@ -3642,19 +4181,37 @@
     }
 
     function loadUsersTable() {
-      document.getElementById('usersTableBody').innerHTML = (appData.users || []).map(u => `
-        <tr>
-          <td>${u.name}</td>
-          <td>${u.email}</td>
-          <td>${ROLE_LABELS[u.role] || u.role}</td>
-          <td>${u.yard}</td>
-          <td><span class="badge badge-${u.active ? 'success' : 'danger'}">${u.active ? 'Active' : 'Inactive'}</span></td>
-          <td>
-            <button class="btn-icon edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button>
-            <button class="btn-icon delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i></button>
-          </td>
-        </tr>
-      `).join('');
+      const isAdmin = currentUser.role === 'admin';
+      
+      document.getElementById('usersTableBody').innerHTML = (appData.users || []).map(u => {
+        // Hide super admin credentials from admin users
+        if (isAdmin && u.role === 'super_admin' && u.email !== currentUser.email) {
+          return `
+            <tr>
+              <td>${u.name}</td>
+              <td><em>Hidden (Super Admin)</em></td>
+              <td>${ROLE_LABELS[u.role] || u.role}</td>
+              <td>${u.yard}</td>
+              <td><span class="badge badge-${u.active ? 'success' : 'danger'}">${u.active ? 'Active' : 'Inactive'}</span></td>
+              <td>-</td>
+            </tr>
+          `;
+        }
+        
+        return `
+          <tr>
+            <td>${u.name}</td>
+            <td>${u.email}</td>
+            <td>${ROLE_LABELS[u.role] || u.role}</td>
+            <td>${u.yard}</td>
+            <td><span class="badge badge-${u.active ? 'success' : 'danger'}">${u.active ? 'Active' : 'Inactive'}</span></td>
+            <td>
+              <button class="btn-icon edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button>
+              <button class="btn-icon delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function editUser(id) {
@@ -3738,8 +4295,8 @@
               trainManager: trainManager || '',
               rakeManager: rakeManager || '',
               trainType: trainType || 'WCB',
-              salesTarget: salesTarget,
-              gpTarget: gpTarget
+              salesTarget: Math.round(salesTarget),
+              gpTarget: Math.round(gpTarget)
             };
             appData.trainMasters.push(train);
           }
@@ -3756,10 +4313,10 @@
             trainManager: trainManager || train.trainManager,
             rakeManager: rakeManager || train.rakeManager,
             trainType: trainType || train.trainType,
-            salesTarget: salesTarget,
-            salesAchievement: salesAchievement,
-            gpTarget: gpTarget,
-            gpAchievement: gpAchievement,
+            salesTarget: Math.round(salesTarget),
+            salesAchievement: Math.round(salesAchievement),
+            gpTarget: Math.round(gpTarget),
+            gpAchievement: Math.round(gpAchievement),
             remarks: 'Imported from Excel'
           };
 
@@ -3836,9 +4393,9 @@
         let imported = 0;
 
         rows.forEach(row => {
-          const cashDepositCounter = Number(getColumnValue(row, ['Deposited in Cash', 'cashdeposit', 'Cash Deposit', 'DepositedinCash'])) || 0;
-          const onlineDeposit = Number(getColumnValue(row, ['Deposited through Online', 'onlinedeposit', 'Online Deposit', 'DepositedthroughOnline'])) || 0;
-          const gpFromSales = Number(getColumnValue(row, ['GP Achievement', 'gpachievement', 'GP From Sales'])) || 0;
+          const cashDepositCounter = Math.round(Number(getColumnValue(row, ['Deposited in Cash', 'cashdeposit', 'Cash Deposit', 'DepositedinCash']))) || 0;
+          const onlineDeposit = Math.round(Number(getColumnValue(row, ['Deposited through Online', 'onlinedeposit', 'Online Deposit', 'DepositedthroughOnline']))) || 0;
+          const gpFromSales = Math.round(Number(getColumnValue(row, ['GP Achievement', 'gpachievement', 'GP From Sales']))) || 0;
           
           const entry = {
             id: Date.now() + Math.random(),
@@ -3847,7 +4404,7 @@
             trainName: getColumnValue(row, ['Train Name', 'trainname', 'Train']) || '',
             trainNumber: getColumnValue(row, ['Train Number', 'trainnumber', 'TrainNo']) || '',
             gpFromSales: gpFromSales,
-            gpCollected: Number(getColumnValue(row, ['GP Collected', 'gpcollected', 'CashCollected'])) || 0,
+            gpCollected: Math.round(Number(getColumnValue(row, ['GP Collected', 'gpcollected', 'CashCollected']))) || 0,
             cashDepositCounter: cashDepositCounter,
             onlineDeposit: onlineDeposit,
             totalDeposit: cashDepositCounter + onlineDeposit,
@@ -3890,8 +4447,8 @@
             clusterManager: getColumnValue(row, ['Cluster Manager', 'clustermanager']) || '',
             trainManager: getColumnValue(row, ['Train Manager', 'trainmanager']) || '',
             rakeManager: getColumnValue(row, ['Rake Manager', 'rakemanager']) || '',
-            salesTarget: Number(getColumnValue(row, ['Sales Target', 'salestarget'])) || 0,
-            gpTarget: Number(getColumnValue(row, ['GP Target', 'gptarget', 'GrossProfitTarget'])) || 0
+            salesTarget: Math.round(Number(getColumnValue(row, ['Sales Target', 'salestarget']))) || 0,
+            gpTarget: Math.round(Number(getColumnValue(row, ['GP Target', 'gptarget', 'GrossProfitTarget']))) || 0
           };
 
           if (train.trainName) {
@@ -3904,6 +4461,8 @@
         input.value = '';
         showAlert(`${imported} train masters imported successfully`, 'success');
         loadMasterTable();
+        updateMasterTargetDisplay();
+        document.getElementById('noMasterDataWarning').classList.add('hidden');
 
       } catch (error) { showAlert('Import failed: ' + error.message, 'error'); }
     }
@@ -3969,7 +4528,7 @@
         'Mobile No': '9876543210',
         'PNR No': '1234567890',
         'Complaint Type': 'Service',
-        'Complain Nature': 'Food Quality',
+        'Complain Nature': 'Food Quality - Taste Issue',
         'Details': 'Food was not fresh',
         'Remarks': ''
       }];
@@ -3977,7 +4536,6 @@
     }
 
     function downloadCashSample() {
-      // Create Excel with dropdown for shortage reason
       const data = [{
         'Date': new Date().toISOString().split('T')[0],
         'Yard': 'Howrah',
@@ -3993,7 +4551,6 @@
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(data);
       
-      // Add dropdown for Shortage Reason column
       const shortageReasons = ['Cash Not Deposited', 'Shortage in Cash', 'Pending Collection', 'Manager Absent', 'Bank Holiday', 'Other'];
       ws['!dataValidation'] = {
         F2: {
@@ -4037,6 +4594,17 @@
       downloadExcel(cashData, `cash_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`); 
     }
     function downloadCashDashboardPdf() { window.print(); }
+
+    // Download table data as Excel
+    function downloadTableExcel(tableId, filename) {
+      const table = document.getElementById(tableId);
+      if (!table) return;
+      
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.table_to_sheet(table);
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+      XLSX.writeFile(wb, `${filename}_${new Date().toISOString().split('T')[0]}.xlsx`);
+    }
 
     function downloadExcel(data, filename) {
       const wb = XLSX.utils.book_new();
@@ -4121,7 +4689,9 @@
     window.selectTrain = selectTrain;
     window.calculateSalesPct = calculateSalesPct;
     window.calculateGpPct = calculateGpPct;
-    window.saveSalesEntry = saveSalesEntry;
+    window.validateAndSaveSalesEntry = validateAndSaveSalesEntry;
+    window.confirmGpApproval = confirmGpApproval;
+    window.closeGpWarningModal = closeGpWarningModal;
     window.clearSalesForm = clearSalesForm;
     window.editSalesEntry = editSalesEntry;
     window.deleteSalesEntry = deleteSalesEntry;
@@ -4129,6 +4699,9 @@
     window.clearComplaintForm = clearComplaintForm;
     window.editComplaint = editComplaint;
     window.deleteComplaint = deleteComplaint;
+    window.filterComplaintTrains = filterComplaintTrains;
+    window.showComplaintTrainDropdown = showComplaintTrainDropdown;
+    window.selectComplaintTrain = selectComplaintTrain;
     window.filterCashTrains = filterCashTrains;
     window.showCashTrainDropdown = showCashTrainDropdown;
     window.selectCashTrain = selectCashTrain;
@@ -4162,6 +4735,7 @@
     window.downloadComplaintDashboardPdf = downloadComplaintDashboardPdf;
     window.downloadCashDashboardExcel = downloadCashDashboardExcel;
     window.downloadCashDashboardPdf = downloadCashDashboardPdf;
+    window.downloadTableExcel = downloadTableExcel;
     window.downloadBackup = downloadBackup;
     window.restoreBackup = restoreBackup;
     window.resetAndImportSales = resetAndImportSales;
