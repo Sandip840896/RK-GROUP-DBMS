@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>RK Group - Railway Catering Management System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -12,38 +12,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; margin: 0; background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #e0f2fe 100%); min-height: 100vh; color: #1e293b; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { font-size: 14px; }
+    body { font-family: 'Inter', sans-serif; margin: 0; background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #e0f2fe 100%); min-height: 100vh; color: #1e293b; overflow-x: hidden; }
     
     /* Train Animation Background */
-    .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%); position: relative; overflow: hidden; }
+    .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 16px; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%); position: relative; overflow: hidden; }
     .login-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>'); background-size: 50px 50px; animation: moveBackground 20s linear infinite; }
     @keyframes moveBackground { 0% { transform: translate(0, 0); } 100% { transform: translate(50px, 50px); } }
     
     /* Moving Train Animation */
     .train-animation { position: absolute; bottom: 50px; left: -300px; animation: trainMove 15s linear infinite; opacity: 0.3; }
     @keyframes trainMove { 0% { left: -300px; } 100% { left: 100%; } }
-    .train-icon-anim { font-size: 80px; color: rgba(255,255,255,0.4); }
+    .train-icon-anim { font-size: 60px; color: rgba(255,255,255,0.4); }
     
     /* Track Lines */
     .track-lines { position: absolute; bottom: 30px; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 30px, transparent 30px, transparent 40px); }
     
-    .login-box { background: rgba(255, 255, 255, 0.98); border-radius: 20px; padding: 40px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.3); position: relative; z-index: 1; }
-    .login-logo { text-align: center; margin-bottom: 30px; }
-    .login-logo .train-icon { font-size: 56px; color: #0284c7; margin-bottom: 15px; animation: trainBounce 2s ease-in-out infinite; }
+    .login-box { background: rgba(255, 255, 255, 0.98); border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.3); position: relative; z-index: 1; }
+    .login-logo { text-align: center; margin-bottom: 20px; }
+    .login-logo .train-icon { font-size: 48px; color: #0284c7; margin-bottom: 12px; animation: trainBounce 2s ease-in-out infinite; }
     @keyframes trainBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-    .login-logo h1 { font-size: 32px; font-weight: 700; color: #0369a1; margin: 0; letter-spacing: -0.5px; }
-    .login-logo p { color: #64748b; margin-top: 8px; font-size: 14px; }
-    .login-logo .developer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; }
-    .login-logo .developer strong { color: #0284c7; }
-    .login-logo .support { margin-top: 10px; font-size: 11px; color: #94a3b8; }
-    .login-logo .support i { color: #22c55e; }
+    .login-logo h1 { font-size: 28px; font-weight: 700; color: #0369a1; margin: 0; letter-spacing: -0.5px; }
+    .login-logo p { color: #64748b; margin-top: 6px; font-size: 13px; }
+    .login-logo .tagline { font-size: 11px; color: #94a3b8; margin-top: 4px; }
     
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: #475569; }
-    .form-group input, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; background: #fff; color: #1e293b; transition: all 0.3s; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: #475569; }
+    .form-group input, .form-group select { width: 100%; padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; background: #fff; color: #1e293b; transition: all 0.3s; }
     .form-group input:focus, .form-group select:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15); }
-    .btn { padding: 12px 24px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn { padding: 12px 20px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
     .btn-primary { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white; }
     .btn-primary:hover { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(14, 165, 233, 0.4); }
     .btn-success { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; }
@@ -54,66 +52,68 @@
     .btn-secondary:hover { background: #e2e8f0; }
     .btn-ghost { background: transparent; border: 1px solid #cbd5e1; color: #475569; }
     .btn-ghost:hover { background: #f1f5f9; border-color: #94a3b8; }
-    .btn-sm { padding: 8px 16px; font-size: 13px; }
+    .btn-sm { padding: 8px 14px; font-size: 12px; }
+    
     .app-container { display: none; }
-    .sidebar { width: 260px; background: #fff; border-right: 1px solid #e2e8f0; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 100; box-shadow: 4px 0 20px rgba(0,0,0,0.05); }
-    .sidebar-header { padding: 20px; border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); }
-    .sidebar-header .logo { display: flex; align-items: center; gap: 12px; }
-    .sidebar-header .logo i { font-size: 28px; color: #fff; animation: trainBounce 2s ease-in-out infinite; }
-    .sidebar-header .logo span { font-size: 18px; font-weight: 700; color: #fff; }
-    .sidebar-header .user-info { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); }
-    .sidebar-header .user-info .name { font-size: 14px; font-weight: 600; color: #fff; }
-    .sidebar-header .user-info .role { font-size: 12px; color: rgba(255,255,255,0.8); }
-    .nav-menu { padding: 10px; }
-    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; cursor: pointer; transition: all 0.3s; color: #64748b; margin-bottom: 4px; }
+    .sidebar { width: 260px; background: #fff; border-right: 1px solid #e2e8f0; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 100; box-shadow: 4px 0 20px rgba(0,0,0,0.05); transition: transform 0.3s ease; }
+    .sidebar-header { padding: 16px; border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); }
+    .sidebar-header .logo { display: flex; align-items: center; gap: 10px; }
+    .sidebar-header .logo i { font-size: 24px; color: #fff; animation: trainBounce 2s ease-in-out infinite; }
+    .sidebar-header .logo span { font-size: 16px; font-weight: 700; color: #fff; }
+    .sidebar-header .user-info { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); }
+    .sidebar-header .user-info .name { font-size: 13px; font-weight: 600; color: #fff; }
+    .sidebar-header .user-info .role { font-size: 11px; color: rgba(255,255,255,0.8); }
+    .nav-menu { padding: 8px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: all 0.3s; color: #64748b; margin-bottom: 2px; font-size: 13px; }
     .nav-item:hover { background: #f0f9ff; color: #0284c7; }
     .nav-item.active { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white; }
-    .nav-item i { font-size: 18px; width: 24px; text-align: center; }
-    .main-content { margin-left: 260px; min-height: 100vh; background: #f8fafc; }
-    .top-bar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .top-bar h2 { font-size: 20px; font-weight: 600; color: #1e293b; margin: 0; }
-    .top-bar-actions { display: flex; gap: 10px; }
-    .content-area { padding: 24px; }
-    .card { background: #fff; border-radius: 16px; padding: 24px; border: 1px solid #e2e8f0; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .card-title { font-size: 18px; font-weight: 600; color: #1e293b; margin: 0; }
-    .card-subtitle { font-size: 13px; color: #64748b; margin-top: 4px; }
-    .grid { display: grid; gap: 20px; }
+    .nav-item i { font-size: 16px; width: 20px; text-align: center; }
+    
+    .main-content { margin-left: 260px; min-height: 100vh; background: #f8fafc; transition: margin-left 0.3s ease; }
+    .top-bar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .top-bar h2 { font-size: 16px; font-weight: 600; color: #1e293b; margin: 0; }
+    .top-bar-actions { display: flex; gap: 8px; }
+    .content-area { padding: 16px; }
+    .card { background: #fff; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+    .card-title { font-size: 15px; font-weight: 600; color: #1e293b; margin: 0; }
+    .card-subtitle { font-size: 12px; color: #64748b; margin-top: 4px; }
+    .grid { display: grid; gap: 16px; }
     .grid-2 { grid-template-columns: repeat(2, 1fr); }
     .grid-3 { grid-template-columns: repeat(3, 1fr); }
     .grid-4 { grid-template-columns: repeat(4, 1fr); }
-    .kpi-card { background: linear-gradient(135deg, #fff 0%, #f8fafc 100%); border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .kpi-card { background: linear-gradient(135deg, #fff 0%, #f8fafc 100%); border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
     .kpi-card.success { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-color: #86efac; }
     .kpi-card.warning { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-color: #fcd34d; }
     .kpi-card.danger { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-color: #fca5a5; }
     .kpi-card.info { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-color: #7dd3fc; }
-    .kpi-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 500; }
-    .kpi-value { font-size: 28px; font-weight: 700; color: #1e293b; }
-    .kpi-sub { font-size: 12px; color: #94a3b8; margin-top: 4px; }
-    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
-    .form-field label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: #475569; }
-    .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: #fff; color: #1e293b; transition: all 0.3s; }
-    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15); }
+    .kpi-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; font-weight: 500; }
+    .kpi-value { font-size: 22px; font-weight: 700; color: #1e293b; }
+    .kpi-sub { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 12px; }
+    .form-field label { display: block; margin-bottom: 4px; font-size: 12px; font-weight: 500; color: #475569; }
+    .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: #fff; color: #1e293b; transition: all 0.3s; }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
     .form-field input:read-only { background: #f1f5f9; color: #64748b; }
-    .table-container { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-    th { background: #f8fafc; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-    td { font-size: 14px; color: #1e293b; }
+    .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; min-width: 600px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    th { background: #f8fafc; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; }
+    td { font-size: 13px; color: #1e293b; }
     tr:hover td { background: #f8fafc; }
-    .badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+    .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
     .badge-success { background: #dcfce7; color: #166534; }
     .badge-warning { background: #fef3c7; color: #92400e; }
     .badge-danger { background: #fee2e2; color: #991b1b; }
     .badge-info { background: #e0f2fe; color: #075985; }
-    .chart-container { position: relative; height: 300px; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; }
-    .tab { padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; color: #64748b; transition: all 0.3s; border: none; background: transparent; }
+    .chart-container { position: relative; height: 250px; }
+    .tabs { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .tab { padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; color: #64748b; transition: all 0.3s; border: none; background: transparent; white-space: nowrap; }
     .tab:hover { color: #0284c7; background: #f0f9ff; }
     .tab.active { color: #fff; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); }
     .hidden { display: none !important; }
-    .action-btns { display: flex; gap: 8px; }
-    .btn-icon { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; border: none; }
+    .action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .btn-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; border: none; }
     .btn-icon.edit { background: #e0f2fe; color: #0284c7; }
     .btn-icon.edit:hover { background: #0284c7; color: white; }
     .btn-icon.delete { background: #fee2e2; color: #ef4444; }
@@ -122,71 +122,85 @@
     .searchable-select input { width: 100%; }
     .searchable-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 2px solid #e2e8f0; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 100; display: none; margin-top: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
     .searchable-dropdown.active { display: block; }
-    .searchable-dropdown-item { padding: 10px 14px; cursor: pointer; font-size: 14px; color: #1e293b; border-bottom: 1px solid #f1f5f9; }
+    .searchable-dropdown-item { padding: 10px 12px; cursor: pointer; font-size: 13px; color: #1e293b; border-bottom: 1px solid #f1f5f9; }
     .searchable-dropdown-item:hover { background: #f0f9ff; color: #0284c7; }
     .searchable-dropdown-item:last-child { border-bottom: none; }
-    .filter-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; }
-    .filter-item { display: flex; flex-direction: column; gap: 6px; }
-    .filter-item label { font-size: 12px; color: #64748b; font-weight: 500; }
-    .filter-item input, .filter-item select { padding: 8px 12px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px; background: #fff; color: #1e293b; min-width: 140px; }
+    
+    /* Date Range Filter Styles */
+    .date-range-section { background: #f8fafc; border-radius: 10px; padding: 14px; margin-bottom: 12px; border: 1px solid #e2e8f0; }
+    .date-range-section.primary { background: #f0f9ff; border-color: #7dd3fc; }
+    .date-range-section.comparison { background: #fffbeb; border-color: #fcd34d; }
+    .date-range-title { font-size: 12px; font-weight: 600; color: #0369a1; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .date-range-title.comparison { color: #92400e; }
+    .date-range-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+    .date-range-item { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 130px; }
+    .date-range-item label { font-size: 11px; color: #64748b; font-weight: 500; }
+    .date-range-item input, .date-range-item select { padding: 8px 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px; background: #fff; color: #1e293b; }
+    .date-range-item input:focus, .date-range-item select:focus { border-color: #0ea5e9; outline: none; }
+    
+    .filter-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding: 14px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; }
+    .filter-item { display: flex; flex-direction: column; gap: 4px; }
+    .filter-item label { font-size: 11px; color: #64748b; font-weight: 500; }
+    .filter-item input, .filter-item select { padding: 8px 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px; background: #fff; color: #1e293b; min-width: 120px; }
     .filter-item input:focus, .filter-item select:focus { border-color: #0ea5e9; outline: none; }
-    .section-title { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    
+    .section-title { font-size: 14px; font-weight: 600; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
     .section-title i { color: #0284c7; }
-    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+    .alert { padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; font-size: 13px; }
     .alert-success { background: #dcfce7; border: 1px solid #86efac; color: #166534; }
     .alert-error { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; }
     .alert-warning { background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; }
-    .progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+    .progress-bar { height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
     .progress-fill.success { background: linear-gradient(90deg, #22c55e, #16a34a); }
     .progress-fill.warning { background: linear-gradient(90deg, #f59e0b, #d97706); }
     .progress-fill.danger { background: linear-gradient(90deg, #ef4444, #dc2626); }
-    .tile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-    .tile { padding: 16px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; background: #f8fafc; }
-    .tile:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-    .tile.active { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2); }
+    .tile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+    .tile { padding: 12px; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; background: #f8fafc; }
+    .tile:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+    .tile.active { border-color: #0ea5e9; box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2); }
     .tile.success { background: #dcfce7; }
     .tile.warning { background: #fef3c7; }
     .tile.danger { background: #fee2e2; }
     .tile.info { background: #e0f2fe; }
-    .tile-value { font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #1e293b; }
-    .tile-label { font-size: 12px; color: #64748b; }
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .tile-value { font-size: 20px; font-weight: 700; margin-bottom: 2px; color: #1e293b; }
+    .tile-label { font-size: 11px; color: #64748b; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
     .modal-overlay.active { display: flex; }
-    .modal { background: #fff; border-radius: 16px; padding: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .modal-title { font-size: 18px; font-weight: 600; color: #1e293b; }
+    .modal { background: #fff; border-radius: 12px; padding: 20px; max-width: 450px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-title { font-size: 16px; font-weight: 600; color: #1e293b; }
     .modal-close { background: none; border: none; color: #64748b; font-size: 20px; cursor: pointer; }
     .modal-close:hover { color: #1e293b; }
-    .file-upload { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s; background: #f8fafc; }
+    .file-upload { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s; background: #f8fafc; }
     .file-upload:hover { border-color: #0ea5e9; background: #f0f9ff; }
-    .file-upload i { font-size: 32px; color: #0ea5e9; margin-bottom: 12px; }
-    .file-upload-text { font-size: 14px; color: #64748b; }
-    .status-indicator { display: inline-flex; align-items: center; gap: 6px; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .file-upload i { font-size: 28px; color: #0ea5e9; margin-bottom: 10px; }
+    .file-upload-text { font-size: 13px; color: #64748b; }
+    .status-indicator { display: inline-flex; align-items: center; gap: 4px; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; }
     .status-dot.online { background: #22c55e; animation: pulse 2s infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     .comparison-positive { color: #16a34a; font-weight: 600; }
     .comparison-negative { color: #dc2626; font-weight: 600; }
     .chart-filter-active { position: relative; }
-    .chart-filter-active::after { content: 'Click to Clear Filter'; position: absolute; top: 10px; right: 10px; background: #0ea5e9; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; }
+    .chart-filter-active::after { content: 'Click to Clear Filter'; position: absolute; top: 8px; right: 8px; background: #0ea5e9; color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; cursor: pointer; }
     .required-field { border-color: #fca5a5 !important; background: #fef2f2 !important; }
-    .shortage-alert { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px; margin: 16px 0; }
-    .shortage-alert h4 { color: #dc2626; margin: 0 0 8px 0; }
-    .shortage-alert p { color: #7f1d1d; margin: 0; font-size: 14px; }
+    .shortage-alert { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 12px; margin: 12px 0; }
+    .shortage-alert h4 { color: #dc2626; margin: 0 0 6px 0; font-size: 14px; }
+    .shortage-alert p { color: #7f1d1d; margin: 0; font-size: 12px; }
     
     /* GP Warning Modal Styles */
-    .gp-warning-modal { max-width: 450px; }
-    .gp-warning-icon { font-size: 48px; color: #f59e0b; text-align: center; margin-bottom: 16px; }
-    .gp-warning-text { text-align: center; color: #92400e; margin-bottom: 20px; }
-    .gp-warning-text strong { color: #dc2626; font-size: 18px; }
+    .gp-warning-modal { max-width: 400px; }
+    .gp-warning-icon { font-size: 40px; color: #f59e0b; text-align: center; margin-bottom: 12px; }
+    .gp-warning-text { text-align: center; color: #92400e; margin-bottom: 16px; }
+    .gp-warning-text strong { color: #dc2626; font-size: 16px; }
     
     /* High complaint highlighting */
     .high-complaint { background: #fef2f2 !important; }
     .high-complaint td { color: #dc2626; font-weight: 600; }
     
     /* Nature tag styles */
-    .nature-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+    .nature-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 500; }
     .nature-food { background: #fef3c7; color: #92400e; }
     .nature-service { background: #e0f2fe; color: #075985; }
     .nature-billing { background: #fee2e2; color: #991b1b; }
@@ -194,25 +208,81 @@
     .nature-other { background: #f1f5f9; color: #475569; }
     
     /* Footer styles */
-    .app-footer { background: #fff; border-top: 1px solid #e2e8f0; padding: 16px 24px; margin-top: 40px; text-align: center; font-size: 12px; color: #64748b; }
-    .app-footer .developer-credit { font-weight: 600; color: #0284c7; }
-    .app-footer .support-info { margin-top: 4px; }
+    .app-footer { background: #fff; border-top: 1px solid #e2e8f0; padding: 16px; margin-top: 24px; text-align: center; font-size: 12px; color: #64748b; }
+    .app-footer .developer-credit { font-weight: 600; color: #0284c7; margin-bottom: 4px; }
+    .app-footer .support-info { margin-top: 4px; font-size: 11px; }
     .app-footer .support-info i { color: #22c55e; }
+    .app-footer .copyright { margin-top: 8px; font-size: 10px; color: #94a3b8; }
     
     /* Master data warning */
-    .master-warning { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
-    .master-warning i { color: #f59e0b; font-size: 20px; }
+    .master-warning { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .master-warning i { color: #f59e0b; font-size: 18px; }
     
     /* Current month target display */
-    .current-target-display { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1px solid #7dd3fc; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
-    .current-target-display h4 { margin: 0 0 12px 0; color: #0369a1; font-size: 14px; }
-    .target-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .current-target-display { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1px solid #7dd3fc; border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+    .current-target-display h4 { margin: 0 0 10px 0; color: #0369a1; font-size: 13px; }
+    .target-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
     .target-item { text-align: center; }
-    .target-value { font-size: 20px; font-weight: 700; color: #0284c7; }
-    .target-label { font-size: 11px; color: #64748b; }
+    .target-value { font-size: 18px; font-weight: 700; color: #0284c7; }
+    .target-label { font-size: 10px; color: #64748b; }
     
-    @media (max-width: 1024px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 768px) { .sidebar { width: 100%; transform: translateX(-100%); transition: transform 0.3s; } .sidebar.open { transform: translateX(0); } .main-content { margin-left: 0; } .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+    /* Mobile Menu Toggle */
+    .menu-toggle { display: none; background: none; border: none; font-size: 20px; color: #475569; cursor: pointer; padding: 8px; }
+    
+    /* Mobile Sidebar Overlay */
+    .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 99; }
+    .sidebar-overlay.active { display: block; }
+    
+    /* Mobile Responsive Styles */
+    @media (max-width: 1024px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .chart-container { height: 220px; }
+    }
+    
+    @media (max-width: 768px) {
+      html { font-size: 13px; }
+      .sidebar { width: 280px; transform: translateX(-100%); z-index: 101; }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay { display: none; }
+      .sidebar-overlay.active { display: block; }
+      .main-content { margin-left: 0; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .menu-toggle { display: block; }
+      .top-bar { padding: 10px 12px; }
+      .top-bar h2 { font-size: 14px; }
+      .top-bar-actions { display: none; }
+      .content-area { padding: 12px; }
+      .card { padding: 14px; margin-bottom: 12px; }
+      .card-title { font-size: 14px; }
+      .kpi-value { font-size: 18px; }
+      .kpi-label { font-size: 10px; }
+      .chart-container { height: 200px; }
+      .form-row { grid-template-columns: 1fr; }
+      .filter-row { padding: 12px; }
+      .date-range-row { flex-direction: column; }
+      .date-range-item { min-width: 100%; }
+      .tile-grid { grid-template-columns: repeat(2, 1fr); }
+      .tile-value { font-size: 18px; }
+      table { min-width: 500px; }
+      th, td { padding: 8px 10px; font-size: 12px; }
+      .btn { padding: 10px 16px; font-size: 13px; }
+      .btn-sm { padding: 6px 12px; font-size: 11px; }
+      .modal { padding: 16px; }
+      .app-footer { padding: 14px; }
+      .train-animation { display: none; }
+      .track-lines { display: none; }
+    }
+    
+    @media (max-width: 480px) {
+      .login-box { padding: 20px 16px; }
+      .login-logo h1 { font-size: 24px; }
+      .login-logo .train-icon { font-size: 40px; }
+      .tile-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .tile { padding: 10px; }
+      .tile-value { font-size: 16px; }
+      .kpi-value { font-size: 16px; }
+      .chart-container { height: 180px; }
+    }
   </style>
 <base target="_blank">
 </head>
@@ -230,13 +300,7 @@
         <div class="train-icon"><i class="fas fa-train"></i></div>
         <h1>RK Group</h1>
         <p>Railway Catering Management System</p>
-        <p style="font-size: 11px; color: #64748b; margin-top: 4px;">Serving Indian Railways Since 1964</p>
-        <div class="developer">
-          <i class="fas fa-code"></i> Developed by <strong>Sandip Nandi</strong>
-        </div>
-        <div class="support">
-          <i class="fas fa-headset"></i> Support: <strong>+91 98765 43210</strong> | <strong>sandipnandi2000@gmail.com</strong>
-        </div>
+        <p class="tagline">Serving Indian Railways Since 1964</p>
       </div>
       <div id="loginError" class="alert alert-error hidden"></div>
       <div class="form-group">
@@ -247,7 +311,7 @@
         <label>Password</label>
         <input type="password" id="loginPassword" placeholder="Enter your password">
       </div>
-      <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="handleLogin()">
+      <button class="btn btn-primary" style="width: 100%;" onclick="handleLogin()">
         <i class="fas fa-sign-in-alt"></i> Login
       </button>
     </div>
@@ -255,8 +319,11 @@
 
   <!-- Main App -->
   <div id="appContainer" class="app-container">
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="logo">
           <i class="fas fa-train"></i>
@@ -265,9 +332,9 @@
         <div class="user-info">
           <div class="name" id="userName">User Name</div>
           <div class="role" id="userRoleDisplay">Role</div>
-          <div class="status-indicator" style="margin-top: 8px;">
+          <div class="status-indicator" style="margin-top: 6px;">
             <span class="status-dot online"></span>
-            <span style="font-size: 11px; color: #86efac;">Online</span>
+            <span style="font-size: 10px; color: #86efac;">Online</span>
           </div>
         </div>
       </div>
@@ -315,10 +382,15 @@
     <main class="main-content">
       <!-- Top Bar -->
       <div class="top-bar">
-        <h2 id="pageTitle">Sales Dashboard</h2>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button class="menu-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h2 id="pageTitle">Sales Dashboard</h2>
+        </div>
         <div class="top-bar-actions">
           <button class="btn btn-ghost btn-sm" onclick="syncToCloud()">
-            <i class="fas fa-cloud-upload-alt"></i> Sync to Cloud
+            <i class="fas fa-cloud-upload-alt"></i> Sync
           </button>
           <button class="btn btn-ghost btn-sm" onclick="downloadBackup()">
             <i class="fas fa-download"></i> Backup
@@ -339,110 +411,134 @@
               </div>
               <div class="action-btns">
                 <button class="btn btn-warning btn-sm" onclick="clearSalesFilters()">
-                  <i class="fas fa-undo"></i> Clear Filters
+                  <i class="fas fa-undo"></i> Clear
                 </button>
                 <button class="btn btn-ghost btn-sm" onclick="downloadSalesDashboardExcel()">
-                  <i class="fas fa-file-excel"></i> Excel
-                </button>
-                <button class="btn btn-ghost btn-sm" onclick="downloadSalesDashboardPdf()">
-                  <i class="fas fa-file-pdf"></i> PDF
+                  <i class="fas fa-file-excel"></i>
                 </button>
               </div>
             </div>
-            <div class="filter-row">
-              <div class="filter-item">
-                <label>From Date</label>
-                <input type="date" id="dashFromDate" onchange="loadDashboard()">
+            
+            <!-- Date Range 1 (From Date Range) -->
+            <div class="date-range-section primary">
+              <div class="date-range-title">
+                <i class="fas fa-calendar-alt"></i> From Date Range (Period 1)
               </div>
-              <div class="filter-item">
-                <label>To Date</label>
-                <input type="date" id="dashToDate" onchange="loadDashboard()">
-              </div>
-              <div class="filter-item">
-                <label>Single Date</label>
-                <input type="date" id="dashSingleDate" onchange="applySingleDate()">
-              </div>
-              <div class="filter-item">
-                <label>Train</label>
-                <select id="dashTrainFilter" onchange="loadDashboard()">
-                  <option value="">All Trains</option>
-                </select>
-              </div>
-              <div class="filter-item">
-                <label>Train Manager</label>
-                <select id="dashManagerFilter" onchange="loadDashboard()">
-                  <option value="">All Managers</option>
-                </select>
-              </div>
-              <div class="filter-item">
-                <label>Yard</label>
-                <select id="dashYardFilter" onchange="loadDashboard()">
-                  <option value="">All Yards</option>
-                </select>
+              <div class="date-range-row">
+                <div class="date-range-item">
+                  <label>Start Date</label>
+                  <input type="date" id="dashFromDate1" onchange="loadDashboard()">
+                </div>
+                <div class="date-range-item">
+                  <label>End Date</label>
+                  <input type="date" id="dashToDate1" onchange="loadDashboard()">
+                </div>
+                <div class="date-range-item">
+                  <label>Train</label>
+                  <select id="dashTrainFilter" onchange="loadDashboard()">
+                    <option value="">All Trains</option>
+                  </select>
+                </div>
+                <div class="date-range-item">
+                  <label>Manager</label>
+                  <select id="dashManagerFilter" onchange="loadDashboard()">
+                    <option value="">All Managers</option>
+                  </select>
+                </div>
+                <div class="date-range-item">
+                  <label>Yard</label>
+                  <select id="dashYardFilter" onchange="loadDashboard()">
+                    <option value="">All Yards</option>
+                  </select>
+                </div>
               </div>
             </div>
-            <div id="activeFilters" style="margin-top: 12px; font-size: 12px; color: #64748b;"></div>
-            <div id="chartFilterDisplay" style="margin-top: 8px; font-size: 12px; color: #0284c7; display: none;">
+            
+            <!-- Date Range 2 (To Date Range / Comparison) -->
+            <div class="date-range-section comparison">
+              <div class="date-range-title comparison">
+                <i class="fas fa-exchange-alt"></i> To Date Range (Period 2 - Comparison)
+              </div>
+              <div class="date-range-row">
+                <div class="date-range-item">
+                  <label>Start Date</label>
+                  <input type="date" id="dashFromDate2" onchange="loadDashboard()">
+                </div>
+                <div class="date-range-item">
+                  <label>End Date</label>
+                  <input type="date" id="dashToDate2" onchange="loadDashboard()">
+                </div>
+                <div class="date-range-item" style="flex: 0 0 auto;">
+                  <button class="btn btn-ghost btn-sm" onclick="setDefaultDateRanges()" style="margin-top: 18px;">
+                    <i class="fas fa-magic"></i> Auto (MTD vs Last Month)
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div id="activeFilters" style="margin-top: 10px; font-size: 11px; color: #64748b;"></div>
+            <div id="chartFilterDisplay" style="margin-top: 6px; font-size: 11px; color: #0284c7; display: none;">
               <i class="fas fa-filter"></i> <span id="chartFilterText"></span> 
-              <button class="btn btn-sm" style="margin-left: 8px; padding: 2px 8px; font-size: 11px;" onclick="clearChartFilter()">Clear</button>
+              <button class="btn btn-sm" style="margin-left: 6px; padding: 2px 8px; font-size: 10px;" onclick="clearChartFilter()">Clear</button>
             </div>
           </div>
 
           <!-- KPI Cards -->
           <div class="grid grid-4">
             <div class="kpi-card info">
-              <div class="kpi-label">Sales Target</div>
+              <div class="kpi-label">Sales Target (P1)</div>
               <div class="kpi-value" id="kpiSalesTarget">₹0</div>
-              <div class="kpi-sub" id="kpiSalesTargetSub">0 filtered records</div>
+              <div class="kpi-sub" id="kpiSalesTargetSub">0 records</div>
             </div>
             <div class="kpi-card success">
-              <div class="kpi-label">Sales Achievement</div>
+              <div class="kpi-label">Sales Achievement (P1)</div>
               <div class="kpi-value" id="kpiSalesAchievement">₹0</div>
-              <div class="progress-bar" style="margin-top: 8px;">
+              <div class="progress-bar" style="margin-top: 6px;">
                 <div class="progress-fill success" id="kpiSalesProgress" style="width: 0%"></div>
               </div>
               <div class="kpi-sub" id="kpiSalesAchievementSub">0% achieved</div>
             </div>
             <div class="kpi-card warning">
-              <div class="kpi-label">GP Target</div>
+              <div class="kpi-label">GP Target (P1)</div>
               <div class="kpi-value" id="kpiGpTarget">₹0</div>
               <div class="kpi-sub">Gross Profit Target</div>
             </div>
             <div class="kpi-card success">
-              <div class="kpi-label">GP Achievement</div>
+              <div class="kpi-label">GP Achievement (P1)</div>
               <div class="kpi-value" id="kpiGpAchievement">₹0</div>
-              <div class="progress-bar" style="margin-top: 8px;">
+              <div class="progress-bar" style="margin-top: 6px;">
                 <div class="progress-fill success" id="kpiGpProgress" style="width: 0%"></div>
               </div>
               <div class="kpi-sub" id="kpiGpAchievementSub">0% achieved</div>
             </div>
           </div>
 
-          <div class="grid grid-4" style="margin-top: 20px;">
+          <!-- Comparison KPI Cards -->
+          <div class="grid grid-4" style="margin-top: 16px;">
+            <div class="kpi-card info">
+              <div class="kpi-label">Sales Achievement (P2)</div>
+              <div class="kpi-value" id="kpiSalesAchievementP2">₹0</div>
+              <div class="kpi-sub" id="kpiSalesVariance">Variance: ₹0</div>
+            </div>
+            <div class="kpi-card info">
+              <div class="kpi-label">GP Achievement (P2)</div>
+              <div class="kpi-value" id="kpiGpAchievementP2">₹0</div>
+              <div class="kpi-sub" id="kpiGpVariance">Variance: ₹0</div>
+            </div>
             <div class="kpi-card info">
               <div class="kpi-label">Open Complaints</div>
               <div class="kpi-value" id="kpiOpenComplaints">0</div>
               <div class="kpi-sub" id="kpiComplaintSub">0 closed | 0 total</div>
             </div>
-            <div class="kpi-card success">
+            <div class="kpi-card info">
               <div class="kpi-label">Bank Deposit</div>
               <div class="kpi-value" id="kpiBankDeposit">₹0</div>
               <div class="kpi-sub" id="kpiCashBankSub">Counter: ₹0</div>
             </div>
-            <div class="kpi-card info">
-              <div class="kpi-label">Cash Counter</div>
-              <div class="kpi-value" id="kpiCashCounter">₹0</div>
-              <div class="kpi-sub">Online: ₹0</div>
-            </div>
-            <div class="kpi-card warning">
-              <div class="kpi-label">Online Deposit</div>
-              <div class="kpi-value" id="kpiOnlineDeposit">₹0</div>
-              <div class="kpi-sub">Digital payments</div>
-            </div>
           </div>
 
           <!-- Sales Achievement Buckets -->
-          <div class="card" style="margin-top: 20px;">
+          <div class="card" style="margin-top: 16px;">
             <div class="card-header">
               <div>
                 <h3 class="card-title">Sales Achievement Buckets (Click to Filter)</h3>
@@ -453,7 +549,7 @@
           </div>
 
           <!-- GP Achievement Buckets -->
-          <div class="card" style="margin-top: 20px;">
+          <div class="card" style="margin-top: 16px;">
             <div class="card-header">
               <div>
                 <h3 class="card-title">GP Achievement Buckets (Click to Filter)</h3>
@@ -464,15 +560,15 @@
           </div>
 
           <!-- Charts Row 1 -->
-          <div class="grid grid-2" style="margin-top: 20px;">
+          <div class="grid grid-2" style="margin-top: 16px;">
             <div class="card" id="salesTrendCard">
-              <h3 class="card-title">Sales Trend (Daily) <small style="font-size: 11px; color: #64748b;">- Click bar to filter</small></h3>
+              <h3 class="card-title">Sales Trend (Daily) <small style="font-size: 10px; color: #64748b;">- Click bar to filter</small></h3>
               <div class="chart-container">
                 <canvas id="salesTrendChart"></canvas>
               </div>
             </div>
             <div class="card" id="yardSalesCard">
-              <h3 class="card-title">Yard-wise Sales (Target vs Achievement) <small style="font-size: 11px; color: #64748b;">- Click bar to filter</small></h3>
+              <h3 class="card-title">Yard-wise Sales <small style="font-size: 10px; color: #64748b;">- Click bar to filter</small></h3>
               <div class="chart-container">
                 <canvas id="yardSalesChart"></canvas>
               </div>
@@ -480,15 +576,15 @@
           </div>
 
           <!-- Charts Row 2 -->
-          <div class="grid grid-2" style="margin-top: 20px;">
+          <div class="grid grid-2" style="margin-top: 16px;">
             <div class="card" id="topTrainsCard">
-              <h3 class="card-title">Top 10 Trains Performance <small style="font-size: 11px; color: #64748b;">- Click bar to filter</small></h3>
+              <h3 class="card-title">Top 10 Trains <small style="font-size: 10px; color: #64748b;">- Click bar to filter</small></h3>
               <div class="chart-container">
                 <canvas id="topTrainsChart"></canvas>
               </div>
             </div>
             <div class="card" id="bottomTrainsCard">
-              <h3 class="card-title">Bottom 10 Trains Performance <small style="font-size: 11px; color: #64748b;">- Click bar to filter</small></h3>
+              <h3 class="card-title">Bottom 10 Trains <small style="font-size: 10px; color: #64748b;">- Click bar to filter</small></h3>
               <div class="chart-container">
                 <canvas id="bottomTrainsChart"></canvas>
               </div>
@@ -496,15 +592,15 @@
           </div>
 
           <!-- Charts Row 3 -->
-          <div class="grid grid-2" style="margin-top: 20px;">
+          <div class="grid grid-2" style="margin-top: 16px;">
             <div class="card" id="managerCard">
-              <h3 class="card-title">Manager Contribution (GP) <small style="font-size: 11px; color: #64748b;">- Click segment to filter</small></h3>
+              <h3 class="card-title">Manager Contribution (GP) <small style="font-size: 10px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="managerChart"></canvas>
               </div>
             </div>
             <div class="card" id="trainTypeCard">
-              <h3 class="card-title">Train Type wise Sales Contribution <small style="font-size: 11px; color: #64748b;">- Click segment to filter</small></h3>
+              <h3 class="card-title">Train Type Contribution <small style="font-size: 10px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="trainTypeChart"></canvas>
               </div>
@@ -512,12 +608,12 @@
           </div>
 
           <!-- Top/Bottom 10 Tables -->
-          <div class="grid grid-2" style="margin-top: 20px;">
+          <div class="grid grid-2" style="margin-top: 16px;">
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Top 10 Train Performance</h3>
                 <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('topTrainTable', 'top_trains')">
-                  <i class="fas fa-file-excel"></i> Excel
+                  <i class="fas fa-file-excel"></i>
                 </button>
               </div>
               <div class="table-container">
@@ -527,8 +623,8 @@
                       <th>Train</th>
                       <th>Sales %</th>
                       <th>GP %</th>
-                      <th>Sales Amount</th>
-                      <th>GP Amount</th>
+                      <th>Sales Amt</th>
+                      <th>GP Amt</th>
                     </tr>
                   </thead>
                   <tbody id="topTrainTableBody"></tbody>
@@ -539,7 +635,7 @@
               <div class="card-header">
                 <h3 class="card-title">Bottom 10 Train Performance</h3>
                 <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('bottomTrainTable', 'bottom_trains')">
-                  <i class="fas fa-file-excel"></i> Excel
+                  <i class="fas fa-file-excel"></i>
                 </button>
               </div>
               <div class="table-container">
@@ -549,8 +645,8 @@
                       <th>Train</th>
                       <th>Sales %</th>
                       <th>GP %</th>
-                      <th>Sales Amount</th>
-                      <th>GP Amount</th>
+                      <th>Sales Amt</th>
+                      <th>GP Amt</th>
                     </tr>
                   </thead>
                   <tbody id="bottomTrainTableBody"></tbody>
@@ -560,14 +656,14 @@
           </div>
 
           <!-- Month-over-Month Comparison -->
-          <div class="card" style="margin-top: 20px;">
+          <div class="card" style="margin-top: 16px;">
             <div class="card-header">
               <div>
-                <h3 class="card-title">Month-over-Month (MOM) Comparison</h3>
-                <p class="card-subtitle">Sorted by GP Growth (Highest to Lowest)</p>
+                <h3 class="card-title">Period Comparison (P1 vs P2)</h3>
+                <p class="card-subtitle">Comparing selected date ranges</p>
               </div>
-              <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('momTable', 'mom_comparison')">
-                <i class="fas fa-file-excel"></i> Excel
+              <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('momTable', 'period_comparison')">
+                <i class="fas fa-file-excel"></i>
               </button>
             </div>
             <div class="table-container">
@@ -575,12 +671,12 @@
                 <thead>
                   <tr>
                     <th>Train Name</th>
-                    <th>MTD Sales</th>
-                    <th>Prev Month Sales</th>
-                    <th>Sales Variance</th>
-                    <th>MTD GP</th>
-                    <th>Prev Month GP</th>
-                    <th>GP Variance</th>
+                    <th>P1 Sales</th>
+                    <th>P2 Sales</th>
+                    <th>Sales Var</th>
+                    <th>P1 GP</th>
+                    <th>P2 GP</th>
+                    <th>GP Var</th>
                   </tr>
                 </thead>
                 <tbody id="momTableBody"></tbody>
@@ -589,14 +685,14 @@
           </div>
 
           <!-- Train Rank Table -->
-          <div class="card" style="margin-top: 20px;">
+          <div class="card" style="margin-top: 16px;">
             <div class="card-header">
               <div>
                 <h3 class="card-title">Train Rank Table</h3>
-                <p class="card-subtitle">Ranking based on: Sales Target % (Below 70%=1, 70-80%=2, 80-90%=3, Above 90%=4) + GP Target % (same scale) + Cash Deposit (0 or 1) + Complaints (0 or 1). Max 10 marks.</p>
+                <p class="card-subtitle">Ranking based on performance metrics (Max 10 marks)</p>
               </div>
               <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('rankTable', 'train_ranking')">
-                <i class="fas fa-file-excel"></i> Excel
+                <i class="fas fa-file-excel"></i>
               </button>
             </div>
             <div class="table-container">
@@ -604,15 +700,11 @@
                 <thead>
                   <tr>
                     <th>Rank</th>
-                    <th>Train Name</th>
+                    <th>Train</th>
                     <th>Sales %</th>
                     <th>GP %</th>
-                    <th>Sales Marks</th>
-                    <th>GP Marks</th>
-                    <th>Cash Marks</th>
-                    <th>Complaint Marks</th>
-                    <th>Total Marks</th>
-                    <th>Complaint Count</th>
+                    <th>Total</th>
+                    <th>Complaints</th>
                   </tr>
                 </thead>
                 <tbody id="rankTableBody"></tbody>
@@ -632,113 +724,114 @@
               </div>
               <div class="action-btns">
                 <button class="btn btn-warning btn-sm" onclick="clearComplaintFilters()">
-                  <i class="fas fa-undo"></i> Clear Filters
+                  <i class="fas fa-undo"></i> Clear
                 </button>
                 <button class="btn btn-ghost btn-sm" onclick="downloadComplaintDashboardExcel()">
-                  <i class="fas fa-file-excel"></i> Excel
-                </button>
-                <button class="btn btn-ghost btn-sm" onclick="downloadComplaintDashboardPdf()">
-                  <i class="fas fa-file-pdf"></i> PDF
+                  <i class="fas fa-file-excel"></i>
                 </button>
               </div>
             </div>
             
-            <!-- Current Period Filters -->
-            <div class="filter-row" style="background: #f0f9ff;">
-              <div style="width: 100%; margin-bottom: 8px; font-weight: 600; color: #0369a1;">
-                <i class="fas fa-calendar-alt"></i> Current Period
+            <!-- Date Range 1 (From Date Range) -->
+            <div class="date-range-section primary">
+              <div class="date-range-title">
+                <i class="fas fa-calendar-alt"></i> From Date Range (Period 1)
               </div>
-              <div class="filter-item">
-                <label>From Date</label>
-                <input type="date" id="compDashFromDate" onchange="loadComplaintDashboard()">
-              </div>
-              <div class="filter-item">
-                <label>To Date</label>
-                <input type="date" id="compDashToDate" onchange="loadComplaintDashboard()">
-              </div>
-              <div class="filter-item">
-                <label>Train</label>
-                <select id="compDashTrainFilter" onchange="loadComplaintDashboard()">
-                  <option value="">All Trains</option>
-                </select>
-              </div>
-              <div class="filter-item">
-                <label>Status</label>
-                <select id="compDashStatusFilter" onchange="loadComplaintDashboard()">
-                  <option value="">All Status</option>
-                  <option>Open</option>
-                  <option>In Progress</option>
-                  <option>Closed</option>
-                </select>
-              </div>
-              <div class="filter-item">
-                <label>Yard</label>
-                <select id="compDashYardFilter" onchange="loadComplaintDashboard()">
-                  <option value="">All Yards</option>
-                </select>
-              </div>
-            </div>
-            
-            <!-- Comparison Period Filters -->
-            <div class="filter-row" style="background: #fffbeb; margin-top: 12px;">
-              <div style="width: 100%; margin-bottom: 8px; font-weight: 600; color: #92400e;">
-                <i class="fas fa-exchange-alt"></i> Comparison Period
-              </div>
-              <div class="filter-item">
-                <label>Compare From</label>
-                <input type="date" id="compCompareFrom" onchange="loadComplaintDashboard()">
-              </div>
-              <div class="filter-item">
-                <label>Compare To</label>
-                <input type="date" id="compCompareTo" onchange="loadComplaintDashboard()">
-              </div>
-              <div class="filter-item" style="justify-content: flex-end; display: flex; align-items: flex-end;">
-                <button class="btn btn-ghost btn-sm" onclick="setDefaultComparisonRange()">
-                  <i class="fas fa-calendar"></i> Set Default (Current vs Last Month)
-                </button>
+              <div class="date-range-row">
+                <div class="date-range-item">
+                  <label>Start Date</label>
+                  <input type="date" id="compFromDate1" onchange="loadComplaintDashboard()">
+                </div>
+                <div class="date-range-item">
+                  <label>End Date</label>
+                  <input type="date" id="compToDate1" onchange="loadComplaintDashboard()">
+                </div>
+                <div class="date-range-item">
+                  <label>Train</label>
+                  <select id="compDashTrainFilter" onchange="loadComplaintDashboard()">
+                    <option value="">All Trains</option>
+                  </select>
+                </div>
+                <div class="date-range-item">
+                  <label>Status</label>
+                  <select id="compDashStatusFilter" onchange="loadComplaintDashboard()">
+                    <option value="">All Status</option>
+                    <option>Open</option>
+                    <option>In Progress</option>
+                    <option>Closed</option>
+                  </select>
+                </div>
+                <div class="date-range-item">
+                  <label>Yard</label>
+                  <select id="compDashYardFilter" onchange="loadComplaintDashboard()">
+                    <option value="">All Yards</option>
+                  </select>
+                </div>
               </div>
             </div>
             
-            <div id="compChartFilterDisplay" style="margin-top: 8px; font-size: 12px; color: #0284c7; display: none;">
+            <!-- Date Range 2 (To Date Range / Comparison) -->
+            <div class="date-range-section comparison">
+              <div class="date-range-title comparison">
+                <i class="fas fa-exchange-alt"></i> To Date Range (Period 2 - Comparison)
+              </div>
+              <div class="date-range-row">
+                <div class="date-range-item">
+                  <label>Start Date</label>
+                  <input type="date" id="compFromDate2" onchange="loadComplaintDashboard()">
+                </div>
+                <div class="date-range-item">
+                  <label>End Date</label>
+                  <input type="date" id="compToDate2" onchange="loadComplaintDashboard()">
+                </div>
+                <div class="date-range-item" style="flex: 0 0 auto;">
+                  <button class="btn btn-ghost btn-sm" onclick="setDefaultCompDateRanges()" style="margin-top: 18px;">
+                    <i class="fas fa-magic"></i> Auto (MTD vs Last Month)
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div id="compChartFilterDisplay" style="margin-top: 6px; font-size: 11px; color: #0284c7; display: none;">
               <i class="fas fa-filter"></i> <span id="compChartFilterText"></span> 
-              <button class="btn btn-sm" style="margin-left: 8px; padding: 2px 8px; font-size: 11px;" onclick="clearCompChartFilter()">Clear</button>
+              <button class="btn btn-sm" style="margin-left: 6px; padding: 2px 8px; font-size: 10px;" onclick="clearCompChartFilter()">Clear</button>
             </div>
           </div>
 
           <!-- KPI Cards -->
           <div class="grid grid-4">
             <div class="kpi-card info">
-              <div class="kpi-label">Total Complaints (Filtered)</div>
+              <div class="kpi-label">Total Complaints (P1)</div>
               <div class="kpi-value" id="compKpiTotal">0</div>
-              <div class="kpi-sub">Filtered complaint records</div>
+              <div class="kpi-sub" id="compKpiTotalRange">-</div>
             </div>
             <div class="kpi-card warning">
-              <div class="kpi-label">Current Period</div>
+              <div class="kpi-label">Period 1 Complaints</div>
               <div class="kpi-value" id="compKpiCurrent">0</div>
               <div class="kpi-sub" id="compKpiCurrentRange">-</div>
             </div>
             <div class="kpi-card success">
-              <div class="kpi-label">Comparison Period</div>
+              <div class="kpi-label">Period 2 Complaints</div>
               <div class="kpi-value" id="compKpiPrevious">0</div>
               <div class="kpi-sub" id="compKpiPreviousRange">-</div>
             </div>
             <div class="kpi-card" id="compKpiVarianceCard">
               <div class="kpi-label">Variance</div>
               <div class="kpi-value" id="compKpiVariance">0</div>
-              <div class="kpi-sub">Current minus comparison</div>
+              <div class="kpi-sub">P1 minus P2</div>
             </div>
           </div>
 
           <!-- Charts Row 1 -->
-          <div class="grid grid-2" style="margin-top: 20px;">
+          <div class="grid grid-2" style="margin-top: 16px;">
             <div class="card" id="complaintTrendCard">
-              <h3 class="card-title">Daily Complaint Trend <small style="font-size: 11px; color: #64748b;">- Click to filter</small></h3>
+              <h3 class="card-title">Daily Complaint Trend <small style="font-size: 10px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="complaintTrendChart"></canvas>
               </div>
             </div>
             <div class="card" id="complaintStatusCard">
-              <h3 class="card-title">Status Comparison <small style="font-size: 11px; color: #64748b;">- Click to filter</small></h3>
+              <h3 class="card-title">Status Comparison <small style="font-size: 10px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="complaintStatusChart"></canvas>
               </div>
@@ -746,15 +839,15 @@
           </div>
 
           <!-- Charts Row 2 -->
-          <div class="grid grid-2" style="margin-top: 20px;">
+          <div class="grid grid-2" style="margin-top: 16px;">
             <div class="card" id="complaintTrainCard">
-              <h3 class="card-title">Train-wise Comparison (Top 12) <small style="font-size: 11px; color: #64748b;">- Click to filter</small></h3>
+              <h3 class="card-title">Train-wise Comparison <small style="font-size: 10px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="complaintTrainChart"></canvas>
               </div>
             </div>
             <div class="card" id="complaintSourceCard">
-              <h3 class="card-title">Complaint Source Mix <small style="font-size: 11px; color: #64748b;">- Click to filter</small></h3>
+              <h3 class="card-title">Complaint Source Mix <small style="font-size: 10px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="complaintSourceChart"></canvas>
               </div>
@@ -762,28 +855,28 @@
           </div>
 
           <!-- Manager-wise Complaint % Chart -->
-          <div class="card" style="margin-top: 20px;">
-            <h3 class="card-title">Manager-wise Complaint Percentage <small style="font-size: 11px; color: #64748b;">- Shows complaint count as % of total</small></h3>
+          <div class="card" style="margin-top: 16px;">
+            <h3 class="card-title">Manager-wise Complaint % <small style="font-size: 10px; color: #64748b;">- Shows % of total complaints</small></h3>
             <div class="chart-container">
               <canvas id="managerComplaintChart"></canvas>
             </div>
           </div>
 
           <!-- Nature-wise Analysis Chart -->
-          <div class="card" style="margin-top: 20px;">
-            <h3 class="card-title">Nature-wise Complaint Analysis <small style="font-size: 11px; color: #64748b;">- Current vs Comparison Period</small></h3>
+          <div class="card" style="margin-top: 16px;">
+            <h3 class="card-title">Nature-wise Complaint Analysis <small style="font-size: 10px; color: #64748b;">- P1 vs P2 comparison</small></h3>
             <div class="chart-container">
               <canvas id="natureAnalysisChart"></canvas>
             </div>
           </div>
 
           <!-- Comparison Tables -->
-          <div class="grid grid-2" style="margin-top: 20px;">
+          <div class="grid grid-2" style="margin-top: 16px;">
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Train-wise Complaint Count</h3>
                 <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('compTrainTable', 'train_complaint_comparison')">
-                  <i class="fas fa-file-excel"></i> Excel
+                  <i class="fas fa-file-excel"></i>
                 </button>
               </div>
               <div class="table-container">
@@ -791,8 +884,8 @@
                   <thead>
                     <tr>
                       <th>Train Name</th>
-                      <th>Current Period</th>
-                      <th>Comparison Period</th>
+                      <th>Period 1</th>
+                      <th>Period 2</th>
                       <th>Variance</th>
                     </tr>
                   </thead>
@@ -802,18 +895,18 @@
             </div>
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Complaint Nature Comparison</h3>
+                <h3 class="card-title">Nature-wise Comparison</h3>
                 <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('compNatureTable', 'nature_comparison')">
-                  <i class="fas fa-file-excel"></i> Excel
+                  <i class="fas fa-file-excel"></i>
                 </button>
               </div>
               <div class="table-container">
                 <table id="compNatureTable" class="comparison-table">
                   <thead>
                     <tr>
-                      <th>Complaint Nature</th>
-                      <th>Current Period</th>
-                      <th>Comparison Period</th>
+                      <th>Nature</th>
+                      <th>Period 1</th>
+                      <th>Period 2</th>
                       <th>Variance</th>
                     </tr>
                   </thead>
@@ -823,6 +916,7 @@
             </div>
           </div>
         </div>
+
 
         <!-- Sales Entry Page -->
         <div id="page-sales" class="page-content hidden">
@@ -834,7 +928,7 @@
               </div>
               <div class="action-btns">
                 <button class="btn btn-ghost btn-sm" onclick="document.getElementById('salesImportFile').click()">
-                  <i class="fas fa-file-import"></i> Import Excel
+                  <i class="fas fa-file-import"></i> Import
                 </button>
                 <input type="file" id="salesImportFile" accept=".xlsx,.xls" style="display: none;" onchange="importSalesExcel(this)">
                 <button class="btn btn-ghost btn-sm" onclick="downloadSalesSample()">
@@ -928,7 +1022,7 @@
                 </div>
               </div>
 
-              <div style="display: flex; gap: 12px; margin-top: 20px;">
+              <div style="display: flex; gap: 10px; margin-top: 16px;">
                 <button class="btn btn-primary" onclick="validateAndSaveSalesEntry()">
                   <i class="fas fa-save"></i> Save Entry
                 </button>
@@ -997,7 +1091,7 @@
               </div>
               <div class="action-btns">
                 <button class="btn btn-ghost btn-sm" onclick="document.getElementById('complaintImportFile').click()">
-                  <i class="fas fa-file-import"></i> Import Excel
+                  <i class="fas fa-file-import"></i> Import
                 </button>
                 <input type="file" id="complaintImportFile" accept=".xlsx,.xls" style="display: none;" onchange="importComplaintExcel(this)">
                 <button class="btn btn-ghost btn-sm" onclick="downloadComplaintSample()">
@@ -1129,7 +1223,7 @@
                 </div>
               </div>
 
-              <div style="display: flex; gap: 12px; margin-top: 20px;">
+              <div style="display: flex; gap: 10px; margin-top: 16px;">
                 <button class="btn btn-primary" onclick="saveComplaint()">
                   <i class="fas fa-save"></i> Save Complaint
                 </button>
@@ -1201,10 +1295,7 @@
               </div>
               <div class="action-btns">
                 <button class="btn btn-ghost btn-sm" onclick="downloadCashDashboardExcel()">
-                  <i class="fas fa-file-excel"></i> Excel
-                </button>
-                <button class="btn btn-ghost btn-sm" onclick="downloadCashDashboardPdf()">
-                  <i class="fas fa-file-pdf"></i> PDF
+                  <i class="fas fa-file-excel"></i>
                 </button>
               </div>
             </div>
@@ -1224,7 +1315,7 @@
                 </select>
               </div>
               <div class="filter-item">
-                <label>Train Manager</label>
+                <label>Manager</label>
                 <select id="cashDashManagerFilter" onchange="loadCashDashboard()">
                   <option value="">All Managers</option>
                 </select>
@@ -1261,7 +1352,7 @@
             </div>
           </div>
 
-          <div class="grid grid-4" style="margin-top: 20px;">
+          <div class="grid grid-4" style="margin-top: 16px;">
             <div class="kpi-card danger" id="shortageCard" style="display: none;">
               <div class="kpi-label">Shortage Amount</div>
               <div class="kpi-value" id="cashKpiShortage">₹0</div>
@@ -1285,26 +1376,26 @@
           </div>
 
           <!-- Manager-wise Cash Deposit Table -->
-          <div class="card" style="margin-top: 20px;">
+          <div class="card" style="margin-top: 16px;">
             <div class="card-header">
               <div>
                 <h3 class="card-title">Manager-wise Cash Deposit Summary</h3>
                 <p class="card-subtitle">GP Achievement vs Cash Deposit comparison</p>
               </div>
               <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('managerCashTable', 'manager_cash_summary')">
-                <i class="fas fa-file-excel"></i> Excel
+                <i class="fas fa-file-excel"></i>
               </button>
             </div>
             <div class="table-container">
               <table id="managerCashTable">
                 <thead>
                   <tr>
-                    <th>Manager Name</th>
-                    <th>GP Achievement</th>
-                    <th>Cash Deposit</th>
-                    <th>Online Deposit</th>
-                    <th>Total Deposit</th>
-                    <th>Difference</th>
+                    <th>Manager</th>
+                    <th>GP</th>
+                    <th>Cash</th>
+                    <th>Online</th>
+                    <th>Total</th>
+                    <th>Diff</th>
                     <th>Status</th>
                   </tr>
                 </thead>
@@ -1314,7 +1405,7 @@
           </div>
 
           <!-- Cash Entry Form -->
-          <div class="card" style="margin-top: 20px;">
+          <div class="card" style="margin-top: 16px;">
             <div class="card-header">
               <div>
                 <h3 class="card-title">Cash & Bank Deposit Entry</h3>
@@ -1322,7 +1413,7 @@
               </div>
               <div class="action-btns">
                 <button class="btn btn-ghost btn-sm" onclick="document.getElementById('cashImportFile').click()">
-                  <i class="fas fa-file-import"></i> Import Excel
+                  <i class="fas fa-file-import"></i> Import
                 </button>
                 <input type="file" id="cashImportFile" accept=".xlsx,.xls" style="display: none;" onchange="importCashExcel(this)">
                 <button class="btn btn-ghost btn-sm" onclick="downloadCashSample()">
@@ -1339,7 +1430,7 @@
             <div id="cashEntryTab">
               <div id="shortageAlert" class="shortage-alert hidden">
                 <h4><i class="fas fa-exclamation-triangle"></i> Shortage Detected</h4>
-                <p>Total deposit (Cash + Online) is less than GP Achievement. Please provide a reason below.</p>
+                <p>Total deposit is less than GP Achievement. Please provide a reason.</p>
               </div>
 
               <div class="form-row">
@@ -1367,7 +1458,7 @@
 
               <div class="form-row">
                 <div class="form-field">
-                  <label>GP Achievement (Auto-filled from Sales)</label>
+                  <label>GP Achievement (Auto)</label>
                   <input type="number" id="cashGpFromSales" readonly placeholder="Will be auto-filled">
                 </div>
                 <div class="form-field">
@@ -1406,7 +1497,7 @@
                 </div>
               </div>
 
-              <div style="display: flex; gap: 12px; margin-top: 20px;">
+              <div style="display: flex; gap: 10px; margin-top: 16px;">
                 <button class="btn btn-primary" onclick="saveCashEntry()">
                   <i class="fas fa-save"></i> Save Entry
                 </button>
@@ -1446,11 +1537,11 @@
                       <th>Date</th>
                       <th>Yard</th>
                       <th>Train</th>
-                      <th>GP Achievement</th>
-                      <th>Cash Deposit</th>
-                      <th>Online Deposit</th>
+                      <th>GP</th>
+                      <th>Cash</th>
+                      <th>Online</th>
                       <th>Total</th>
-                      <th>Shortage Reason</th>
+                      <th>Reason</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -1491,7 +1582,7 @@
             <i class="fas fa-exclamation-triangle"></i>
             <div>
               <strong>No Master Data Found!</strong>
-              <p style="margin: 4px 0 0 0; font-size: 13px;">Please import or add train master data to start using the system.</p>
+              <p style="margin: 4px 0 0 0; font-size: 12px;">Please import or add train master data to start using the system.</p>
             </div>
           </div>
 
@@ -1503,7 +1594,7 @@
               </div>
               <div class="action-btns">
                 <button class="btn btn-ghost btn-sm" onclick="document.getElementById('masterImportFile').click()">
-                  <i class="fas fa-file-import"></i> Import Excel
+                  <i class="fas fa-file-import"></i> Import
                 </button>
                 <input type="file" id="masterImportFile" accept=".xlsx,.xls" style="display: none;" onchange="importMasterExcel(this)">
                 <button class="btn btn-ghost btn-sm" onclick="downloadMasterSample()">
@@ -1567,7 +1658,7 @@
               </div>
             </div>
 
-            <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <div style="display: flex; gap: 10px; margin-top: 16px;">
               <button class="btn btn-primary" onclick="saveTrainMaster()">
                 <i class="fas fa-save"></i> Save Train
               </button>
@@ -1581,27 +1672,27 @@
             <h3 class="card-title">Master Values Management</h3>
             <div class="grid grid-3">
               <div>
-                <label style="display: block; margin-bottom: 8px; font-size: 13px; color: #475569; font-weight: 500;">Add New Yard</label>
-                <div style="display: flex; gap: 8px;">
-                  <input type="text" id="newYard" placeholder="Yard name" style="flex: 1; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b;">
+                <label style="display: block; margin-bottom: 6px; font-size: 12px; color: #475569; font-weight: 500;">Add New Yard</label>
+                <div style="display: flex; gap: 6px;">
+                  <input type="text" id="newYard" placeholder="Yard name" style="flex: 1; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b; font-size: 14px;">
                   <button class="btn btn-success btn-sm" onclick="addYard()">
                     <i class="fas fa-plus"></i>
                   </button>
                 </div>
               </div>
               <div>
-                <label style="display: block; margin-bottom: 8px; font-size: 13px; color: #475569; font-weight: 500;">Add Cluster Manager</label>
-                <div style="display: flex; gap: 8px;">
-                  <input type="text" id="newClusterManager" placeholder="Manager name" style="flex: 1; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b;">
+                <label style="display: block; margin-bottom: 6px; font-size: 12px; color: #475569; font-weight: 500;">Add Cluster Manager</label>
+                <div style="display: flex; gap: 6px;">
+                  <input type="text" id="newClusterManager" placeholder="Manager name" style="flex: 1; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b; font-size: 14px;">
                   <button class="btn btn-success btn-sm" onclick="addClusterManager()">
                     <i class="fas fa-plus"></i>
                   </button>
                 </div>
               </div>
               <div>
-                <label style="display: block; margin-bottom: 8px; font-size: 13px; color: #475569; font-weight: 500;">Add Train Manager</label>
-                <div style="display: flex; gap: 8px;">
-                  <input type="text" id="newTrainManager" placeholder="Manager name" style="flex: 1; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b;">
+                <label style="display: block; margin-bottom: 6px; font-size: 12px; color: #475569; font-weight: 500;">Add Train Manager</label>
+                <div style="display: flex; gap: 6px;">
+                  <input type="text" id="newTrainManager" placeholder="Manager name" style="flex: 1; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b; font-size: 14px;">
                   <button class="btn btn-success btn-sm" onclick="addTrainManager()">
                     <i class="fas fa-plus"></i>
                   </button>
@@ -1614,19 +1705,19 @@
             <div class="card-header">
               <h3 class="card-title">Train Master List</h3>
               <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('masterTable', 'train_master_list')">
-                <i class="fas fa-file-excel"></i> Excel
+                <i class="fas fa-file-excel"></i>
               </button>
             </div>
             <div class="table-container">
               <table id="masterTable">
                 <thead>
                   <tr>
-                    <th>Train Name</th>
+                    <th>Train</th>
                     <th>Number</th>
                     <th>Yard</th>
                     <th>Type</th>
-                    <th>Cluster Manager</th>
-                    <th>Train Manager</th>
+                    <th>Cluster</th>
+                    <th>Manager</th>
                     <th>Sales Target</th>
                     <th>GP Target</th>
                   </tr>
@@ -1687,11 +1778,11 @@
                 </div>
               </div>
 
-              <div id="superAdminWarning" class="alert alert-error hidden" style="margin-top: 16px;">
+              <div id="superAdminWarning" class="alert alert-error hidden" style="margin-top: 14px;">
                 <i class="fas fa-exclamation-circle"></i> Only the primary super admin (sandipnandi2000@gmail.com) can create other super admin accounts.
               </div>
 
-              <div style="display: flex; gap: 12px; margin-top: 20px;">
+              <div style="display: flex; gap: 10px; margin-top: 16px;">
                 <button class="btn btn-primary" onclick="saveUser()">
                   <i class="fas fa-save"></i> Save User
                 </button>
@@ -1727,7 +1818,7 @@
           <div class="grid grid-2">
             <div class="card">
               <h3 class="card-title"><i class="fas fa-database"></i> Data Backup & Restore</h3>
-              <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; flex-direction: column; gap: 10px;">
                 <button class="btn btn-primary" onclick="downloadBackup()">
                   <i class="fas fa-download"></i> Download Full Backup
                 </button>
@@ -1742,7 +1833,7 @@
             <div class="card">
               <h3 class="card-title"><i class="fas fa-cloud"></i> Cloud Sync</h3>
               <p class="card-subtitle">Sync data with Firebase cloud storage</p>
-              <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
                 <button class="btn btn-success" onclick="syncToCloud()">
                   <i class="fas fa-cloud-upload-alt"></i> Push to Cloud
                 </button>
@@ -1750,39 +1841,38 @@
                   <i class="fas fa-cloud-download-alt"></i> Pull from Cloud
                 </button>
               </div>
-              <div id="cloudStatus" style="margin-top: 12px; font-size: 12px; color: #64748b;"></div>
+              <div id="cloudStatus" style="margin-top: 10px; font-size: 11px; color: #64748b;"></div>
             </div>
           </div>
 
           <div class="card">
             <h3 class="card-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Danger Zone</h3>
             <p class="card-subtitle">These actions cannot be undone. Use with caution!</p>
-            <div class="grid grid-4" style="margin-top: 20px;">
-              <div style="padding: 16px; background: #fef2f2; border-radius: 12px; border: 1px solid #fca5a5;">
-                <h4 style="color: #dc2626; margin: 0 0 12px 0;">Reset Sales Data</h4>
-                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Delete all sales entries</p>
-                <input type="file" id="resetSalesFile" accept=".xlsx,.xls" style="display: none;" onchange="resetAndImportSales(this)">
+            <div class="grid grid-4" style="margin-top: 16px;">
+              <div style="padding: 14px; background: #fef2f2; border-radius: 10px; border: 1px solid #fca5a5;">
+                <h4 style="color: #dc2626; margin: 0 0 10px 0; font-size: 13px;">Reset Sales Data</h4>
+                <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Delete all sales entries</p>
                 <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="if(confirm('Delete ALL sales data? This cannot be undone!')) { appData.sales = []; saveData(); showAlert('All sales data deleted', 'success'); loadDashboard(); }">
                   <i class="fas fa-trash"></i> Delete All
                 </button>
               </div>
-              <div style="padding: 16px; background: #fef2f2; border-radius: 12px; border: 1px solid #fca5a5;">
-                <h4 style="color: #dc2626; margin: 0 0 12px 0;">Reset Complaints</h4>
-                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Delete all complaint records</p>
+              <div style="padding: 14px; background: #fef2f2; border-radius: 10px; border: 1px solid #fca5a5;">
+                <h4 style="color: #dc2626; margin: 0 0 10px 0; font-size: 13px;">Reset Complaints</h4>
+                <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Delete all complaint records</p>
                 <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="if(confirm('Delete ALL complaint data? This cannot be undone!')) { appData.complaints = []; saveData(); showAlert('All complaint data deleted', 'success'); loadDashboard(); }">
                   <i class="fas fa-trash"></i> Delete All
                 </button>
               </div>
-              <div style="padding: 16px; background: #fef2f2; border-radius: 12px; border: 1px solid #fca5a5;">
-                <h4 style="color: #dc2626; margin: 0 0 12px 0;">Reset Cash Data</h4>
-                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Delete all cash deposit records</p>
+              <div style="padding: 14px; background: #fef2f2; border-radius: 10px; border: 1px solid #fca5a5;">
+                <h4 style="color: #dc2626; margin: 0 0 10px 0; font-size: 13px;">Reset Cash Data</h4>
+                <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Delete all cash deposit records</p>
                 <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="if(confirm('Delete ALL cash deposit data? This cannot be undone!')) { appData.cash = []; saveData(); showAlert('All cash data deleted', 'success'); loadDashboard(); }">
                   <i class="fas fa-trash"></i> Delete All
                 </button>
               </div>
-              <div style="padding: 16px; background: #fef2f2; border-radius: 12px; border: 1px solid #fca5a5;">
-                <h4 style="color: #dc2626; margin: 0 0 12px 0;">Reset Everything</h4>
-                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Reset to default data</p>
+              <div style="padding: 14px; background: #fef2f2; border-radius: 10px; border: 1px solid #fca5a5;">
+                <h4 style="color: #dc2626; margin: 0 0 10px 0; font-size: 13px;">Reset Everything</h4>
+                <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Reset to default data</p>
                 <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="if(confirm('Reset ALL data to defaults? This cannot be undone!')) { resetToDefault(); }">
                   <i class="fas fa-redo"></i> Reset All
                 </button>
@@ -1828,9 +1918,9 @@
           <i class="fas fa-code"></i> Developed by Sandip Nandi
         </div>
         <div class="support-info">
-          <i class="fas fa-headset"></i> Support: +91 98765 43210 | sandipnandi2000@gmail.com
+          <i class="fas fa-headset"></i> Support: +91 8584833366 | sandipnandi2000@gmail.com
         </div>
-        <div style="margin-top: 8px; color: #94a3b8;">
+        <div class="copyright">
           © 2024 RK Group - Railway Catering Management System
         </div>
       </div>
@@ -1856,7 +1946,7 @@
       </div>
       <div class="gp-warning-text">
         <p>GP Achievement is <strong id="gpWarningPct">0%</strong></p>
-        <p style="font-size: 14px; margin-top: 8px;">This is below the 95% threshold. Please provide approval details.</p>
+        <p style="font-size: 13px; margin-top: 6px;">This is below the 95% threshold. Please provide approval details.</p>
       </div>
       <div class="form-row">
         <div class="form-field" style="grid-column: 1 / -1;">
@@ -1870,7 +1960,7 @@
           <textarea id="gpApprovalRemarks" rows="2" placeholder="Enter approval remarks..."></textarea>
         </div>
       </div>
-      <div style="display: flex; gap: 12px; margin-top: 20px;">
+      <div style="display: flex; gap: 10px; margin-top: 16px;">
         <button class="btn btn-primary" onclick="confirmGpApproval()" style="flex: 1;">
           <i class="fas fa-check"></i> Confirm & Save
         </button>
@@ -2002,6 +2092,21 @@
       document.getElementById('cashDate') && (document.getElementById('cashDate').value = today);
     }
 
+    // ==================== MOBILE SIDEBAR ====================
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    }
+
+    function closeSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    }
+
     // ==================== AUTHENTICATION ====================
     function handleLogin() {
       const email = document.getElementById('loginEmail').value.trim();
@@ -2031,6 +2136,7 @@
       document.getElementById('appContainer').style.display = 'none';
       document.getElementById('loginEmail').value = '';
       document.getElementById('loginPassword').value = '';
+      closeSidebar();
     }
 
     function showApp() {
@@ -2068,6 +2174,9 @@
       };
       document.getElementById('pageTitle').textContent = titles[page] || page;
 
+      // Close sidebar on mobile when changing pages
+      closeSidebar();
+
       if (page === 'dashboard') { loadDashboard(); populateDashboardFilters(); }
       else if (page === 'complaintDashboard') { loadComplaintDashboard(); populateComplaintDashboardFilters(); }
       else if (page === 'sales') loadSalesPage();
@@ -2078,12 +2187,65 @@
       else if (page === 'admin') loadAdminPage();
     }
 
+    // ==================== DATE RANGE HELPERS ====================
+    function setDefaultDateRanges() {
+      const now = new Date();
+      const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      // Calculate same period last month
+      const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastMonthEnd = new Date(now.getFullYear(), now.getMonth() - 1, yesterday.getDate());
+      
+      // Set Period 1 (Current Month MTD)
+      document.getElementById('dashFromDate1').value = currentMonthStart.toISOString().split('T')[0];
+      document.getElementById('dashToDate1').value = yesterday.toISOString().split('T')[0];
+      
+      // Set Period 2 (Last Month same period)
+      document.getElementById('dashFromDate2').value = lastMonthStart.toISOString().split('T')[0];
+      document.getElementById('dashToDate2').value = lastMonthEnd.toISOString().split('T')[0];
+      
+      loadDashboard();
+      showAlert('Date ranges set: Current Month MTD vs Last Month same period', 'success');
+    }
+
+    function setDefaultCompDateRanges() {
+      const now = new Date();
+      const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      // Calculate same period last month
+      const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastMonthEnd = new Date(now.getFullYear(), now.getMonth() - 1, yesterday.getDate());
+      
+      // Set Period 1 (Current Month MTD)
+      document.getElementById('compFromDate1').value = currentMonthStart.toISOString().split('T')[0];
+      document.getElementById('compToDate1').value = yesterday.toISOString().split('T')[0];
+      
+      // Set Period 2 (Last Month same period)
+      document.getElementById('compFromDate2').value = lastMonthStart.toISOString().split('T')[0];
+      document.getElementById('compToDate2').value = lastMonthEnd.toISOString().split('T')[0];
+      
+      loadComplaintDashboard();
+      showAlert('Date ranges set: Current Month MTD vs Last Month same period', 'success');
+    }
+
     // ==================== FILTER FUNCTIONS ====================
-    function getFilteredSales() {
+    function getFilteredSales(period) {
       let filtered = [...(appData.sales || [])];
       
-      const fromDate = document.getElementById('dashFromDate')?.value;
-      const toDate = document.getElementById('dashToDate')?.value;
+      let fromDate, toDate;
+      
+      if (period === 1) {
+        fromDate = document.getElementById('dashFromDate1')?.value;
+        toDate = document.getElementById('dashToDate1')?.value;
+      } else if (period === 2) {
+        fromDate = document.getElementById('dashFromDate2')?.value;
+        toDate = document.getElementById('dashToDate2')?.value;
+      }
+      
       const trainFilter = document.getElementById('dashTrainFilter')?.value;
       const managerFilter = document.getElementById('dashManagerFilter')?.value;
       const yardFilter = document.getElementById('dashYardFilter')?.value;
@@ -2135,11 +2297,19 @@
       }
     }
 
-    function getFilteredComplaints() {
+    function getFilteredComplaints(period) {
       let filtered = [...(appData.complaints || [])];
       
-      const fromDate = document.getElementById('compDashFromDate')?.value;
-      const toDate = document.getElementById('compDashToDate')?.value;
+      let fromDate, toDate;
+      
+      if (period === 1) {
+        fromDate = document.getElementById('compFromDate1')?.value;
+        toDate = document.getElementById('compToDate1')?.value;
+      } else if (period === 2) {
+        fromDate = document.getElementById('compFromDate2')?.value;
+        toDate = document.getElementById('compToDate2')?.value;
+      }
+      
       const trainFilter = document.getElementById('compDashTrainFilter')?.value;
       const statusFilter = document.getElementById('compDashStatusFilter')?.value;
       const yardFilter = document.getElementById('compDashYardFilter')?.value;
@@ -2192,9 +2362,10 @@
     }
 
     function clearSalesFilters() {
-      document.getElementById('dashFromDate').value = '';
-      document.getElementById('dashToDate').value = '';
-      document.getElementById('dashSingleDate').value = '';
+      document.getElementById('dashFromDate1').value = '';
+      document.getElementById('dashToDate1').value = '';
+      document.getElementById('dashFromDate2').value = '';
+      document.getElementById('dashToDate2').value = '';
       document.getElementById('dashTrainFilter').value = '';
       document.getElementById('dashManagerFilter').value = '';
       document.getElementById('dashYardFilter').value = '';
@@ -2210,46 +2381,19 @@
     }
 
     function clearComplaintFilters() {
-      document.getElementById('compDashFromDate').value = '';
-      document.getElementById('compDashToDate').value = '';
+      document.getElementById('compFromDate1').value = '';
+      document.getElementById('compToDate1').value = '';
+      document.getElementById('compFromDate2').value = '';
+      document.getElementById('compToDate2').value = '';
       document.getElementById('compDashTrainFilter').value = '';
       document.getElementById('compDashStatusFilter').value = '';
       document.getElementById('compDashYardFilter').value = '';
-      document.getElementById('compCompareFrom').value = '';
-      document.getElementById('compCompareTo').value = '';
       compChartFilter = { type: null, value: null };
       loadComplaintDashboard();
     }
 
     function clearCompChartFilter() {
       compChartFilter = { type: null, value: null };
-      loadComplaintDashboard();
-    }
-
-    function applySingleDate() {
-      const date = document.getElementById('dashSingleDate').value;
-      if (date) {
-        document.getElementById('dashFromDate').value = date;
-        document.getElementById('dashToDate').value = date;
-        loadDashboard();
-      }
-    }
-
-    function setDefaultComparisonRange() {
-      const now = new Date();
-      const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const yesterday = new Date(now);
-      yesterday.setDate(yesterday.getDate() - 1);
-      
-      // Calculate same period last month
-      const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      const lastMonthEnd = new Date(now.getFullYear(), now.getMonth() - 1, yesterday.getDate());
-      
-      document.getElementById('compDashFromDate').value = currentMonthStart.toISOString().split('T')[0];
-      document.getElementById('compDashToDate').value = yesterday.toISOString().split('T')[0];
-      document.getElementById('compCompareFrom').value = lastMonthStart.toISOString().split('T')[0];
-      document.getElementById('compCompareTo').value = lastMonthEnd.toISOString().split('T')[0];
-      
       loadComplaintDashboard();
     }
 
@@ -2264,73 +2408,88 @@
       loadDashboard();
     }
 
-    // ==================== DASHBOARD ====================
+    // ==================== SALES DASHBOARD ====================
     function loadDashboard() {
-      const sales = getFilteredSales();
-      const complaints = getFilteredComplaints();
+      // Get data for both periods
+      const salesP1 = getFilteredSales(1);
+      const salesP2 = getFilteredSales(2);
+      
+      // Get complaints for Period 1 date range
+      const fromDate1 = document.getElementById('dashFromDate1')?.value;
+      const toDate1 = document.getElementById('dashToDate1')?.value;
+      let complaints = [...(appData.complaints || [])];
+      if (fromDate1) complaints = complaints.filter(c => c.date >= fromDate1);
+      if (toDate1) complaints = complaints.filter(c => c.date <= toDate1);
+      if (currentUser.yard !== 'ALL') complaints = complaints.filter(c => c.yard === currentUser.yard);
+      
       const cash = appData.cash || [];
 
-      // Calculate KPIs
-      const salesTarget = sales.reduce((sum, s) => sum + (Number(s.salesTarget) || 0), 0);
-      const salesAchievement = sales.reduce((sum, s) => sum + (Number(s.salesAchievement) || 0), 0);
-      const gpTarget = sales.reduce((sum, s) => sum + (Number(s.gpTarget) || 0), 0);
-      const gpAchievement = sales.reduce((sum, s) => sum + (Number(s.gpAchievement) || 0), 0);
+      // Calculate KPIs for Period 1
+      const salesTargetP1 = salesP1.reduce((sum, s) => sum + (Number(s.salesTarget) || 0), 0);
+      const salesAchievementP1 = salesP1.reduce((sum, s) => sum + (Number(s.salesAchievement) || 0), 0);
+      const gpTargetP1 = salesP1.reduce((sum, s) => sum + (Number(s.gpTarget) || 0), 0);
+      const gpAchievementP1 = salesP1.reduce((sum, s) => sum + (Number(s.gpAchievement) || 0), 0);
       
-      // Get all complaints for the filtered date range (not just filtered by other criteria)
-      const dashFromDate = document.getElementById('dashFromDate')?.value;
-      const dashToDate = document.getElementById('dashToDate')?.value;
-      let allComplaints = [...(appData.complaints || [])];
-      if (dashFromDate) allComplaints = allComplaints.filter(c => c.date >= dashFromDate);
-      if (dashToDate) allComplaints = allComplaints.filter(c => c.date <= dashToDate);
-      if (currentUser.yard !== 'ALL') allComplaints = allComplaints.filter(c => c.yard === currentUser.yard);
+      // Calculate KPIs for Period 2
+      const salesAchievementP2 = salesP2.reduce((sum, s) => sum + (Number(s.salesAchievement) || 0), 0);
+      const gpAchievementP2 = salesP2.reduce((sum, s) => sum + (Number(s.gpAchievement) || 0), 0);
       
-      const openComplaints = allComplaints.filter(c => c.status === 'Open').length;
-      const closedComplaints = allComplaints.filter(c => c.status === 'Closed').length;
-      const totalComplaints = allComplaints.length;
+      const openComplaints = complaints.filter(c => c.status === 'Open').length;
+      const closedComplaints = complaints.filter(c => c.status === 'Closed').length;
+      const totalComplaints = complaints.length;
       
       const bankDeposit = cash.reduce((sum, c) => sum + (Number(c.totalDeposit) || 0), 0);
       const cashCounter = cash.reduce((sum, c) => sum + (Number(c.cashDepositCounter) || 0), 0);
       const onlineDeposit = cash.reduce((sum, c) => sum + (Number(c.onlineDeposit) || 0), 0);
 
-      // Update KPI cards - NO DECIMALS
-      document.getElementById('kpiSalesTarget').textContent = formatCurrency(salesTarget);
-      document.getElementById('kpiSalesTargetSub').textContent = sales.length + ' filtered records';
-      document.getElementById('kpiSalesAchievement').textContent = formatCurrency(salesAchievement);
-      document.getElementById('kpiSalesAchievementSub').textContent = salesTarget > 0 ? 
-        Math.round((salesAchievement / salesTarget) * 100) + '% achieved' : '0% achieved';
-      document.getElementById('kpiSalesProgress').style.width = salesTarget > 0 ? 
-        Math.min((salesAchievement / salesTarget) * 100, 100) + '%' : '0%';
+      // Update KPI cards - Period 1
+      document.getElementById('kpiSalesTarget').textContent = formatCurrency(salesTargetP1);
+      document.getElementById('kpiSalesTargetSub').textContent = salesP1.length + ' records';
+      document.getElementById('kpiSalesAchievement').textContent = formatCurrency(salesAchievementP1);
+      document.getElementById('kpiSalesAchievementSub').textContent = salesTargetP1 > 0 ? 
+        Math.round((salesAchievementP1 / salesTargetP1) * 100) + '% achieved' : '0% achieved';
+      document.getElementById('kpiSalesProgress').style.width = salesTargetP1 > 0 ? 
+        Math.min((salesAchievementP1 / salesTargetP1) * 100, 100) + '%' : '0%';
 
-      document.getElementById('kpiGpTarget').textContent = formatCurrency(gpTarget);
-      document.getElementById('kpiGpAchievement').textContent = formatCurrency(gpAchievement);
-      document.getElementById('kpiGpAchievementSub').textContent = gpTarget > 0 ? 
-        Math.round((gpAchievement / gpTarget) * 100) + '% achieved' : '0% achieved';
-      document.getElementById('kpiGpProgress').style.width = gpTarget > 0 ? 
-        Math.min((gpAchievement / gpTarget) * 100, 100) + '%' : '0%';
+      document.getElementById('kpiGpTarget').textContent = formatCurrency(gpTargetP1);
+      document.getElementById('kpiGpAchievement').textContent = formatCurrency(gpAchievementP1);
+      document.getElementById('kpiGpAchievementSub').textContent = gpTargetP1 > 0 ? 
+        Math.round((gpAchievementP1 / gpTargetP1) * 100) + '% achieved' : '0% achieved';
+      document.getElementById('kpiGpProgress').style.width = gpTargetP1 > 0 ? 
+        Math.min((gpAchievementP1 / gpTargetP1) * 100, 100) + '%' : '0%';
+
+      // Update Period 2 KPIs
+      document.getElementById('kpiSalesAchievementP2').textContent = formatCurrency(salesAchievementP2);
+      const salesVariance = salesAchievementP1 - salesAchievementP2;
+      document.getElementById('kpiSalesVariance').textContent = 'Variance: ' + (salesVariance >= 0 ? '+' : '') + formatCurrency(salesVariance);
+      document.getElementById('kpiSalesVariance').className = salesVariance >= 0 ? 'kpi-sub comparison-positive' : 'kpi-sub comparison-negative';
+      
+      document.getElementById('kpiGpAchievementP2').textContent = formatCurrency(gpAchievementP2);
+      const gpVariance = gpAchievementP1 - gpAchievementP2;
+      document.getElementById('kpiGpVariance').textContent = 'Variance: ' + (gpVariance >= 0 ? '+' : '') + formatCurrency(gpVariance);
+      document.getElementById('kpiGpVariance').className = gpVariance >= 0 ? 'kpi-sub comparison-positive' : 'kpi-sub comparison-negative';
 
       document.getElementById('kpiOpenComplaints').textContent = openComplaints;
       document.getElementById('kpiComplaintSub').textContent = closedComplaints + ' closed | ' + totalComplaints + ' total';
       document.getElementById('kpiBankDeposit').textContent = formatCurrency(bankDeposit);
       document.getElementById('kpiCashBankSub').textContent = 'Counter: ' + formatCurrency(cashCounter);
-      document.getElementById('kpiCashCounter').textContent = formatCurrency(cashCounter);
-      document.getElementById('kpiOnlineDeposit').textContent = formatCurrency(onlineDeposit);
 
       // Render buckets
-      renderSalesBuckets(sales);
-      renderGpBuckets(sales);
+      renderSalesBuckets(salesP1);
+      renderGpBuckets(salesP1);
 
       // Render charts
-      renderSalesTrendChart(sales);
-      renderYardSalesChart(sales);
-      renderTopTrainsChart(sales);
-      renderBottomTrainsChart(sales);
-      renderManagerChart(sales);
-      renderTrainTypeChart(sales);
+      renderSalesTrendChart(salesP1);
+      renderYardSalesChart(salesP1);
+      renderTopTrainsChart(salesP1);
+      renderBottomTrainsChart(salesP1);
+      renderManagerChart(salesP1);
+      renderTrainTypeChart(salesP1);
 
       // Render tables
-      renderTopBottomTables(sales);
-      renderMOMTable(sales);
-      renderRankTable(sales, allComplaints, cash);
+      renderTopBottomTables(salesP1);
+      renderPeriodComparisonTable(salesP1, salesP2);
+      renderRankTable(salesP1, complaints, cash);
 
       // Update filter displays
       updateActiveFiltersDisplay();
@@ -2338,17 +2497,17 @@
     }
 
     function updateActiveFiltersDisplay() {
+      const fromDate1 = document.getElementById('dashFromDate1')?.value;
+      const toDate1 = document.getElementById('dashToDate1')?.value;
+      const fromDate2 = document.getElementById('dashFromDate2')?.value;
+      const toDate2 = document.getElementById('dashToDate2')?.value;
+      
       const filters = [];
-      if (document.getElementById('dashFromDate')?.value) filters.push('From: ' + document.getElementById('dashFromDate').value);
-      if (document.getElementById('dashToDate')?.value) filters.push('To: ' + document.getElementById('dashToDate').value);
-      if (document.getElementById('dashTrainFilter')?.value) filters.push('Train: ' + document.getElementById('dashTrainFilter').value);
-      if (document.getElementById('dashManagerFilter')?.value) filters.push('Manager: ' + document.getElementById('dashManagerFilter').value);
-      if (document.getElementById('dashYardFilter')?.value) filters.push('Yard: ' + document.getElementById('dashYardFilter').value);
-      if (salesBucketFilter) filters.push('Sales: ' + salesBucketFilter);
-      if (gpBucketFilter) filters.push('GP: ' + gpBucketFilter);
+      if (fromDate1 && toDate1) filters.push('P1: ' + fromDate1 + ' to ' + toDate1);
+      if (fromDate2 && toDate2) filters.push('P2: ' + fromDate2 + ' to ' + toDate2);
       
       const display = document.getElementById('activeFilters');
-      if (display) display.innerHTML = filters.length > 0 ? '<strong>Active Filters:</strong> ' + filters.join(' | ') : '';
+      if (display) display.innerHTML = filters.length > 0 ? '<strong>Active Date Ranges:</strong> ' + filters.join(' | ') : '';
     }
 
     function updateChartFilterDisplay() {
@@ -2405,7 +2564,7 @@
     }
 
 
-    // ==================== CHART RENDERING WITH INTERACTIVITY ====================
+    // ==================== CHART RENDERING ====================
     function renderSalesTrendChart(sales) {
       const ctx = document.getElementById('salesTrendChart');
       if (!ctx) return;
@@ -2423,7 +2582,7 @@
             label: 'Sales Achievement',
             data: sortedDates.map(d => dateMap[d]),
             backgroundColor: '#0ea5e9',
-            borderRadius: 6
+            borderRadius: 4
           }]
         },
         options: {
@@ -2439,8 +2598,8 @@
           },
           plugins: { legend: { display: false } },
           scales: {
-            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
-            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
@@ -2467,8 +2626,8 @@
         data: {
           labels: yards,
           datasets: [
-            { label: 'Target', data: yards.map(y => yardMap[y].target), backgroundColor: '#f59e0b', borderRadius: 6 },
-            { label: 'Achievement', data: yards.map(y => yardMap[y].achievement), backgroundColor: '#0ea5e9', borderRadius: 6 }
+            { label: 'Target', data: yards.map(y => yardMap[y].target), backgroundColor: '#f59e0b', borderRadius: 4 },
+            { label: 'Achievement', data: yards.map(y => yardMap[y].achievement), backgroundColor: '#0ea5e9', borderRadius: 4 }
           ]
         },
         options: {
@@ -2481,10 +2640,10 @@
               loadDashboard();
             }
           },
-          plugins: { legend: { labels: { color: '#64748b' } } },
+          plugins: { legend: { labels: { color: '#64748b', font: { size: 10 } } } },
           scales: {
-            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
-            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
@@ -2516,7 +2675,7 @@
             label: 'Achievement %',
             data: trainPerformance.map(t => Math.round(t.pct)),
             backgroundColor: '#22c55e',
-            borderRadius: 6
+            borderRadius: 4
           }]
         },
         options: {
@@ -2531,8 +2690,8 @@
           },
           plugins: { legend: { display: false } },
           scales: {
-            y: { beginAtZero: true, max: 120, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
-            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            y: { beginAtZero: true, max: 120, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
@@ -2564,7 +2723,7 @@
             label: 'Achievement %',
             data: trainPerformance.map(t => Math.round(t.pct)),
             backgroundColor: '#ef4444',
-            borderRadius: 6
+            borderRadius: 4
           }]
         },
         options: {
@@ -2579,8 +2738,8 @@
           },
           plugins: { legend: { display: false } },
           scales: {
-            y: { beginAtZero: true, max: 120, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
-            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            y: { beginAtZero: true, max: 120, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
@@ -2616,7 +2775,7 @@
             }
           },
           plugins: {
-            legend: { position: 'bottom', labels: { color: '#64748b' } }
+            legend: { position: 'bottom', labels: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
@@ -2652,7 +2811,7 @@
             }
           },
           plugins: {
-            legend: { position: 'bottom', labels: { color: '#64748b' } },
+            legend: { position: 'bottom', labels: { color: '#64748b', font: { size: 10 } } },
             tooltip: {
               callbacks: {
                 label: function(context) {
@@ -2712,46 +2871,41 @@
       `).join('');
     }
 
-    function renderMOMTable(sales) {
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-      const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-      const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-      const yesterday = new Date(now);
-      yesterday.setDate(yesterday.getDate() - 1);
-
-      const currentMonthStart = new Date(currentYear, currentMonth, 1);
-      const currentMTD = sales.filter(s => { const d = new Date(s.date); return d >= currentMonthStart && d <= yesterday; });
-
-      const prevMonthStart = new Date(prevYear, prevMonth, 1);
-      const prevMonthEnd = new Date(prevYear, prevMonth, yesterday.getDate());
-      const prevMTD = sales.filter(s => { const d = new Date(s.date); return d >= prevMonthStart && d <= prevMonthEnd; });
-
+    function renderPeriodComparisonTable(salesP1, salesP2) {
+      // Create a map of all trains from both periods
       const trainMap = {};
-      [...currentMTD, ...prevMTD].forEach(s => { if (!trainMap[s.trainName]) trainMap[s.trainName] = { currentSales: 0, prevSales: 0, currentGP: 0, prevGP: 0 }; });
-      currentMTD.forEach(s => { if (trainMap[s.trainName]) { trainMap[s.trainName].currentSales += Number(s.salesAchievement) || 0; trainMap[s.trainName].currentGP += Number(s.gpAchievement) || 0; }});
-      prevMTD.forEach(s => { if (trainMap[s.trainName]) { trainMap[s.trainName].prevSales += Number(s.salesAchievement) || 0; trainMap[s.trainName].prevGP += Number(s.gpAchievement) || 0; }});
+      
+      salesP1.forEach(s => {
+        if (!trainMap[s.trainName]) trainMap[s.trainName] = { p1Sales: 0, p2Sales: 0, p1GP: 0, p2GP: 0 };
+        trainMap[s.trainName].p1Sales += Number(s.salesAchievement) || 0;
+        trainMap[s.trainName].p1GP += Number(s.gpAchievement) || 0;
+      });
+      
+      salesP2.forEach(s => {
+        if (!trainMap[s.trainName]) trainMap[s.trainName] = { p1Sales: 0, p2Sales: 0, p1GP: 0, p2GP: 0 };
+        trainMap[s.trainName].p2Sales += Number(s.salesAchievement) || 0;
+        trainMap[s.trainName].p2GP += Number(s.gpAchievement) || 0;
+      });
 
       // Sort by GP variance (highest growth first)
       const rows = Object.entries(trainMap).map(([name, data]) => ({
         name, 
-        currentSales: data.currentSales, 
-        prevSales: data.prevSales,
-        salesVariance: data.currentSales - data.prevSales,
-        currentGP: data.currentGP, 
-        prevGP: data.prevGP,
-        gpVariance: data.currentGP - data.prevGP
+        p1Sales: data.p1Sales, 
+        p2Sales: data.p2Sales,
+        salesVariance: data.p1Sales - data.p2Sales,
+        p1GP: data.p1GP, 
+        p2GP: data.p2GP,
+        gpVariance: data.p1GP - data.p2GP
       })).sort((a, b) => b.gpVariance - a.gpVariance);
 
       document.getElementById('momTableBody').innerHTML = rows.map(r => `
         <tr>
           <td>${r.name}</td>
-          <td>${formatCurrency(r.currentSales)}</td>
-          <td>${formatCurrency(r.prevSales)}</td>
+          <td>${formatCurrency(r.p1Sales)}</td>
+          <td>${formatCurrency(r.p2Sales)}</td>
           <td class="${r.salesVariance >= 0 ? 'comparison-positive' : 'comparison-negative'}">${r.salesVariance >= 0 ? '+' : ''}${formatCurrency(r.salesVariance)}</td>
-          <td>${formatCurrency(r.currentGP)}</td>
-          <td>${formatCurrency(r.prevGP)}</td>
+          <td>${formatCurrency(r.p1GP)}</td>
+          <td>${formatCurrency(r.p2GP)}</td>
           <td class="${r.gpVariance >= 0 ? 'comparison-positive' : 'comparison-negative'}">${r.gpVariance >= 0 ? '+' : ''}${formatCurrency(r.gpVariance)}</td>
         </tr>
       `).join('');
@@ -2794,10 +2948,6 @@
           <td>${t.name}</td>
           <td>${t.salesPct}%</td>
           <td>${t.gpPct}%</td>
-          <td>${t.salesMarks}</td>
-          <td>${t.gpMarks}</td>
-          <td>${t.cashMarks}</td>
-          <td>${t.complaintMarks}</td>
           <td><strong>${t.totalMarks}</strong></td>
           <td>${t.complaintCount}</td>
         </tr>
@@ -2807,57 +2957,42 @@
 
     // ==================== COMPLAINT DASHBOARD ====================
     function loadComplaintDashboard() {
-      const complaints = getFilteredComplaints();
-      const compareFrom = document.getElementById('compCompareFrom')?.value;
-      const compareTo = document.getElementById('compCompareTo')?.value;
-      const currentFrom = document.getElementById('compDashFromDate')?.value;
-      const currentTo = document.getElementById('compDashToDate')?.value;
-
-      let currentPeriod, comparisonPeriod;
+      // Get data for both periods
+      const complaintsP1 = getFilteredComplaints(1);
+      const complaintsP2 = getFilteredComplaints(2);
       
-      // Use the two separate date ranges
-      if (currentFrom && currentTo) {
-        currentPeriod = complaints.filter(c => c.date >= currentFrom && c.date <= currentTo);
-      } else {
-        // Default to current month MTD
-        const now = new Date();
-        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-        const yesterday = new Date(now);
-        yesterday.setDate(yesterday.getDate() - 1);
-        currentPeriod = complaints.filter(c => c.date >= monthStart && c.date <= yesterday.toISOString().split('T')[0]);
-      }
+      const variance = complaintsP1.length - complaintsP2.length;
 
-      if (compareFrom && compareTo) {
-        comparisonPeriod = complaints.filter(c => c.date >= compareFrom && c.date <= compareTo);
-      } else {
-        // Default to last month same period
-        const now = new Date();
-        const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString().split('T')[0];
-        const lastMonthEnd = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate() - 1).toISOString().split('T')[0];
-        comparisonPeriod = complaints.filter(c => c.date >= lastMonthStart && c.date <= lastMonthEnd);
-      }
+      // Get date ranges for display
+      const fromDate1 = document.getElementById('compFromDate1')?.value;
+      const toDate1 = document.getElementById('compToDate1')?.value;
+      const fromDate2 = document.getElementById('compFromDate2')?.value;
+      const toDate2 = document.getElementById('compToDate2')?.value;
 
-      const variance = currentPeriod.length - comparisonPeriod.length;
-
-      document.getElementById('compKpiTotal').textContent = complaints.length;
-      document.getElementById('compKpiCurrent').textContent = currentPeriod.length;
-      document.getElementById('compKpiCurrentRange').textContent = currentFrom && currentTo ? 
-        `${currentFrom} to ${currentTo}` : 'Current Month MTD';
-      document.getElementById('compKpiPrevious').textContent = comparisonPeriod.length;
-      document.getElementById('compKpiPreviousRange').textContent = compareFrom && compareTo ? 
-        `${compareFrom} to ${compareTo}` : 'Last Month Same Period';
+      document.getElementById('compKpiTotal').textContent = complaintsP1.length;
+      document.getElementById('compKpiTotalRange').textContent = fromDate1 && toDate1 ? 
+        `${fromDate1} to ${toDate1}` : 'No date range selected';
+      
+      document.getElementById('compKpiCurrent').textContent = complaintsP1.length;
+      document.getElementById('compKpiCurrentRange').textContent = fromDate1 && toDate1 ? 
+        `${fromDate1} to ${toDate1}` : 'Period 1';
+      
+      document.getElementById('compKpiPrevious').textContent = complaintsP2.length;
+      document.getElementById('compKpiPreviousRange').textContent = fromDate2 && toDate2 ? 
+        `${fromDate2} to ${toDate2}` : 'Period 2';
+      
       document.getElementById('compKpiVariance').textContent = (variance >= 0 ? '+' : '') + variance;
       
       const varianceCard = document.getElementById('compKpiVarianceCard');
       varianceCard.className = 'kpi-card ' + (variance > 0 ? 'danger' : variance < 0 ? 'success' : 'info');
 
-      renderComplaintTrendChart(currentPeriod, comparisonPeriod);
-      renderComplaintStatusChart(currentPeriod, comparisonPeriod);
-      renderComplaintTrainChart(currentPeriod, comparisonPeriod);
-      renderComplaintSourceChart(complaints);
-      renderManagerComplaintChart(currentPeriod, comparisonPeriod);
-      renderNatureAnalysisChart(currentPeriod, comparisonPeriod);
-      renderComplaintComparisonTables(currentPeriod, comparisonPeriod);
+      renderComplaintTrendChart(complaintsP1, complaintsP2);
+      renderComplaintStatusChart(complaintsP1, complaintsP2);
+      renderComplaintTrainChart(complaintsP1, complaintsP2);
+      renderComplaintSourceChart([...complaintsP1, ...complaintsP2]);
+      renderManagerComplaintChart(complaintsP1, complaintsP2);
+      renderNatureAnalysisChart(complaintsP1, complaintsP2);
+      renderComplaintComparisonTables(complaintsP1, complaintsP2);
       updateCompChartFilterDisplay();
     }
 
@@ -2886,8 +3021,8 @@
         data: {
           labels: allDates,
           datasets: [
-            { label: 'Current Period', data: allDates.map(d => currentByDate[d] || 0), borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.4 },
-            { label: 'Comparison Period', data: allDates.map(d => prevByDate[d] || 0), borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', fill: true, tension: 0.4 }
+            { label: 'Period 1', data: allDates.map(d => currentByDate[d] || 0), borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.4 },
+            { label: 'Period 2', data: allDates.map(d => prevByDate[d] || 0), borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', fill: true, tension: 0.4 }
           ]
         },
         options: {
@@ -2900,10 +3035,10 @@
               loadComplaintDashboard();
             }
           },
-          plugins: { legend: { labels: { color: '#64748b' } } },
+          plugins: { legend: { labels: { color: '#64748b', font: { size: 10 } } } },
           scales: {
-            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
-            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
@@ -2923,8 +3058,8 @@
         data: {
           labels: statuses,
           datasets: [
-            { label: 'Current Period', data: currentCounts, backgroundColor: '#0ea5e9', borderRadius: 6 },
-            { label: 'Comparison Period', data: prevCounts, backgroundColor: '#f59e0b', borderRadius: 6 }
+            { label: 'Period 1', data: currentCounts, backgroundColor: '#0ea5e9', borderRadius: 4 },
+            { label: 'Period 2', data: prevCounts, backgroundColor: '#f59e0b', borderRadius: 4 }
           ]
         },
         options: {
@@ -2937,10 +3072,10 @@
               loadComplaintDashboard();
             }
           },
-          plugins: { legend: { labels: { color: '#64748b' } } },
+          plugins: { legend: { labels: { color: '#64748b', font: { size: 10 } } } },
           scales: {
-            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
-            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
@@ -2963,8 +3098,8 @@
         data: {
           labels: sorted.map(t => t[0]),
           datasets: [
-            { label: 'Current', data: sorted.map(t => t[1].current), backgroundColor: '#ef4444', borderRadius: 6 },
-            { label: 'Comparison', data: sorted.map(t => t[1].prev), backgroundColor: '#22c55e', borderRadius: 6 }
+            { label: 'P1', data: sorted.map(t => t[1].current), backgroundColor: '#ef4444', borderRadius: 4 },
+            { label: 'P2', data: sorted.map(t => t[1].prev), backgroundColor: '#22c55e', borderRadius: 4 }
           ]
         },
         options: {
@@ -2977,10 +3112,10 @@
               loadComplaintDashboard();
             }
           },
-          plugins: { legend: { labels: { color: '#64748b' } } },
+          plugins: { legend: { labels: { color: '#64748b', font: { size: 10 } } } },
           scales: {
-            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
-            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
@@ -3014,7 +3149,7 @@
             }
           },
           plugins: {
-            legend: { position: 'bottom', labels: { color: '#64748b' } }
+            legend: { position: 'bottom', labels: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
@@ -3024,12 +3159,10 @@
       const ctx = document.getElementById('managerComplaintChart');
       if (!ctx) return;
 
-      // Get manager-wise complaint counts
       const managerMap = {};
       const allComplaints = [...current, ...prev];
       
       allComplaints.forEach(c => {
-        // Find train manager from train master
         const train = appData.trainMasters.find(t => t.trainName === c.trainName);
         const manager = train?.trainManager || 'Unassigned';
         if (!managerMap[manager]) managerMap[manager] = { current: 0, prev: 0 };
@@ -3047,7 +3180,6 @@
         if (managerMap[manager]) managerMap[manager].prev++;
       });
 
-      // Calculate percentages
       const currentTotal = current.length || 1;
       const prevTotal = prev.length || 1;
       const managers = Object.keys(managerMap);
@@ -3058,25 +3190,15 @@
         data: {
           labels: managers,
           datasets: [
-            { 
-              label: 'Current Period %', 
-              data: managers.map(m => Math.round((managerMap[m].current / currentTotal) * 100)), 
-              backgroundColor: '#0ea5e9', 
-              borderRadius: 6 
-            },
-            { 
-              label: 'Comparison Period %', 
-              data: managers.map(m => Math.round((managerMap[m].prev / prevTotal) * 100)), 
-              backgroundColor: '#f59e0b', 
-              borderRadius: 6 
-            }
+            { label: 'P1 %', data: managers.map(m => Math.round((managerMap[m].current / currentTotal) * 100)), backgroundColor: '#0ea5e9', borderRadius: 4 },
+            { label: 'P2 %', data: managers.map(m => Math.round((managerMap[m].prev / prevTotal) * 100)), backgroundColor: '#f59e0b', borderRadius: 4 }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: { 
-            legend: { labels: { color: '#64748b' } },
+            legend: { labels: { color: '#64748b', font: { size: 10 } } },
             tooltip: {
               callbacks: {
                 afterLabel: function(context) {
@@ -3088,8 +3210,8 @@
             }
           },
           scales: {
-            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', callback: v => v + '%' } },
-            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 }, callback: v => v + '%' } },
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
@@ -3099,7 +3221,6 @@
       const ctx = document.getElementById('natureAnalysisChart');
       if (!ctx) return;
 
-      // Group by nature category
       const natureMap = {};
       [...current, ...prev].forEach(c => {
         const category = COMPLAINT_NATURE_CATEGORIES[c.complainNature] || 'Other';
@@ -3124,24 +3245,24 @@
         data: {
           labels: categories,
           datasets: [
-            { label: 'Current Period', data: categories.map(c => natureMap[c].current), backgroundColor: '#ef4444', borderRadius: 6 },
-            { label: 'Comparison Period', data: categories.map(c => natureMap[c].prev), backgroundColor: '#22c55e', borderRadius: 6 }
+            { label: 'Period 1', data: categories.map(c => natureMap[c].current), backgroundColor: '#ef4444', borderRadius: 4 },
+            { label: 'Period 2', data: categories.map(c => natureMap[c].prev), backgroundColor: '#22c55e', borderRadius: 4 }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#64748b' } } },
+          plugins: { legend: { labels: { color: '#64748b', font: { size: 10 } } } },
           scales: {
-            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
-            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
     }
 
     function renderComplaintComparisonTables(current, prev) {
-      // Train-wise comparison - sorted by current count descending, with red highlighting for high complaints
+      // Train-wise comparison - sorted by current count descending
       const trainMap = {};
       [...current, ...prev].forEach(c => { if (!trainMap[c.trainName]) trainMap[c.trainName] = { current: 0, prev: 0 }; });
       current.forEach(c => { if (trainMap[c.trainName]) trainMap[c.trainName].current++; });
@@ -3151,7 +3272,6 @@
         .map(([name, data]) => ({ name, ...data, diff: data.current - data.prev }))
         .sort((a, b) => b.current - a.current);
 
-      // Highlight rows with 3+ complaints in red
       document.getElementById('compTrainTableBody').innerHTML = trainRows.map(r => `
         <tr class="${r.current >= 3 ? 'high-complaint' : ''}">
           <td>${r.name}</td>
@@ -3180,7 +3300,6 @@
         </tr>
       `).join('');
     }
-
 
     // ==================== CASH DASHBOARD ====================
     function loadCashDashboard() {
@@ -3265,7 +3384,7 @@
           <td>${formatCurrency(r.onlineDeposit)}</td>
           <td>${formatCurrency(r.totalDeposit)}</td>
           <td class="${r.difference > 0 ? 'comparison-negative' : r.difference < 0 ? 'comparison-positive' : ''}">${r.difference > 0 ? '-' : r.difference < 0 ? '+' : ''}${formatCurrency(Math.abs(r.difference))}</td>
-          <td><span class="badge badge-${r.difference > 0 ? 'danger' : r.difference < 0 ? 'success' : 'info'}">${r.difference > 0 ? 'Shortage' : r.difference < 0 ? 'Excess' : 'Matched'}</span></td>
+          <td><span class="badge badge-${r.difference > 0 ? 'danger' : r.difference < 0 ? 'success' : 'info'}">${r.difference > 0 ? 'Short' : r.difference < 0 ? 'Excess' : 'Match'}</span></td>
         </tr>
       `).join('');
     }
@@ -3314,6 +3433,7 @@
         shortageReason.value = '';
       }
     }
+
 
     // ==================== SALES PAGE FUNCTIONS ====================
     function loadSalesPage() {
@@ -3400,7 +3520,6 @@
       const pct = target > 0 ? Math.round((achievement / target) * 100) : 0;
       document.getElementById('salesGpAchievementPct').value = pct + '%';
       
-      // Show/hide remarks required message
       const remarksRequired = document.getElementById('remarksRequired');
       if (pct < 100) {
         remarksRequired.style.display = 'inline';
@@ -3409,7 +3528,6 @@
       }
     }
 
-    // ==================== GP WARNING MODAL ====================
     function validateAndSaveSalesEntry() {
       const trainId = document.getElementById('salesTrainId').value;
       const date = document.getElementById('salesDate').value;
@@ -3425,22 +3543,17 @@
 
       const gpPct = gpTarget > 0 ? (Number(gpAchievement) / gpTarget) * 100 : 0;
 
-      // Check if GP < 95% - show warning modal
       if (gpPct < 95) {
         document.getElementById('gpWarningPct').textContent = Math.round(gpPct) + '%';
         document.getElementById('gpApprovedBy').value = '';
         document.getElementById('gpApprovalRemarks').value = '';
         document.getElementById('gpWarningModal').classList.add('active');
         
-        // Store pending entry data
         const train = appData.trainMasters.find(t => t.id == trainId);
-        pendingSalesEntry = {
-          trainId, date, salesAchievement, gpAchievement, train, remarks
-        };
+        pendingSalesEntry = { trainId, date, salesAchievement, gpAchievement, train, remarks };
         return;
       }
 
-      // Check if GP < 100% - require remarks
       if (gpPct < 100 && !remarks) {
         showAlert('Remarks are required when GP Achievement is below 100%', 'error');
         document.getElementById('salesRemarks').focus();
@@ -3454,16 +3567,9 @@
       const approvedBy = document.getElementById('gpApprovedBy').value.trim();
       const approvalRemarks = document.getElementById('gpApprovalRemarks').value.trim();
 
-      if (!approvedBy) {
-        showAlert('Please enter approver name', 'error');
-        return;
-      }
-      if (!approvalRemarks) {
-        showAlert('Please enter approval remarks', 'error');
-        return;
-      }
+      if (!approvedBy) { showAlert('Please enter approver name', 'error'); return; }
+      if (!approvalRemarks) { showAlert('Please enter approval remarks', 'error'); return; }
 
-      // Add approval info to remarks
       const originalRemarks = pendingSalesEntry.remarks;
       const combinedRemarks = originalRemarks + (originalRemarks ? ' | ' : '') + 
         `Approved by: ${approvedBy} - ${approvalRemarks}`;
@@ -3612,7 +3718,6 @@
       loadDashboard();
       showAlert('Entry deleted', 'success');
     }
-
 
     // ==================== COMPLAINT PAGE FUNCTIONS ====================
     function loadComplaintsPage() {
@@ -3854,7 +3959,6 @@
 
       if (!date || !yard) { showAlert('Please fill all required fields', 'error'); return; }
 
-      // Validate shortage reason if needed
       if (gpFromSales > 0 && (cashDeposit + onlineDeposit) < gpFromSales && !shortageReason) {
         showAlert('Please select a shortage reason. Cash + Online deposit is less than GP Achievement.', 'error');
         document.getElementById('cashShortageReason').focus();
@@ -3990,10 +4094,8 @@
       document.getElementById('masterClusterManager').innerHTML = (appData.clusterManagers || []).map(m => `<option value="${m}">${m}</option>`).join('');
       document.getElementById('masterTrainManager').innerHTML = (appData.trainManagers || []).map(m => `<option value="${m}">${m}</option>`).join('');
       
-      // Update current month target display
       updateMasterTargetDisplay();
       
-      // Show/hide no data warning
       const hasData = appData.trainMasters && appData.trainMasters.length > 0;
       document.getElementById('noMasterDataWarning').classList.toggle('hidden', hasData);
       
@@ -4184,7 +4286,6 @@
       const isAdmin = currentUser.role === 'admin';
       
       document.getElementById('usersTableBody').innerHTML = (appData.users || []).map(u => {
-        // Hide super admin credentials from admin users
         if (isAdmin && u.role === 'super_admin' && u.email !== currentUser.email) {
           return `
             <tr>
@@ -4547,22 +4648,7 @@
         'Shortage Reason': 'Cash Not Deposited',
         'Remarks': 'Daily collection'
       }];
-      
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(data);
-      
-      const shortageReasons = ['Cash Not Deposited', 'Shortage in Cash', 'Pending Collection', 'Manager Absent', 'Bank Holiday', 'Other'];
-      ws['!dataValidation'] = {
-        F2: {
-          type: 'list',
-          allowBlank: true,
-          formula1: '"' + shortageReasons.join(',') + '"',
-          showDropDown: true
-        }
-      };
-      
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      XLSX.writeFile(wb, 'cash_import_sample.xlsx');
+      downloadExcel(data, 'cash_import_sample.xlsx');
     }
 
     function downloadMasterSample() {
@@ -4581,10 +4667,8 @@
     }
 
     function downloadMasterData() { downloadExcel(appData.trainMasters, 'train_master_export.xlsx'); }
-    function downloadSalesDashboardExcel() { downloadExcel(getFilteredSales(), `sales_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`); }
-    function downloadSalesDashboardPdf() { window.print(); }
-    function downloadComplaintDashboardExcel() { downloadExcel(getFilteredComplaints(), `complaint_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`); }
-    function downloadComplaintDashboardPdf() { window.print(); }
+    function downloadSalesDashboardExcel() { downloadExcel(getFilteredSales(1), `sales_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`); }
+    function downloadComplaintDashboardExcel() { downloadExcel(getFilteredComplaints(1), `complaint_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`); }
     function downloadCashDashboardExcel() { 
       const fromDate = document.getElementById('cashDashFromDate')?.value;
       const toDate = document.getElementById('cashDashToDate')?.value;
@@ -4593,9 +4677,7 @@
       if (toDate) cashData = cashData.filter(c => c.date <= toDate);
       downloadExcel(cashData, `cash_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`); 
     }
-    function downloadCashDashboardPdf() { window.print(); }
 
-    // Download table data as Excel
     function downloadTableExcel(tableId, filename) {
       const table = document.getElementById(tableId);
       if (!table) return;
@@ -4669,7 +4751,7 @@
     function showAlert(message, type) {
       const alert = document.createElement('div');
       alert.className = `alert alert-${type}`;
-      alert.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+      alert.style.cssText = 'position: fixed; top: 16px; right: 16px; z-index: 9999; min-width: 280px; max-width: 90vw;';
       alert.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
       document.body.appendChild(alert);
       setTimeout(() => alert.remove(), 3000);
@@ -4681,6 +4763,8 @@
     window.handleLogin = handleLogin;
     window.handleLogout = handleLogout;
     window.showPage = showPage;
+    window.toggleSidebar = toggleSidebar;
+    window.closeSidebar = closeSidebar;
     window.switchSalesTab = switchSalesTab;
     window.switchComplaintTab = switchComplaintTab;
     window.switchCashTab = switchCashTab;
@@ -4730,11 +4814,8 @@
     window.downloadMasterSample = downloadMasterSample;
     window.downloadMasterData = downloadMasterData;
     window.downloadSalesDashboardExcel = downloadSalesDashboardExcel;
-    window.downloadSalesDashboardPdf = downloadSalesDashboardPdf;
     window.downloadComplaintDashboardExcel = downloadComplaintDashboardExcel;
-    window.downloadComplaintDashboardPdf = downloadComplaintDashboardPdf;
     window.downloadCashDashboardExcel = downloadCashDashboardExcel;
-    window.downloadCashDashboardPdf = downloadCashDashboardPdf;
     window.downloadTableExcel = downloadTableExcel;
     window.downloadBackup = downloadBackup;
     window.restoreBackup = restoreBackup;
@@ -4745,8 +4826,8 @@
     window.clearSalesFilters = clearSalesFilters;
     window.clearComplaintFilters = clearComplaintFilters;
     window.clearCashDashFilters = clearCashDashFilters;
-    window.applySingleDate = applySingleDate;
-    window.setDefaultComparisonRange = setDefaultComparisonRange;
+    window.setDefaultDateRanges = setDefaultDateRanges;
+    window.setDefaultCompDateRanges = setDefaultCompDateRanges;
     window.filterByBucket = filterByBucket;
     window.clearChartFilter = clearChartFilter;
     window.clearCompChartFilter = clearCompChartFilter;
