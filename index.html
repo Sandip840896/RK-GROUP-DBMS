@@ -13,143 +13,152 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; margin: 0; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); min-height: 100vh; color: #e2e8f0; }
-    .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); position: relative; overflow: hidden; }
-    .login-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></svg>'); background-size: 50px 50px; animation: moveBackground 20s linear infinite; }
+    body { font-family: 'Inter', sans-serif; margin: 0; background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #e0f2fe 100%); min-height: 100vh; color: #1e293b; }
+    .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%); position: relative; overflow: hidden; }
+    .login-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>'); background-size: 50px 50px; animation: moveBackground 20s linear infinite; }
     @keyframes moveBackground { 0% { transform: translate(0, 0); } 100% { transform: translate(50px, 50px); } }
-    .login-box { background: rgba(15, 23, 42, 0.95); border-radius: 20px; padding: 40px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(59, 130, 246, 0.3); position: relative; z-index: 1; }
+    .login-box { background: rgba(255, 255, 255, 0.98); border-radius: 20px; padding: 40px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.3); position: relative; z-index: 1; }
     .login-logo { text-align: center; margin-bottom: 30px; }
-    .login-logo .train-icon { font-size: 48px; color: #f59e0b; margin-bottom: 15px; }
-    .login-logo h1 { font-size: 28px; font-weight: 700; color: #fff; margin: 0; letter-spacing: -0.5px; }
-    .login-logo p { color: #94a3b8; margin-top: 8px; font-size: 14px; }
+    .login-logo .train-icon { font-size: 56px; color: #0284c7; margin-bottom: 15px; }
+    .login-logo h1 { font-size: 32px; font-weight: 700; color: #0369a1; margin: 0; letter-spacing: -0.5px; }
+    .login-logo p { color: #64748b; margin-top: 8px; font-size: 14px; }
+    .login-logo .developer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; }
+    .login-logo .developer strong { color: #0284c7; }
     .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: #cbd5e1; }
-    .form-group input, .form-group select { width: 100%; padding: 12px 16px; border: 1px solid #334155; border-radius: 10px; font-size: 15px; background: #1e293b; color: #fff; transition: all 0.3s; }
-    .form-group input:focus, .form-group select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+    .form-group label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: #475569; }
+    .form-group input, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; background: #fff; color: #1e293b; transition: all 0.3s; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15); }
     .btn { padding: 12px 24px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
-    .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
-    .btn-primary:hover { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4); }
-    .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
-    .btn-success:hover { background: linear-gradient(135deg, #059669 0%, #047857 100%); transform: translateY(-2px); }
+    .btn-primary { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white; }
+    .btn-primary:hover { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(14, 165, 233, 0.4); }
+    .btn-success { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; }
+    .btn-success:hover { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); transform: translateY(-2px); }
     .btn-warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; }
     .btn-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
-    .btn-secondary { background: #334155; color: #e2e8f0; }
-    .btn-secondary:hover { background: #475569; }
-    .btn-ghost { background: transparent; border: 1px solid #475569; color: #e2e8f0; }
-    .btn-ghost:hover { background: rgba(255,255,255,0.05); border-color: #64748b; }
+    .btn-secondary { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .btn-secondary:hover { background: #e2e8f0; }
+    .btn-ghost { background: transparent; border: 1px solid #cbd5e1; color: #475569; }
+    .btn-ghost:hover { background: #f1f5f9; border-color: #94a3b8; }
     .btn-sm { padding: 8px 16px; font-size: 13px; }
     .app-container { display: none; }
-    .sidebar { width: 260px; background: rgba(15, 23, 42, 0.98); border-right: 1px solid rgba(59, 130, 246, 0.2); position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 100; }
-    .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(59, 130, 246, 0.2); }
+    .sidebar { width: 260px; background: #fff; border-right: 1px solid #e2e8f0; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 100; box-shadow: 4px 0 20px rgba(0,0,0,0.05); }
+    .sidebar-header { padding: 20px; border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); }
     .sidebar-header .logo { display: flex; align-items: center; gap: 12px; }
-    .sidebar-header .logo i { font-size: 28px; color: #f59e0b; }
+    .sidebar-header .logo i { font-size: 28px; color: #fff; }
     .sidebar-header .logo span { font-size: 18px; font-weight: 700; color: #fff; }
-    .sidebar-header .user-info { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(59, 130, 246, 0.2); }
+    .sidebar-header .user-info { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); }
     .sidebar-header .user-info .name { font-size: 14px; font-weight: 600; color: #fff; }
-    .sidebar-header .user-info .role { font-size: 12px; color: #94a3b8; }
+    .sidebar-header .user-info .role { font-size: 12px; color: rgba(255,255,255,0.8); }
     .nav-menu { padding: 10px; }
-    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; cursor: pointer; transition: all 0.3s; color: #94a3b8; margin-bottom: 4px; }
-    .nav-item:hover { background: rgba(59, 130, 246, 0.1); color: #e2e8f0; }
-    .nav-item.active { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; cursor: pointer; transition: all 0.3s; color: #64748b; margin-bottom: 4px; }
+    .nav-item:hover { background: #f0f9ff; color: #0284c7; }
+    .nav-item.active { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white; }
     .nav-item i { font-size: 18px; width: 24px; text-align: center; }
-    .main-content { margin-left: 260px; min-height: 100vh; }
-    .top-bar { background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid rgba(59, 130, 246, 0.2); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
-    .top-bar h2 { font-size: 20px; font-weight: 600; color: #fff; margin: 0; }
+    .main-content { margin-left: 260px; min-height: 100vh; background: #f8fafc; }
+    .top-bar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .top-bar h2 { font-size: 20px; font-weight: 600; color: #1e293b; margin: 0; }
     .top-bar-actions { display: flex; gap: 10px; }
     .content-area { padding: 24px; }
-    .card { background: rgba(30, 41, 59, 0.8); border-radius: 16px; padding: 24px; border: 1px solid rgba(59, 130, 246, 0.2); margin-bottom: 24px; }
+    .card { background: #fff; border-radius: 16px; padding: 24px; border: 1px solid #e2e8f0; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .card-title { font-size: 18px; font-weight: 600; color: #fff; margin: 0; }
-    .card-subtitle { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+    .card-title { font-size: 18px; font-weight: 600; color: #1e293b; margin: 0; }
+    .card-subtitle { font-size: 13px; color: #64748b; margin-top: 4px; }
     .grid { display: grid; gap: 20px; }
     .grid-2 { grid-template-columns: repeat(2, 1fr); }
     .grid-3 { grid-template-columns: repeat(3, 1fr); }
     .grid-4 { grid-template-columns: repeat(4, 1fr); }
-    .kpi-card { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(30, 41, 59, 0.9) 100%); border-radius: 16px; padding: 20px; border: 1px solid rgba(59, 130, 246, 0.3); }
-    .kpi-card.success { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(30, 41, 59, 0.9) 100%); border-color: rgba(16, 185, 129, 0.3); }
-    .kpi-card.warning { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(30, 41, 59, 0.9) 100%); border-color: rgba(245, 158, 11, 0.3); }
-    .kpi-card.danger { background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(30, 41, 59, 0.9) 100%); border-color: rgba(239, 68, 68, 0.3); }
-    .kpi-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-    .kpi-value { font-size: 28px; font-weight: 700; color: #fff; }
-    .kpi-sub { font-size: 12px; color: #64748b; margin-top: 4px; }
+    .kpi-card { background: linear-gradient(135deg, #fff 0%, #f8fafc 100%); border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .kpi-card.success { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-color: #86efac; }
+    .kpi-card.warning { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-color: #fcd34d; }
+    .kpi-card.danger { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-color: #fca5a5; }
+    .kpi-card.info { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-color: #7dd3fc; }
+    .kpi-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 500; }
+    .kpi-value { font-size: 28px; font-weight: 700; color: #1e293b; }
+    .kpi-sub { font-size: 12px; color: #94a3b8; margin-top: 4px; }
     .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
-    .form-field label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: #cbd5e1; }
-    .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 10px 14px; border: 1px solid #334155; border-radius: 8px; font-size: 14px; background: #1e293b; color: #fff; transition: all 0.3s; }
-    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
-    .form-field input:read-only { background: #0f172a; color: #64748b; }
+    .form-field label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: #475569; }
+    .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: #fff; color: #1e293b; transition: all 0.3s; }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15); }
+    .form-field input:read-only { background: #f1f5f9; color: #64748b; }
     .table-container { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #334155; }
-    th { background: rgba(59, 130, 246, 0.1); font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
-    td { font-size: 14px; color: #e2e8f0; }
-    tr:hover td { background: rgba(59, 130, 246, 0.05); }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    th { background: #f8fafc; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { font-size: 14px; color: #1e293b; }
+    tr:hover td { background: #f8fafc; }
     .badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
-    .badge-success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-    .badge-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-    .badge-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-    .badge-info { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger { background: #fee2e2; color: #991b1b; }
+    .badge-info { background: #e0f2fe; color: #075985; }
     .chart-container { position: relative; height: 300px; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 12px; }
-    .tab { padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; color: #94a3b8; transition: all 0.3s; border: none; background: transparent; }
-    .tab:hover { color: #e2e8f0; background: rgba(59, 130, 246, 0.1); }
-    .tab.active { color: #fff; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; }
+    .tab { padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; color: #64748b; transition: all 0.3s; border: none; background: transparent; }
+    .tab:hover { color: #0284c7; background: #f0f9ff; }
+    .tab.active { color: #fff; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); }
     .hidden { display: none !important; }
     .action-btns { display: flex; gap: 8px; }
     .btn-icon { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; border: none; }
-    .btn-icon.edit { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-    .btn-icon.edit:hover { background: #3b82f6; color: white; }
-    .btn-icon.delete { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .btn-icon.edit { background: #e0f2fe; color: #0284c7; }
+    .btn-icon.edit:hover { background: #0284c7; color: white; }
+    .btn-icon.delete { background: #fee2e2; color: #ef4444; }
     .btn-icon.delete:hover { background: #ef4444; color: white; }
     .searchable-select { position: relative; }
     .searchable-select input { width: 100%; }
-    .searchable-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #1e293b; border: 1px solid #334155; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 100; display: none; margin-top: 4px; }
+    .searchable-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 2px solid #e2e8f0; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 100; display: none; margin-top: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
     .searchable-dropdown.active { display: block; }
-    .searchable-dropdown-item { padding: 10px 14px; cursor: pointer; font-size: 14px; color: #e2e8f0; border-bottom: 1px solid #334155; }
-    .searchable-dropdown-item:hover { background: rgba(59, 130, 246, 0.2); }
+    .searchable-dropdown-item { padding: 10px 14px; cursor: pointer; font-size: 14px; color: #1e293b; border-bottom: 1px solid #f1f5f9; }
+    .searchable-dropdown-item:hover { background: #f0f9ff; color: #0284c7; }
     .searchable-dropdown-item:last-child { border-bottom: none; }
-    .filter-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; padding: 16px; background: rgba(15, 23, 42, 0.5); border-radius: 12px; }
+    .filter-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; }
     .filter-item { display: flex; flex-direction: column; gap: 6px; }
-    .filter-item label { font-size: 12px; color: #94a3b8; }
-    .filter-item input, .filter-item select { padding: 8px 12px; border: 1px solid #334155; border-radius: 6px; font-size: 13px; background: #1e293b; color: #fff; min-width: 140px; }
-    .section-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .section-title i { color: #f59e0b; }
+    .filter-item label { font-size: 12px; color: #64748b; font-weight: 500; }
+    .filter-item input, .filter-item select { padding: 8px 12px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 13px; background: #fff; color: #1e293b; min-width: 140px; }
+    .filter-item input:focus, .filter-item select:focus { border-color: #0ea5e9; outline: none; }
+    .section-title { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .section-title i { color: #0284c7; }
     .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
-    .alert-success { background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; }
-    .alert-error { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; }
-    .progress-bar { height: 8px; background: #334155; border-radius: 4px; overflow: hidden; }
+    .alert-success { background: #dcfce7; border: 1px solid #86efac; color: #166534; }
+    .alert-error { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; }
+    .alert-warning { background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; }
+    .progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
-    .progress-fill.success { background: linear-gradient(90deg, #10b981, #059669); }
+    .progress-fill.success { background: linear-gradient(90deg, #22c55e, #16a34a); }
     .progress-fill.warning { background: linear-gradient(90deg, #f59e0b, #d97706); }
     .progress-fill.danger { background: linear-gradient(90deg, #ef4444, #dc2626); }
     .tile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-    .tile { padding: 16px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; border: 1px solid transparent; }
-    .tile:hover { transform: translateY(-2px); }
-    .tile.active { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
-    .tile.success { background: rgba(16, 185, 129, 0.15); }
-    .tile.warning { background: rgba(245, 158, 11, 0.15); }
-    .tile.danger { background: rgba(239, 68, 68, 0.15); }
-    .tile-value { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-    .tile-label { font-size: 12px; color: #94a3b8; }
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .tile { padding: 16px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; background: #f8fafc; }
+    .tile:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+    .tile.active { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2); }
+    .tile.success { background: #dcfce7; }
+    .tile.warning { background: #fef3c7; }
+    .tile.danger { background: #fee2e2; }
+    .tile.info { background: #e0f2fe; }
+    .tile-value { font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #1e293b; }
+    .tile-label { font-size: 12px; color: #64748b; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
     .modal-overlay.active { display: flex; }
-    .modal { background: #1e293b; border-radius: 16px; padding: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .modal { background: #fff; border-radius: 16px; padding: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .modal-title { font-size: 18px; font-weight: 600; color: #fff; }
-    .modal-close { background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; }
-    .modal-close:hover { color: #fff; }
-    .file-upload { border: 2px dashed #334155; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s; }
-    .file-upload:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
-    .file-upload i { font-size: 32px; color: #3b82f6; margin-bottom: 12px; }
-    .file-upload-text { font-size: 14px; color: #94a3b8; }
+    .modal-title { font-size: 18px; font-weight: 600; color: #1e293b; }
+    .modal-close { background: none; border: none; color: #64748b; font-size: 20px; cursor: pointer; }
+    .modal-close:hover { color: #1e293b; }
+    .file-upload { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s; background: #f8fafc; }
+    .file-upload:hover { border-color: #0ea5e9; background: #f0f9ff; }
+    .file-upload i { font-size: 32px; color: #0ea5e9; margin-bottom: 12px; }
+    .file-upload-text { font-size: 14px; color: #64748b; }
     .status-indicator { display: inline-flex; align-items: center; gap: 6px; }
     .status-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .status-dot.online { background: #10b981; animation: pulse 2s infinite; }
+    .status-dot.online { background: #22c55e; animation: pulse 2s infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    .railway-pattern { position: relative; }
-    .railway-pattern::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(90deg, #f59e0b 0px, #f59e0b 20px, transparent 20px, transparent 30px); }
-    .comparison-table th { background: rgba(245, 158, 11, 0.2); }
-    .comparison-positive { color: #10b981; }
-    .comparison-negative { color: #ef4444; }
+    .comparison-positive { color: #16a34a; font-weight: 600; }
+    .comparison-negative { color: #dc2626; font-weight: 600; }
+    .chart-filter-active { position: relative; }
+    .chart-filter-active::after { content: 'Click to Clear Filter'; position: absolute; top: 10px; right: 10px; background: #0ea5e9; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; }
+    .required-field { border-color: #fca5a5 !important; background: #fef2f2 !important; }
+    .shortage-alert { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px; margin: 16px 0; }
+    .shortage-alert h4 { color: #dc2626; margin: 0 0 8px 0; }
+    .shortage-alert p { color: #7f1d1d; margin: 0; font-size: 14px; }
     @media (max-width: 1024px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 768px) { .sidebar { width: 100%; transform: translateX(-100%); transition: transform 0.3s; } .sidebar.open { transform: translateX(0); } .main-content { margin-left: 0; } .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
   </style>
@@ -164,6 +173,9 @@
         <h1>RK Group</h1>
         <p>Railway Catering Management System</p>
         <p style="font-size: 11px; color: #64748b; margin-top: 4px;">Serving Indian Railways Since 1964</p>
+        <div class="developer">
+          <i class="fas fa-code"></i> Developed by <strong>Sandip Nandi</strong>
+        </div>
       </div>
       <div id="loginError" class="alert alert-error hidden"></div>
       <div class="form-group">
@@ -177,10 +189,6 @@
       <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="handleLogin()">
         <i class="fas fa-sign-in-alt"></i> Login
       </button>
-      <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #64748b;">
-        <p>Default Super Admin: sandipnandi2000@gmail.com</p>
-        <p>Password: Sanju@1234</p>
-      </div>
     </div>
   </div>
 
@@ -195,10 +203,10 @@
         </div>
         <div class="user-info">
           <div class="name" id="userName">User Name</div>
-          <div class="role" id="userRole">Role</div>
+          <div class="role" id="userRoleDisplay">Role</div>
           <div class="status-indicator" style="margin-top: 8px;">
             <span class="status-dot online"></span>
-            <span style="font-size: 11px; color: #10b981;">Online</span>
+            <span style="font-size: 11px; color: #86efac;">Online</span>
           </div>
         </div>
       </div>
@@ -312,12 +320,16 @@
                 </select>
               </div>
             </div>
-            <div id="activeFilters" style="margin-top: 12px; font-size: 12px; color: #94a3b8;"></div>
+            <div id="activeFilters" style="margin-top: 12px; font-size: 12px; color: #64748b;"></div>
+            <div id="chartFilterDisplay" style="margin-top: 8px; font-size: 12px; color: #0284c7; display: none;">
+              <i class="fas fa-filter"></i> <span id="chartFilterText"></span> 
+              <button class="btn btn-sm" style="margin-left: 8px; padding: 2px 8px; font-size: 11px;" onclick="clearChartFilter()">Clear</button>
+            </div>
           </div>
 
           <!-- KPI Cards -->
           <div class="grid grid-4">
-            <div class="kpi-card">
+            <div class="kpi-card info">
               <div class="kpi-label">Sales Target</div>
               <div class="kpi-value" id="kpiSalesTarget">₹0</div>
               <div class="kpi-sub" id="kpiSalesTargetSub">0 filtered records</div>
@@ -346,7 +358,7 @@
           </div>
 
           <div class="grid grid-4" style="margin-top: 20px;">
-            <div class="kpi-card">
+            <div class="kpi-card info">
               <div class="kpi-label">Open Complaints</div>
               <div class="kpi-value" id="kpiOpenComplaints">0</div>
               <div class="kpi-sub" id="kpiComplaintSub">0 closed | 0 total</div>
@@ -356,7 +368,7 @@
               <div class="kpi-value" id="kpiBankDeposit">₹0</div>
               <div class="kpi-sub" id="kpiCashBankSub">Counter: ₹0</div>
             </div>
-            <div class="kpi-card">
+            <div class="kpi-card info">
               <div class="kpi-label">Cash Counter</div>
               <div class="kpi-value" id="kpiCashCounter">₹0</div>
               <div class="kpi-sub">Online: ₹0</div>
@@ -392,14 +404,14 @@
 
           <!-- Charts Row 1 -->
           <div class="grid grid-2" style="margin-top: 20px;">
-            <div class="card">
-              <h3 class="card-title">Sales Trend (Daily)</h3>
+            <div class="card" id="salesTrendCard">
+              <h3 class="card-title">Sales Trend (Daily) <small style="font-size: 11px; color: #64748b;">- Click bar to filter</small></h3>
               <div class="chart-container">
                 <canvas id="salesTrendChart"></canvas>
               </div>
             </div>
-            <div class="card">
-              <h3 class="card-title">Yard-wise Sales (Target vs Achievement)</h3>
+            <div class="card" id="yardSalesCard">
+              <h3 class="card-title">Yard-wise Sales (Target vs Achievement) <small style="font-size: 11px; color: #64748b;">- Click bar to filter</small></h3>
               <div class="chart-container">
                 <canvas id="yardSalesChart"></canvas>
               </div>
@@ -408,14 +420,14 @@
 
           <!-- Charts Row 2 -->
           <div class="grid grid-2" style="margin-top: 20px;">
-            <div class="card">
-              <h3 class="card-title">Top 10 Trains Performance</h3>
+            <div class="card" id="topTrainsCard">
+              <h3 class="card-title">Top 10 Trains Performance <small style="font-size: 11px; color: #64748b;">- Click bar to filter</small></h3>
               <div class="chart-container">
                 <canvas id="topTrainsChart"></canvas>
               </div>
             </div>
-            <div class="card">
-              <h3 class="card-title">Bottom 10 Trains Performance</h3>
+            <div class="card" id="bottomTrainsCard">
+              <h3 class="card-title">Bottom 10 Trains Performance <small style="font-size: 11px; color: #64748b;">- Click bar to filter</small></h3>
               <div class="chart-container">
                 <canvas id="bottomTrainsChart"></canvas>
               </div>
@@ -424,14 +436,14 @@
 
           <!-- Charts Row 3 -->
           <div class="grid grid-2" style="margin-top: 20px;">
-            <div class="card">
-              <h3 class="card-title">Manager Contribution (GP)</h3>
+            <div class="card" id="managerCard">
+              <h3 class="card-title">Manager Contribution (GP) <small style="font-size: 11px; color: #64748b;">- Click segment to filter</small></h3>
               <div class="chart-container">
                 <canvas id="managerChart"></canvas>
               </div>
             </div>
-            <div class="card">
-              <h3 class="card-title">Train Type wise Sales Contribution</h3>
+            <div class="card" id="trainTypeCard">
+              <h3 class="card-title">Train Type wise Sales Contribution <small style="font-size: 11px; color: #64748b;">- Click segment to filter</small></h3>
               <div class="chart-container">
                 <canvas id="trainTypeChart"></canvas>
               </div>
@@ -584,7 +596,7 @@
                 </select>
               </div>
             </div>
-            <div class="filter-row" style="margin-top: 12px; background: rgba(245, 158, 11, 0.1);">
+            <div class="filter-row" style="margin-top: 12px; background: #fffbeb;">
               <div class="filter-item">
                 <label>Compare Range From</label>
                 <input type="date" id="compCompareFrom" onchange="loadComplaintDashboard()">
@@ -599,11 +611,15 @@
                 </button>
               </div>
             </div>
+            <div id="compChartFilterDisplay" style="margin-top: 8px; font-size: 12px; color: #0284c7; display: none;">
+              <i class="fas fa-filter"></i> <span id="compChartFilterText"></span> 
+              <button class="btn btn-sm" style="margin-left: 8px; padding: 2px 8px; font-size: 11px;" onclick="clearCompChartFilter()">Clear</button>
+            </div>
           </div>
 
           <!-- KPI Cards -->
           <div class="grid grid-4">
-            <div class="kpi-card">
+            <div class="kpi-card info">
               <div class="kpi-label">Total Complaints</div>
               <div class="kpi-value" id="compKpiTotal">0</div>
               <div class="kpi-sub">Filtered complaint records</div>
@@ -627,14 +643,14 @@
 
           <!-- Charts -->
           <div class="grid grid-2" style="margin-top: 20px;">
-            <div class="card">
-              <h3 class="card-title">Daily Complaint Trend (Current vs Previous)</h3>
+            <div class="card" id="complaintTrendCard">
+              <h3 class="card-title">Daily Complaint Trend (Current vs Previous) <small style="font-size: 11px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="complaintTrendChart"></canvas>
               </div>
             </div>
-            <div class="card">
-              <h3 class="card-title">Status Comparison</h3>
+            <div class="card" id="complaintStatusCard">
+              <h3 class="card-title">Status Comparison <small style="font-size: 11px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="complaintStatusChart"></canvas>
               </div>
@@ -642,14 +658,14 @@
           </div>
 
           <div class="grid grid-2" style="margin-top: 20px;">
-            <div class="card">
-              <h3 class="card-title">Train-wise Comparison (Top 12)</h3>
+            <div class="card" id="complaintTrainCard">
+              <h3 class="card-title">Train-wise Comparison (Top 12) <small style="font-size: 11px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="complaintTrainChart"></canvas>
               </div>
             </div>
-            <div class="card">
-              <h3 class="card-title">Complaint Source Mix</h3>
+            <div class="card" id="complaintSourceCard">
+              <h3 class="card-title">Complaint Source Mix <small style="font-size: 11px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="complaintSourceChart"></canvas>
               </div>
@@ -1033,7 +1049,126 @@
 
         <!-- Cash Deposit Page -->
         <div id="page-cash" class="page-content hidden">
+          <!-- Cash Dashboard Tiles -->
           <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Cash Deposit Dashboard</h3>
+                <p class="card-subtitle">Overview of cash collection and deposits</p>
+              </div>
+              <div class="action-btns">
+                <button class="btn btn-ghost btn-sm" onclick="downloadCashDashboardExcel()">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+                <button class="btn btn-ghost btn-sm" onclick="downloadCashDashboardPdf()">
+                  <i class="fas fa-file-pdf"></i> PDF
+                </button>
+              </div>
+            </div>
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>From Date</label>
+                <input type="date" id="cashDashFromDate" onchange="loadCashDashboard()">
+              </div>
+              <div class="filter-item">
+                <label>To Date</label>
+                <input type="date" id="cashDashToDate" onchange="loadCashDashboard()">
+              </div>
+              <div class="filter-item">
+                <label>Yard</label>
+                <select id="cashDashYardFilter" onchange="loadCashDashboard()">
+                  <option value="">All Yards</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>Train Manager</label>
+                <select id="cashDashManagerFilter" onchange="loadCashDashboard()">
+                  <option value="">All Managers</option>
+                </select>
+              </div>
+              <div class="filter-item" style="justify-content: flex-end; display: flex; align-items: flex-end;">
+                <button class="btn btn-warning btn-sm" onclick="clearCashDashFilters()">
+                  <i class="fas fa-undo"></i> Clear
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cash KPI Tiles -->
+          <div class="grid grid-4">
+            <div class="kpi-card info">
+              <div class="kpi-label">Total GP Collected</div>
+              <div class="kpi-value" id="cashKpiGpCollected">₹0</div>
+              <div class="kpi-sub">From sales entries</div>
+            </div>
+            <div class="kpi-card success">
+              <div class="kpi-label">Total Deposit</div>
+              <div class="kpi-value" id="cashKpiTotalDeposit">₹0</div>
+              <div class="kpi-sub" id="cashKpiDepositSub">Cash + Online</div>
+            </div>
+            <div class="kpi-card warning">
+              <div class="kpi-label">Cash Counter</div>
+              <div class="kpi-value" id="cashKpiCashCounter">₹0</div>
+              <div class="kpi-sub">Physical deposits</div>
+            </div>
+            <div class="kpi-card info">
+              <div class="kpi-label">Online Deposit</div>
+              <div class="kpi-value" id="cashKpiOnlineDeposit">₹0</div>
+              <div class="kpi-sub">Digital transfers</div>
+            </div>
+          </div>
+
+          <div class="grid grid-4" style="margin-top: 20px;">
+            <div class="kpi-card danger" id="shortageCard" style="display: none;">
+              <div class="kpi-label">Shortage Amount</div>
+              <div class="kpi-value" id="cashKpiShortage">₹0</div>
+              <div class="kpi-sub">GP - Total Deposit</div>
+            </div>
+            <div class="kpi-card success" id="excessCard" style="display: none;">
+              <div class="kpi-label">Excess Amount</div>
+              <div class="kpi-value" id="cashKpiExcess">₹0</div>
+              <div class="kpi-sub">Deposit > GP</div>
+            </div>
+            <div class="kpi-card info">
+              <div class="kpi-label">Records Count</div>
+              <div class="kpi-value" id="cashKpiCount">0</div>
+              <div class="kpi-sub">Cash entries</div>
+            </div>
+            <div class="kpi-card warning">
+              <div class="kpi-label">Pending Shortage</div>
+              <div class="kpi-value" id="cashKpiPendingShortage">0</div>
+              <div class="kpi-sub">Without reason</div>
+            </div>
+          </div>
+
+          <!-- Manager-wise Cash Deposit Table -->
+          <div class="card" style="margin-top: 20px;">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Manager-wise Cash Deposit Summary</h3>
+                <p class="card-subtitle">GP Achievement vs Cash Deposit comparison</p>
+              </div>
+            </div>
+            <div class="table-container">
+              <table id="managerCashTable">
+                <thead>
+                  <tr>
+                    <th>Manager Name</th>
+                    <th>GP Achievement</th>
+                    <th>Cash Deposit</th>
+                    <th>Online Deposit</th>
+                    <th>Total Deposit</th>
+                    <th>Difference</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="managerCashTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Cash Entry Form -->
+          <div class="card" style="margin-top: 20px;">
             <div class="card-header">
               <div>
                 <h3 class="card-title">Cash & Bank Deposit Entry</h3>
@@ -1056,6 +1191,11 @@
             </div>
 
             <div id="cashEntryTab">
+              <div id="shortageAlert" class="shortage-alert hidden">
+                <h4><i class="fas fa-exclamation-triangle"></i> Shortage Detected</h4>
+                <p>Total deposit (Cash + Online) is less than GP Achievement. Please provide a reason below.</p>
+              </div>
+
               <div class="form-row">
                 <div class="form-field">
                   <label>Date *</label>
@@ -1063,12 +1203,12 @@
                 </div>
                 <div class="form-field">
                   <label>Yard *</label>
-                  <select id="cashYard"></select>
+                  <select id="cashYard" onchange="updateCashGPFromSales()"></select>
                 </div>
                 <div class="form-field">
                   <label>Train Name</label>
                   <div class="searchable-select">
-                    <input type="text" id="cashTrainSearch" placeholder="Search train..." oninput="filterCashTrains(this.value)" onfocus="showCashTrainDropdown()">
+                    <input type="text" id="cashTrainSearch" placeholder="Search train..." oninput="filterCashTrains(this.value)" onfocus="showCashTrainDropdown()" onchange="updateCashGPFromSales()">
                     <input type="hidden" id="cashTrainId">
                     <div class="searchable-dropdown" id="cashTrainDropdown"></div>
                   </div>
@@ -1081,20 +1221,35 @@
 
               <div class="form-row">
                 <div class="form-field">
-                  <label>GP Collected</label>
-                  <input type="number" id="cashGpCollected" placeholder="Amount collected">
+                  <label>GP Achievement (Auto-filled from Sales)</label>
+                  <input type="number" id="cashGpFromSales" readonly placeholder="Will be auto-filled">
                 </div>
                 <div class="form-field">
-                  <label>Cash Deposit (Counter)</label>
-                  <input type="number" id="cashDepositCounter" oninput="calculateTotalDeposit()">
+                  <label>Cash Deposit (Counter) *</label>
+                  <input type="number" id="cashDepositCounter" oninput="calculateTotalDeposit(); checkShortage();">
                 </div>
                 <div class="form-field">
-                  <label>Online Deposit</label>
-                  <input type="number" id="cashOnlineDeposit" oninput="calculateTotalDeposit()">
+                  <label>Online Deposit *</label>
+                  <input type="number" id="cashOnlineDeposit" oninput="calculateTotalDeposit(); checkShortage();">
                 </div>
                 <div class="form-field">
                   <label>Total Deposit</label>
                   <input type="number" id="cashTotalDeposit" readonly>
+                </div>
+              </div>
+
+              <div class="form-row" id="shortageReasonRow" style="display: none;">
+                <div class="form-field" style="grid-column: 1 / -1;">
+                  <label>Shortage Reason * <small style="color: #dc2626;">(Required when deposit < GP)</small></label>
+                  <select id="cashShortageReason">
+                    <option value="">Select Reason</option>
+                    <option value="Cash Not Deposited">Cash Not Deposited</option>
+                    <option value="Shortage in Cash">Shortage in Cash</option>
+                    <option value="Pending Collection">Pending Collection</option>
+                    <option value="Manager Absent">Manager Absent</option>
+                    <option value="Bank Holiday">Bank Holiday</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
               </div>
 
@@ -1145,10 +1300,11 @@
                       <th>Date</th>
                       <th>Yard</th>
                       <th>Train</th>
-                      <th>GP Collected</th>
+                      <th>GP Achievement</th>
                       <th>Cash Deposit</th>
                       <th>Online Deposit</th>
                       <th>Total</th>
+                      <th>Shortage Reason</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -1247,27 +1403,27 @@
             <h3 class="card-title">Master Values Management</h3>
             <div class="grid grid-3">
               <div>
-                <label style="display: block; margin-bottom: 8px; font-size: 13px; color: #cbd5e1;">Add New Yard</label>
+                <label style="display: block; margin-bottom: 8px; font-size: 13px; color: #475569; font-weight: 500;">Add New Yard</label>
                 <div style="display: flex; gap: 8px;">
-                  <input type="text" id="newYard" placeholder="Yard name" style="flex: 1; padding: 10px 14px; border: 1px solid #334155; border-radius: 8px; background: #1e293b; color: #fff;">
+                  <input type="text" id="newYard" placeholder="Yard name" style="flex: 1; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b;">
                   <button class="btn btn-success btn-sm" onclick="addYard()">
                     <i class="fas fa-plus"></i>
                   </button>
                 </div>
               </div>
               <div>
-                <label style="display: block; margin-bottom: 8px; font-size: 13px; color: #cbd5e1;">Add Cluster Manager</label>
+                <label style="display: block; margin-bottom: 8px; font-size: 13px; color: #475569; font-weight: 500;">Add Cluster Manager</label>
                 <div style="display: flex; gap: 8px;">
-                  <input type="text" id="newClusterManager" placeholder="Manager name" style="flex: 1; padding: 10px 14px; border: 1px solid #334155; border-radius: 8px; background: #1e293b; color: #fff;">
+                  <input type="text" id="newClusterManager" placeholder="Manager name" style="flex: 1; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b;">
                   <button class="btn btn-success btn-sm" onclick="addClusterManager()">
                     <i class="fas fa-plus"></i>
                   </button>
                 </div>
               </div>
               <div>
-                <label style="display: block; margin-bottom: 8px; font-size: 13px; color: #cbd5e1;">Add Train Manager</label>
+                <label style="display: block; margin-bottom: 8px; font-size: 13px; color: #475569; font-weight: 500;">Add Train Manager</label>
                 <div style="display: flex; gap: 8px;">
-                  <input type="text" id="newTrainManager" placeholder="Manager name" style="flex: 1; padding: 10px 14px; border: 1px solid #334155; border-radius: 8px; background: #1e293b; color: #fff;">
+                  <input type="text" id="newTrainManager" placeholder="Manager name" style="flex: 1; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b;">
                   <button class="btn btn-success btn-sm" onclick="addTrainManager()">
                     <i class="fas fa-plus"></i>
                   </button>
@@ -1419,31 +1575,31 @@
             <h3 class="card-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Danger Zone</h3>
             <p class="card-subtitle">These actions cannot be undone. Use with caution!</p>
             <div class="grid grid-4" style="margin-top: 20px;">
-              <div style="padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.3);">
-                <h4 style="color: #ef4444; margin: 0 0 12px 0;">Reset Sales Data</h4>
-                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">Delete all sales entries</p>
+              <div style="padding: 16px; background: #fef2f2; border-radius: 12px; border: 1px solid #fca5a5;">
+                <h4 style="color: #dc2626; margin: 0 0 12px 0;">Reset Sales Data</h4>
+                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Delete all sales entries</p>
                 <input type="file" id="resetSalesFile" accept=".xlsx,.xls" style="display: none;" onchange="resetAndImportSales(this)">
                 <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="if(confirm('Delete ALL sales data? This cannot be undone!')) { appData.sales = []; saveData(); showAlert('All sales data deleted', 'success'); loadDashboard(); }">
                   <i class="fas fa-trash"></i> Delete All
                 </button>
               </div>
-              <div style="padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.3);">
-                <h4 style="color: #ef4444; margin: 0 0 12px 0;">Reset Complaints</h4>
-                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">Delete all complaint records</p>
+              <div style="padding: 16px; background: #fef2f2; border-radius: 12px; border: 1px solid #fca5a5;">
+                <h4 style="color: #dc2626; margin: 0 0 12px 0;">Reset Complaints</h4>
+                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Delete all complaint records</p>
                 <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="if(confirm('Delete ALL complaint data? This cannot be undone!')) { appData.complaints = []; saveData(); showAlert('All complaint data deleted', 'success'); loadDashboard(); }">
                   <i class="fas fa-trash"></i> Delete All
                 </button>
               </div>
-              <div style="padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.3);">
-                <h4 style="color: #ef4444; margin: 0 0 12px 0;">Reset Cash Data</h4>
-                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">Delete all cash deposit records</p>
+              <div style="padding: 16px; background: #fef2f2; border-radius: 12px; border: 1px solid #fca5a5;">
+                <h4 style="color: #dc2626; margin: 0 0 12px 0;">Reset Cash Data</h4>
+                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Delete all cash deposit records</p>
                 <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="if(confirm('Delete ALL cash deposit data? This cannot be undone!')) { appData.cash = []; saveData(); showAlert('All cash data deleted', 'success'); loadDashboard(); }">
                   <i class="fas fa-trash"></i> Delete All
                 </button>
               </div>
-              <div style="padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.3);">
-                <h4 style="color: #ef4444; margin: 0 0 12px 0;">Reset Everything</h4>
-                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">Reset to default data</p>
+              <div style="padding: 16px; background: #fef2f2; border-radius: 12px; border: 1px solid #fca5a5;">
+                <h4 style="color: #dc2626; margin: 0 0 12px 0;">Reset Everything</h4>
+                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Reset to default data</p>
                 <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="if(confirm('Reset ALL data to defaults? This cannot be undone!')) { resetToDefault(); }">
                   <i class="fas fa-redo"></i> Reset All
                 </button>
@@ -1454,27 +1610,27 @@
           <div class="card">
             <h3 class="card-title">System Summary</h3>
             <div class="grid grid-6">
-              <div class="kpi-card">
+              <div class="kpi-card info">
                 <div class="kpi-label">Total Users</div>
                 <div class="kpi-value" id="summaryUsers">0</div>
               </div>
-              <div class="kpi-card">
+              <div class="kpi-card info">
                 <div class="kpi-label">Train Masters</div>
                 <div class="kpi-value" id="summaryTrains">0</div>
               </div>
-              <div class="kpi-card">
+              <div class="kpi-card info">
                 <div class="kpi-label">Sales Records</div>
                 <div class="kpi-value" id="summarySales">0</div>
               </div>
-              <div class="kpi-card">
+              <div class="kpi-card info">
                 <div class="kpi-label">Complaints</div>
                 <div class="kpi-value" id="summaryComplaints">0</div>
               </div>
-              <div class="kpi-card">
+              <div class="kpi-card info">
                 <div class="kpi-label">Cash Records</div>
                 <div class="kpi-value" id="summaryCash">0</div>
               </div>
-              <div class="kpi-card">
+              <div class="kpi-card info">
                 <div class="kpi-label">Yards</div>
                 <div class="kpi-value" id="summaryYards">0</div>
               </div>
@@ -1519,6 +1675,8 @@
     let charts = {};
     let salesBucketFilter = null;
     let gpBucketFilter = null;
+    let chartFilter = { type: null, value: null };
+    let compChartFilter = { type: null, value: null };
 
     // Role permissions
     const ROLE_PERMISSIONS = {
@@ -1554,7 +1712,6 @@
       const saved = localStorage.getItem('rkGroupData');
       if (saved) {
         appData = JSON.parse(saved);
-        // Ensure all required fields exist
         if (!appData.yards) appData.yards = DEFAULT_DATA.yards;
         if (!appData.clusterManagers) appData.clusterManagers = DEFAULT_DATA.clusterManagers;
         if (!appData.trainManagers) appData.trainManagers = DEFAULT_DATA.trainManagers;
@@ -1610,7 +1767,7 @@
         return;
       }
 
-      const user = appData.users.find(u => u.email === email && u.password === password && u.active);
+      const user = appData.users.find(u => (u.email === email || u.email.toLowerCase() === email.toLowerCase()) && u.password === password && u.active);
       if (user) {
         currentUser = user;
         errorDiv.classList.add('hidden');
@@ -1633,7 +1790,7 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('appContainer').style.display = 'block';
       document.getElementById('userName').textContent = currentUser.name;
-      document.getElementById('userRole').textContent = ROLE_LABELS[currentUser.role];
+      document.getElementById('userRoleDisplay').textContent = ROLE_LABELS[currentUser.role] || currentUser.role;
       setupNavigation();
       showPage('dashboard');
     }
@@ -1676,19 +1833,28 @@
 
     // ==================== FILTER FUNCTIONS ====================
     function getFilteredSales() {
+      let filtered = [...(appData.sales || [])];
+      
       const fromDate = document.getElementById('dashFromDate')?.value;
       const toDate = document.getElementById('dashToDate')?.value;
       const trainFilter = document.getElementById('dashTrainFilter')?.value;
       const managerFilter = document.getElementById('dashManagerFilter')?.value;
       const yardFilter = document.getElementById('dashYardFilter')?.value;
-
-      let filtered = [...(appData.sales || [])];
       
       if (fromDate) filtered = filtered.filter(s => s.date >= fromDate);
       if (toDate) filtered = filtered.filter(s => s.date <= toDate);
       if (trainFilter) filtered = filtered.filter(s => s.trainName === trainFilter);
       if (managerFilter) filtered = filtered.filter(s => s.trainManager === managerFilter);
       if (yardFilter) filtered = filtered.filter(s => s.yard === yardFilter);
+
+      // Chart click filter
+      if (chartFilter.type && chartFilter.value) {
+        if (chartFilter.type === 'yard') filtered = filtered.filter(s => s.yard === chartFilter.value);
+        if (chartFilter.type === 'train') filtered = filtered.filter(s => s.trainName === chartFilter.value);
+        if (chartFilter.type === 'manager') filtered = filtered.filter(s => s.trainManager === chartFilter.value);
+        if (chartFilter.type === 'trainType') filtered = filtered.filter(s => s.trainType === chartFilter.value);
+        if (chartFilter.type === 'date') filtered = filtered.filter(s => s.date === chartFilter.value);
+      }
 
       // Bucket filters
       if (salesBucketFilter) {
@@ -1704,7 +1870,6 @@
         });
       }
 
-      // Yard filter for non-super admin
       if (currentUser.yard !== 'ALL') {
         filtered = filtered.filter(s => s.yard === currentUser.yard);
       }
@@ -1724,19 +1889,27 @@
     }
 
     function getFilteredComplaints() {
+      let filtered = [...(appData.complaints || [])];
+      
       const fromDate = document.getElementById('compDashFromDate')?.value;
       const toDate = document.getElementById('compDashToDate')?.value;
       const trainFilter = document.getElementById('compDashTrainFilter')?.value;
       const statusFilter = document.getElementById('compDashStatusFilter')?.value;
       const yardFilter = document.getElementById('compDashYardFilter')?.value;
 
-      let filtered = [...(appData.complaints || [])];
-      
       if (fromDate) filtered = filtered.filter(c => c.date >= fromDate);
       if (toDate) filtered = filtered.filter(c => c.date <= toDate);
       if (trainFilter) filtered = filtered.filter(c => c.trainName === trainFilter);
       if (statusFilter) filtered = filtered.filter(c => c.status === statusFilter);
       if (yardFilter) filtered = filtered.filter(c => c.yard === yardFilter);
+
+      // Chart click filter
+      if (compChartFilter.type && compChartFilter.value) {
+        if (compChartFilter.type === 'train') filtered = filtered.filter(c => c.trainName === compChartFilter.value);
+        if (compChartFilter.type === 'status') filtered = filtered.filter(c => c.status === compChartFilter.value);
+        if (compChartFilter.type === 'source') filtered = filtered.filter(c => c.source === compChartFilter.value);
+        if (compChartFilter.type === 'date') filtered = filtered.filter(c => c.date === compChartFilter.value);
+      }
 
       if (currentUser.yard !== 'ALL') {
         filtered = filtered.filter(c => c.yard === currentUser.yard);
@@ -1751,22 +1924,13 @@
       const yards = appData.yards || [];
 
       const trainSelect = document.getElementById('dashTrainFilter');
-      if (trainSelect && trainSelect.options.length <= 1) {
-        trainSelect.innerHTML = '<option value="">All Trains</option>' + 
-          trains.map(t => `<option value="${t}">${t}</option>`).join('');
-      }
+      if (trainSelect) trainSelect.innerHTML = '<option value="">All Trains</option>' + trains.map(t => `<option value="${t}">${t}</option>`).join('');
 
       const managerSelect = document.getElementById('dashManagerFilter');
-      if (managerSelect && managerSelect.options.length <= 1) {
-        managerSelect.innerHTML = '<option value="">All Managers</option>' + 
-          managers.map(m => `<option value="${m}">${m}</option>`).join('');
-      }
+      if (managerSelect) managerSelect.innerHTML = '<option value="">All Managers</option>' + managers.map(m => `<option value="${m}">${m}</option>`).join('');
 
       const yardSelect = document.getElementById('dashYardFilter');
-      if (yardSelect && yardSelect.options.length <= 1) {
-        yardSelect.innerHTML = '<option value="">All Yards</option>' + 
-          yards.map(y => `<option value="${y}">${y}</option>`).join('');
-      }
+      if (yardSelect) yardSelect.innerHTML = '<option value="">All Yards</option>' + yards.map(y => `<option value="${y}">${y}</option>`).join('');
     }
 
     function populateComplaintDashboardFilters() {
@@ -1774,16 +1938,10 @@
       const yards = appData.yards || [];
 
       const trainSelect = document.getElementById('compDashTrainFilter');
-      if (trainSelect && trainSelect.options.length <= 1) {
-        trainSelect.innerHTML = '<option value="">All Trains</option>' + 
-          trains.map(t => `<option value="${t}">${t}</option>`).join('');
-      }
+      if (trainSelect) trainSelect.innerHTML = '<option value="">All Trains</option>' + trains.map(t => `<option value="${t}">${t}</option>`).join('');
 
       const yardSelect = document.getElementById('compDashYardFilter');
-      if (yardSelect && yardSelect.options.length <= 1) {
-        yardSelect.innerHTML = '<option value="">All Yards</option>' + 
-          yards.map(y => `<option value="${y}">${y}</option>`).join('');
-      }
+      if (yardSelect) yardSelect.innerHTML = '<option value="">All Yards</option>' + yards.map(y => `<option value="${y}">${y}</option>`).join('');
     }
 
     function clearSalesFilters() {
@@ -1795,6 +1953,12 @@
       document.getElementById('dashYardFilter').value = '';
       salesBucketFilter = null;
       gpBucketFilter = null;
+      chartFilter = { type: null, value: null };
+      loadDashboard();
+    }
+
+    function clearChartFilter() {
+      chartFilter = { type: null, value: null };
       loadDashboard();
     }
 
@@ -1806,6 +1970,12 @@
       document.getElementById('compDashYardFilter').value = '';
       document.getElementById('compCompareFrom').value = '';
       document.getElementById('compCompareTo').value = '';
+      compChartFilter = { type: null, value: null };
+      loadComplaintDashboard();
+    }
+
+    function clearCompChartFilter() {
+      compChartFilter = { type: null, value: null };
       loadComplaintDashboard();
     }
 
@@ -1824,9 +1994,6 @@
       const yesterday = new Date(now);
       yesterday.setDate(yesterday.getDate() - 1);
       
-      const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      const prevMonthYesterday = new Date(now.getFullYear(), now.getMonth() - 1, yesterday.getDate());
-
       document.getElementById('compCompareFrom').value = currentMonthStart.toISOString().split('T')[0];
       document.getElementById('compCompareTo').value = yesterday.toISOString().split('T')[0];
       
@@ -1862,19 +2029,19 @@
       const cashCounter = cash.reduce((sum, c) => sum + (Number(c.cashDepositCounter) || 0), 0);
       const onlineDeposit = cash.reduce((sum, c) => sum + (Number(c.onlineDeposit) || 0), 0);
 
-      // Update KPI cards
+      // Update KPI cards - NO DECIMALS
       document.getElementById('kpiSalesTarget').textContent = formatCurrency(salesTarget);
       document.getElementById('kpiSalesTargetSub').textContent = sales.length + ' filtered records';
       document.getElementById('kpiSalesAchievement').textContent = formatCurrency(salesAchievement);
       document.getElementById('kpiSalesAchievementSub').textContent = salesTarget > 0 ? 
-        ((salesAchievement / salesTarget) * 100).toFixed(1) + '% achieved' : '0% achieved';
+        Math.round((salesAchievement / salesTarget) * 100) + '% achieved' : '0% achieved';
       document.getElementById('kpiSalesProgress').style.width = salesTarget > 0 ? 
         Math.min((salesAchievement / salesTarget) * 100, 100) + '%' : '0%';
 
       document.getElementById('kpiGpTarget').textContent = formatCurrency(gpTarget);
       document.getElementById('kpiGpAchievement').textContent = formatCurrency(gpAchievement);
       document.getElementById('kpiGpAchievementSub').textContent = gpTarget > 0 ? 
-        ((gpAchievement / gpTarget) * 100).toFixed(1) + '% achieved' : '0% achieved';
+        Math.round((gpAchievement / gpTarget) * 100) + '% achieved' : '0% achieved';
       document.getElementById('kpiGpProgress').style.width = gpTarget > 0 ? 
         Math.min((gpAchievement / gpTarget) * 100, 100) + '%' : '0%';
 
@@ -1902,8 +2069,9 @@
       renderMOMTable(sales);
       renderRankTable(sales, complaints, cash);
 
-      // Update active filters display
+      // Update filter displays
       updateActiveFiltersDisplay();
+      updateChartFilterDisplay();
     }
 
     function updateActiveFiltersDisplay() {
@@ -1917,102 +2085,98 @@
       if (gpBucketFilter) filters.push('GP: ' + gpBucketFilter);
       
       const display = document.getElementById('activeFilters');
-      if (display) {
-        display.innerHTML = filters.length > 0 ? 
-          '<strong>Active Filters:</strong> ' + filters.join(' | ') : '';
+      if (display) display.innerHTML = filters.length > 0 ? '<strong>Active Filters:</strong> ' + filters.join(' | ') : '';
+    }
+
+    function updateChartFilterDisplay() {
+      const display = document.getElementById('chartFilterDisplay');
+      const text = document.getElementById('chartFilterText');
+      if (chartFilter.type && chartFilter.value) {
+        display.style.display = 'block';
+        text.textContent = `Filtered by ${chartFilter.type}: ${chartFilter.value}`;
+      } else {
+        display.style.display = 'none';
       }
     }
 
     function renderSalesBuckets(sales) {
-      const buckets = {
-        'Above 100%': { count: 0, color: 'success' },
-        '90-100%': { count: 0, color: 'success' },
-        '80-90%': { count: 0, color: 'success' },
-        '70-80%': { count: 0, color: 'warning' },
-        'Below 70%': { count: 0, color: 'danger' }
-      };
+      const buckets = { 'Above 100%': 0, '90-100%': 0, '80-90%': 0, '70-80%': 0, 'Below 70%': 0 };
+      const colors = { 'Above 100%': 'success', '90-100%': 'success', '80-90%': 'success', '70-80%': 'warning', 'Below 70%': 'danger' };
 
       sales.forEach(s => {
         const pct = s.salesTarget > 0 ? (s.salesAchievement / s.salesTarget) * 100 : 0;
-        if (pct >= 100) buckets['Above 100%'].count++;
-        else if (pct >= 90) buckets['90-100%'].count++;
-        else if (pct >= 80) buckets['80-90%'].count++;
-        else if (pct >= 70) buckets['70-80%'].count++;
-        else buckets['Below 70%'].count++;
+        if (pct >= 100) buckets['Above 100%']++;
+        else if (pct >= 90) buckets['90-100%']++;
+        else if (pct >= 80) buckets['80-90%']++;
+        else if (pct >= 70) buckets['70-80%']++;
+        else buckets['Below 70%']++;
       });
 
-      const container = document.getElementById('salesBuckets');
-      container.innerHTML = Object.entries(buckets).map(([label, data]) => `
-        <div class="tile ${data.color} ${salesBucketFilter === label ? 'active' : ''}" onclick="filterByBucket('${label}', 'sales')">
-          <div class="tile-value">${data.count}</div>
+      document.getElementById('salesBuckets').innerHTML = Object.entries(buckets).map(([label, count]) => `
+        <div class="tile ${colors[label]} ${salesBucketFilter === label ? 'active' : ''}" onclick="filterByBucket('${label}', 'sales')">
+          <div class="tile-value">${count}</div>
           <div class="tile-label">${label}</div>
         </div>
       `).join('');
     }
 
     function renderGpBuckets(sales) {
-      const buckets = {
-        'Above 100%': { count: 0, color: 'success' },
-        '90-100%': { count: 0, color: 'success' },
-        '80-90%': { count: 0, color: 'success' },
-        '70-80%': { count: 0, color: 'warning' },
-        'Below 70%': { count: 0, color: 'danger' }
-      };
+      const buckets = { 'Above 100%': 0, '90-100%': 0, '80-90%': 0, '70-80%': 0, 'Below 70%': 0 };
+      const colors = { 'Above 100%': 'success', '90-100%': 'success', '80-90%': 'success', '70-80%': 'warning', 'Below 70%': 'danger' };
 
       sales.forEach(s => {
         const pct = s.gpTarget > 0 ? (s.gpAchievement / s.gpTarget) * 100 : 0;
-        if (pct >= 100) buckets['Above 100%'].count++;
-        else if (pct >= 90) buckets['90-100%'].count++;
-        else if (pct >= 80) buckets['80-90%'].count++;
-        else if (pct >= 70) buckets['70-80%'].count++;
-        else buckets['Below 70%'].count++;
+        if (pct >= 100) buckets['Above 100%']++;
+        else if (pct >= 90) buckets['90-100%']++;
+        else if (pct >= 80) buckets['80-90%']++;
+        else if (pct >= 70) buckets['70-80%']++;
+        else buckets['Below 70%']++;
       });
 
-      const container = document.getElementById('gpBuckets');
-      container.innerHTML = Object.entries(buckets).map(([label, data]) => `
-        <div class="tile ${data.color} ${gpBucketFilter === label ? 'active' : ''}" onclick="filterByBucket('${label}', 'gp')">
-          <div class="tile-value">${data.count}</div>
+      document.getElementById('gpBuckets').innerHTML = Object.entries(buckets).map(([label, count]) => `
+        <div class="tile ${colors[label]} ${gpBucketFilter === label ? 'active' : ''}" onclick="filterByBucket('${label}', 'gp')">
+          <div class="tile-value">${count}</div>
           <div class="tile-label">${label}</div>
         </div>
       `).join('');
     }
 
-    // ==================== CHART RENDERING ====================
+    // ==================== CHART RENDERING WITH INTERACTIVITY ====================
     function renderSalesTrendChart(sales) {
       const ctx = document.getElementById('salesTrendChart');
       if (!ctx) return;
 
       const dateMap = {};
-      sales.forEach(s => {
-        if (s.date) {
-          dateMap[s.date] = (dateMap[s.date] || 0) + (Number(s.salesAchievement) || 0);
-        }
-      });
-
+      sales.forEach(s => { if (s.date) dateMap[s.date] = (dateMap[s.date] || 0) + (Number(s.salesAchievement) || 0); });
       const sortedDates = Object.keys(dateMap).sort();
-      const data = sortedDates.map(d => dateMap[d]);
 
       if (charts.salesTrend) charts.salesTrend.destroy();
       charts.salesTrend = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
           labels: sortedDates,
           datasets: [{
             label: 'Sales Achievement',
-            data: data,
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            fill: true,
-            tension: 0.4
+            data: sortedDates.map(d => dateMap[d]),
+            backgroundColor: '#0ea5e9',
+            borderRadius: 6
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              const date = sortedDates[index];
+              chartFilter = { type: 'date', value: date };
+              loadDashboard();
+            }
+          },
           plugins: { legend: { display: false } },
           scales: {
-            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
-            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
+            x: { grid: { display: false }, ticks: { color: '#64748b' } }
           }
         }
       });
@@ -2032,8 +2196,6 @@
       });
 
       const yards = Object.keys(yardMap);
-      const targets = yards.map(y => yardMap[y].target);
-      const achievements = yards.map(y => yardMap[y].achievement);
 
       if (charts.yardSales) charts.yardSales.destroy();
       charts.yardSales = new Chart(ctx, {
@@ -2041,17 +2203,24 @@
         data: {
           labels: yards,
           datasets: [
-            { label: 'Target', data: targets, backgroundColor: '#f59e0b', borderRadius: 6 },
-            { label: 'Achievement', data: achievements, backgroundColor: '#3b82f6', borderRadius: 6 }
+            { label: 'Target', data: yards.map(y => yardMap[y].target), backgroundColor: '#f59e0b', borderRadius: 6 },
+            { label: 'Achievement', data: yards.map(y => yardMap[y].achievement), backgroundColor: '#0ea5e9', borderRadius: 6 }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#94a3b8' } } },
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              chartFilter = { type: 'yard', value: yards[index] };
+              loadDashboard();
+            }
+          },
+          plugins: { legend: { labels: { color: '#64748b' } } },
           scales: {
-            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
-            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
+            x: { grid: { display: false }, ticks: { color: '#64748b' } }
           }
         }
       });
@@ -2071,12 +2240,8 @@
       });
 
       const trainPerformance = Object.entries(trainMap)
-        .map(([name, data]) => ({
-          name,
-          pct: data.target > 0 ? (data.achievement / data.target) * 100 : 0
-        }))
-        .sort((a, b) => b.pct - a.pct)
-        .slice(0, 10);
+        .map(([name, data]) => ({ name, pct: data.target > 0 ? (data.achievement / data.target) * 100 : 0 }))
+        .sort((a, b) => b.pct - a.pct).slice(0, 10);
 
       if (charts.topTrains) charts.topTrains.destroy();
       charts.topTrains = new Chart(ctx, {
@@ -2085,18 +2250,25 @@
           labels: trainPerformance.map(t => t.name),
           datasets: [{
             label: 'Achievement %',
-            data: trainPerformance.map(t => t.pct.toFixed(1)),
-            backgroundColor: '#10b981',
+            data: trainPerformance.map(t => Math.round(t.pct)),
+            backgroundColor: '#22c55e',
             borderRadius: 6
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              chartFilter = { type: 'train', value: trainPerformance[index].name };
+              loadDashboard();
+            }
+          },
           plugins: { legend: { display: false } },
           scales: {
-            y: { beginAtZero: true, max: 120, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
-            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            y: { beginAtZero: true, max: 120, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
+            x: { grid: { display: false }, ticks: { color: '#64748b' } }
           }
         }
       });
@@ -2116,12 +2288,8 @@
       });
 
       const trainPerformance = Object.entries(trainMap)
-        .map(([name, data]) => ({
-          name,
-          pct: data.target > 0 ? (data.achievement / data.target) * 100 : 0
-        }))
-        .sort((a, b) => a.pct - b.pct)
-        .slice(0, 10);
+        .map(([name, data]) => ({ name, pct: data.target > 0 ? (data.achievement / data.target) * 100 : 0 }))
+        .sort((a, b) => a.pct - b.pct).slice(0, 10);
 
       if (charts.bottomTrains) charts.bottomTrains.destroy();
       charts.bottomTrains = new Chart(ctx, {
@@ -2130,7 +2298,7 @@
           labels: trainPerformance.map(t => t.name),
           datasets: [{
             label: 'Achievement %',
-            data: trainPerformance.map(t => t.pct.toFixed(1)),
+            data: trainPerformance.map(t => Math.round(t.pct)),
             backgroundColor: '#ef4444',
             borderRadius: 6
           }]
@@ -2138,10 +2306,17 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              chartFilter = { type: 'train', value: trainPerformance[index].name };
+              loadDashboard();
+            }
+          },
           plugins: { legend: { display: false } },
           scales: {
-            y: { beginAtZero: true, max: 120, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
-            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            y: { beginAtZero: true, max: 120, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
+            x: { grid: { display: false }, ticks: { color: '#64748b' } }
           }
         }
       });
@@ -2152,14 +2327,9 @@
       if (!ctx) return;
 
       const managerMap = {};
-      sales.forEach(s => {
-        if (s.trainManager) {
-          managerMap[s.trainManager] = (managerMap[s.trainManager] || 0) + (Number(s.gpAchievement) || 0);
-        }
-      });
+      sales.forEach(s => { if (s.trainManager) managerMap[s.trainManager] = (managerMap[s.trainManager] || 0) + (Number(s.gpAchievement) || 0); });
 
       const managers = Object.keys(managerMap);
-      const data = managers.map(m => managerMap[m]);
 
       if (charts.manager) charts.manager.destroy();
       charts.manager = new Chart(ctx, {
@@ -2167,15 +2337,22 @@
         data: {
           labels: managers,
           datasets: [{
-            data: data,
-            backgroundColor: ['#3b82f6', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#06b6d4']
+            data: managers.map(m => managerMap[m]),
+            backgroundColor: ['#0ea5e9', '#f59e0b', '#22c55e', '#ef4444', '#8b5cf6', '#06b6d4']
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              chartFilter = { type: 'manager', value: managers[index] };
+              loadDashboard();
+            }
+          },
           plugins: {
-            legend: { position: 'bottom', labels: { color: '#94a3b8' } }
+            legend: { position: 'bottom', labels: { color: '#64748b' } }
           }
         }
       });
@@ -2186,13 +2363,9 @@
       if (!ctx) return;
 
       const typeMap = {};
-      sales.forEach(s => {
-        const type = s.trainType || 'Unknown';
-        typeMap[type] = (typeMap[type] || 0) + (Number(s.salesAchievement) || 0);
-      });
+      sales.forEach(s => { const type = s.trainType || 'Unknown'; typeMap[type] = (typeMap[type] || 0) + (Number(s.salesAchievement) || 0); });
 
       const types = Object.keys(typeMap);
-      const data = types.map(t => typeMap[t]);
 
       if (charts.trainType) charts.trainType.destroy();
       charts.trainType = new Chart(ctx, {
@@ -2200,21 +2373,28 @@
         data: {
           labels: types,
           datasets: [{
-            data: data,
-            backgroundColor: ['#005f73', '#0a9396', '#3b82f6', '#8b5cf6', '#f59e0b', '#ca6702', '#ef4444', '#10b981']
+            data: types.map(t => typeMap[t]),
+            backgroundColor: ['#0ea5e9', '#f59e0b', '#22c55e', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6']
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              chartFilter = { type: 'trainType', value: types[index] };
+              loadDashboard();
+            }
+          },
           plugins: {
-            legend: { position: 'bottom', labels: { color: '#94a3b8' } },
+            legend: { position: 'bottom', labels: { color: '#64748b' } },
             tooltip: {
               callbacks: {
                 label: function(context) {
                   const value = context.raw;
                   const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                  const pct = total ? ((value / total) * 100).toFixed(1) : 0;
+                  const pct = total ? Math.round((value / total) * 100) : 0;
                   return `${context.label}: ${formatCurrency(value)} (${pct}%)`;
                 }
               }
@@ -2228,9 +2408,7 @@
       const trainMap = {};
       sales.forEach(s => {
         if (s.trainName) {
-          if (!trainMap[s.trainName]) {
-            trainMap[s.trainName] = { salesTarget: 0, salesAchievement: 0, gpTarget: 0, gpAchievement: 0 };
-          }
+          if (!trainMap[s.trainName]) trainMap[s.trainName] = { salesTarget: 0, salesAchievement: 0, gpTarget: 0, gpAchievement: 0 };
           trainMap[s.trainName].salesTarget += Number(s.salesTarget) || 0;
           trainMap[s.trainName].salesAchievement += Number(s.salesAchievement) || 0;
           trainMap[s.trainName].gpTarget += Number(s.gpTarget) || 0;
@@ -2240,8 +2418,8 @@
 
       const trainPerformance = Object.entries(trainMap).map(([name, data]) => ({
         name,
-        salesPct: data.salesTarget > 0 ? (data.salesAchievement / data.salesTarget) * 100 : 0,
-        gpPct: data.gpTarget > 0 ? (data.gpAchievement / data.gpTarget) * 100 : 0,
+        salesPct: data.salesTarget > 0 ? Math.round((data.salesAchievement / data.salesTarget) * 100) : 0,
+        gpPct: data.gpTarget > 0 ? Math.round((data.gpAchievement / data.gpTarget) * 100) : 0,
         salesAmount: data.salesAchievement,
         gpAmount: data.gpAchievement
       })).sort((a, b) => b.salesPct - a.salesPct);
@@ -2252,8 +2430,8 @@
       document.getElementById('topTrainTableBody').innerHTML = top10.map(t => `
         <tr>
           <td>${t.name}</td>
-          <td>${t.salesPct.toFixed(1)}%</td>
-          <td>${t.gpPct.toFixed(1)}%</td>
+          <td>${t.salesPct}%</td>
+          <td>${t.gpPct}%</td>
           <td>${formatCurrency(t.salesAmount)}</td>
           <td>${formatCurrency(t.gpAmount)}</td>
         </tr>
@@ -2262,8 +2440,8 @@
       document.getElementById('bottomTrainTableBody').innerHTML = bottom10.map(t => `
         <tr>
           <td>${t.name}</td>
-          <td>${t.salesPct.toFixed(1)}%</td>
-          <td>${t.gpPct.toFixed(1)}%</td>
+          <td>${t.salesPct}%</td>
+          <td>${t.gpPct}%</td>
           <td>${formatCurrency(t.salesAmount)}</td>
           <td>${formatCurrency(t.gpAmount)}</td>
         </tr>
@@ -2279,50 +2457,22 @@
       const yesterday = new Date(now);
       yesterday.setDate(yesterday.getDate() - 1);
 
-      // Current month MTD (1st to yesterday)
       const currentMonthStart = new Date(currentYear, currentMonth, 1);
-      const currentMTD = sales.filter(s => {
-        const d = new Date(s.date);
-        return d >= currentMonthStart && d <= yesterday;
-      });
+      const currentMTD = sales.filter(s => { const d = new Date(s.date); return d >= currentMonthStart && d <= yesterday; });
 
-      // Previous month same period
       const prevMonthStart = new Date(prevYear, prevMonth, 1);
       const prevMonthEnd = new Date(prevYear, prevMonth, yesterday.getDate());
-      const prevMTD = sales.filter(s => {
-        const d = new Date(s.date);
-        return d >= prevMonthStart && d <= prevMonthEnd;
-      });
+      const prevMTD = sales.filter(s => { const d = new Date(s.date); return d >= prevMonthStart && d <= prevMonthEnd; });
 
-      // Aggregate by train
       const trainMap = {};
-      [...currentMTD, ...prevMTD].forEach(s => {
-        if (!trainMap[s.trainName]) {
-          trainMap[s.trainName] = { currentSales: 0, prevSales: 0, currentGP: 0, prevGP: 0 };
-        }
-      });
-
-      currentMTD.forEach(s => {
-        if (trainMap[s.trainName]) {
-          trainMap[s.trainName].currentSales += Number(s.salesAchievement) || 0;
-          trainMap[s.trainName].currentGP += Number(s.gpAchievement) || 0;
-        }
-      });
-
-      prevMTD.forEach(s => {
-        if (trainMap[s.trainName]) {
-          trainMap[s.trainName].prevSales += Number(s.salesAchievement) || 0;
-          trainMap[s.trainName].prevGP += Number(s.gpAchievement) || 0;
-        }
-      });
+      [...currentMTD, ...prevMTD].forEach(s => { if (!trainMap[s.trainName]) trainMap[s.trainName] = { currentSales: 0, prevSales: 0, currentGP: 0, prevGP: 0 }; });
+      currentMTD.forEach(s => { if (trainMap[s.trainName]) { trainMap[s.trainName].currentSales += Number(s.salesAchievement) || 0; trainMap[s.trainName].currentGP += Number(s.gpAchievement) || 0; }});
+      prevMTD.forEach(s => { if (trainMap[s.trainName]) { trainMap[s.trainName].prevSales += Number(s.salesAchievement) || 0; trainMap[s.trainName].prevGP += Number(s.gpAchievement) || 0; }});
 
       const rows = Object.entries(trainMap).map(([name, data]) => ({
-        name,
-        currentSales: data.currentSales,
-        prevSales: data.prevSales,
+        name, currentSales: data.currentSales, prevSales: data.prevSales,
         salesVariance: data.currentSales - data.prevSales,
-        currentGP: data.currentGP,
-        prevGP: data.prevGP,
+        currentGP: data.currentGP, prevGP: data.prevGP,
         gpVariance: data.currentGP - data.prevGP
       }));
 
@@ -2343,22 +2493,15 @@
       const trainMap = {};
       
       sales.forEach(s => {
-        if (!trainMap[s.trainName]) {
-          trainMap[s.trainName] = { salesTarget: 0, salesAchievement: 0, gpTarget: 0, gpAchievement: 0, complaints: 0, cashDeposited: 0 };
-        }
+        if (!trainMap[s.trainName]) trainMap[s.trainName] = { salesTarget: 0, salesAchievement: 0, gpTarget: 0, gpAchievement: 0, complaints: 0, cashDeposited: 0 };
         trainMap[s.trainName].salesTarget += Number(s.salesTarget) || 0;
         trainMap[s.trainName].salesAchievement += Number(s.salesAchievement) || 0;
         trainMap[s.trainName].gpTarget += Number(s.gpTarget) || 0;
         trainMap[s.trainName].gpAchievement += Number(s.gpAchievement) || 0;
       });
 
-      complaints.forEach(c => {
-        if (trainMap[c.trainName]) trainMap[c.trainName].complaints++;
-      });
-
-      cash.forEach(c => {
-        if (trainMap[c.trainName]) trainMap[c.trainName].cashDeposited += Number(c.totalDeposit) || 0;
-      });
+      complaints.forEach(c => { if (trainMap[c.trainName]) trainMap[c.trainName].complaints++; });
+      cash.forEach(c => { if (trainMap[c.trainName]) trainMap[c.trainName].cashDeposited += Number(c.totalDeposit) || 0; });
 
       const ranked = Object.entries(trainMap).map(([name, data]) => {
         const salesPct = data.salesTarget > 0 ? (data.salesAchievement / data.salesTarget) * 100 : 0;
@@ -2370,7 +2513,7 @@
         const complaintMarks = data.complaints === 0 ? 1 : 0;
         
         return {
-          name, salesPct: salesPct.toFixed(1), gpPct: gpPct.toFixed(1),
+          name, salesPct: Math.round(salesPct), gpPct: Math.round(gpPct),
           salesMarks, gpMarks, cashMarks, complaintMarks,
           totalMarks: salesMarks + gpMarks + cashMarks + complaintMarks,
           complaintCount: data.complaints
@@ -2399,7 +2542,6 @@
       const compareFrom = document.getElementById('compCompareFrom')?.value;
       const compareTo = document.getElementById('compCompareTo')?.value;
 
-      // Calculate comparison ranges
       let currentFrom, currentTo, prevFrom, prevTo;
       
       if (compareFrom && compareTo) {
@@ -2411,7 +2553,6 @@
         prevTo = new Date(prevFrom);
         prevTo.setDate(prevTo.getDate() + daysDiff);
       } else {
-        // Default: current month 1st to yesterday vs last month same period
         const now = new Date();
         currentFrom = new Date(now.getFullYear(), now.getMonth(), 1);
         currentTo = new Date(now);
@@ -2420,51 +2561,46 @@
         prevTo = new Date(now.getFullYear(), now.getMonth() - 1, currentTo.getDate());
       }
 
-      const currentPeriod = complaints.filter(c => {
-        const d = new Date(c.date);
-        return d >= currentFrom && d <= currentTo;
-      });
-
-      const prevPeriod = complaints.filter(c => {
-        const d = new Date(c.date);
-        return d >= prevFrom && d <= prevTo;
-      });
+      const currentPeriod = complaints.filter(c => { const d = new Date(c.date); return d >= currentFrom && d <= currentTo; });
+      const prevPeriod = complaints.filter(c => { const d = new Date(c.date); return d >= prevFrom && d <= prevTo; });
 
       const variance = currentPeriod.length - prevPeriod.length;
 
-      // Update KPIs
       document.getElementById('compKpiTotal').textContent = complaints.length;
       document.getElementById('compKpiCurrent').textContent = currentPeriod.length;
-      document.getElementById('compKpiCurrentRange').textContent = 
-        currentFrom.toISOString().split('T')[0] + ' to ' + currentTo.toISOString().split('T')[0];
+      document.getElementById('compKpiCurrentRange').textContent = currentFrom.toISOString().split('T')[0] + ' to ' + currentTo.toISOString().split('T')[0];
       document.getElementById('compKpiPrevious').textContent = prevPeriod.length;
-      document.getElementById('compKpiPreviousRange').textContent = 
-        prevFrom.toISOString().split('T')[0] + ' to ' + prevTo.toISOString().split('T')[0];
+      document.getElementById('compKpiPreviousRange').textContent = prevFrom.toISOString().split('T')[0] + ' to ' + prevTo.toISOString().split('T')[0];
       document.getElementById('compKpiVariance').textContent = (variance >= 0 ? '+' : '') + variance;
       
       const varianceCard = document.getElementById('compKpiVarianceCard');
-      varianceCard.className = 'kpi-card ' + (variance > 0 ? 'danger' : variance < 0 ? 'success' : '');
+      varianceCard.className = 'kpi-card ' + (variance > 0 ? 'danger' : variance < 0 ? 'success' : 'info');
 
-      // Render charts
       renderComplaintTrendChart(currentPeriod, prevPeriod);
       renderComplaintStatusChart(currentPeriod, prevPeriod);
       renderComplaintTrainChart(currentPeriod, prevPeriod);
       renderComplaintSourceChart(complaints);
-
-      // Render tables
       renderComplaintComparisonTables(currentPeriod, prevPeriod);
+      updateCompChartFilterDisplay();
+    }
+
+    function updateCompChartFilterDisplay() {
+      const display = document.getElementById('compChartFilterDisplay');
+      const text = document.getElementById('compChartFilterText');
+      if (compChartFilter.type && compChartFilter.value) {
+        display.style.display = 'block';
+        text.textContent = `Filtered by ${compChartFilter.type}: ${compChartFilter.value}`;
+      } else {
+        display.style.display = 'none';
+      }
     }
 
     function renderComplaintTrendChart(current, prev) {
       const ctx = document.getElementById('complaintTrendChart');
       if (!ctx) return;
 
-      const currentByDate = {};
-      current.forEach(c => { currentByDate[c.date] = (currentByDate[c.date] || 0) + 1; });
-      
-      const prevByDate = {};
-      prev.forEach(c => { prevByDate[c.date] = (prevByDate[c.date] || 0) + 1; });
-
+      const currentByDate = {}; current.forEach(c => { currentByDate[c.date] = (currentByDate[c.date] || 0) + 1; });
+      const prevByDate = {}; prev.forEach(c => { prevByDate[c.date] = (prevByDate[c.date] || 0) + 1; });
       const allDates = [...new Set([...Object.keys(currentByDate), ...Object.keys(prevByDate)])].sort();
 
       if (charts.complaintTrend) charts.complaintTrend.destroy();
@@ -2474,16 +2610,23 @@
           labels: allDates,
           datasets: [
             { label: 'Current Period', data: allDates.map(d => currentByDate[d] || 0), borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.4 },
-            { label: 'Last Month Same Period', data: allDates.map(d => prevByDate[d] || 0), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4 }
+            { label: 'Last Month Same Period', data: allDates.map(d => prevByDate[d] || 0), borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', fill: true, tension: 0.4 }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#94a3b8' } } },
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              compChartFilter = { type: 'date', value: allDates[index] };
+              loadComplaintDashboard();
+            }
+          },
+          plugins: { legend: { labels: { color: '#64748b' } } },
           scales: {
-            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
-            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
+            x: { grid: { display: false }, ticks: { color: '#64748b' } }
           }
         }
       });
@@ -2503,17 +2646,24 @@
         data: {
           labels: statuses,
           datasets: [
-            { label: 'Current Period', data: currentCounts, backgroundColor: '#3b82f6', borderRadius: 6 },
+            { label: 'Current Period', data: currentCounts, backgroundColor: '#0ea5e9', borderRadius: 6 },
             { label: 'Last Month Same Period', data: prevCounts, backgroundColor: '#f59e0b', borderRadius: 6 }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#94a3b8' } } },
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              compChartFilter = { type: 'status', value: statuses[index] };
+              loadComplaintDashboard();
+            }
+          },
+          plugins: { legend: { labels: { color: '#64748b' } } },
           scales: {
-            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
-            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
+            x: { grid: { display: false }, ticks: { color: '#64748b' } }
           }
         }
       });
@@ -2524,15 +2674,11 @@
       if (!ctx) return;
 
       const trainMap = {};
-      [...current, ...prev].forEach(c => {
-        if (!trainMap[c.trainName]) trainMap[c.trainName] = { current: 0, prev: 0 };
-      });
+      [...current, ...prev].forEach(c => { if (!trainMap[c.trainName]) trainMap[c.trainName] = { current: 0, prev: 0 }; });
       current.forEach(c => { if (trainMap[c.trainName]) trainMap[c.trainName].current++; });
       prev.forEach(c => { if (trainMap[c.trainName]) trainMap[c.trainName].prev++; });
 
-      const sorted = Object.entries(trainMap)
-        .sort((a, b) => (b[1].current + b[1].prev) - (a[1].current + a[1].prev))
-        .slice(0, 12);
+      const sorted = Object.entries(trainMap).sort((a, b) => (b[1].current + b[1].prev) - (a[1].current + a[1].prev)).slice(0, 12);
 
       if (charts.complaintTrain) charts.complaintTrain.destroy();
       charts.complaintTrain = new Chart(ctx, {
@@ -2541,16 +2687,23 @@
           labels: sorted.map(t => t[0]),
           datasets: [
             { label: 'Current', data: sorted.map(t => t[1].current), backgroundColor: '#ef4444', borderRadius: 6 },
-            { label: 'Previous', data: sorted.map(t => t[1].prev), backgroundColor: '#10b981', borderRadius: 6 }
+            { label: 'Previous', data: sorted.map(t => t[1].prev), backgroundColor: '#22c55e', borderRadius: 6 }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#94a3b8' } } },
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              compChartFilter = { type: 'train', value: sorted[index][0] };
+              loadComplaintDashboard();
+            }
+          },
+          plugins: { legend: { labels: { color: '#64748b' } } },
           scales: {
-            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
-            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b' } },
+            x: { grid: { display: false }, ticks: { color: '#64748b' } }
           }
         }
       });
@@ -2561,10 +2714,7 @@
       if (!ctx) return;
 
       const sourceMap = {};
-      complaints.forEach(c => {
-        const source = c.source || 'Unknown';
-        sourceMap[source] = (sourceMap[source] || 0) + 1;
-      });
+      complaints.forEach(c => { const source = c.source || 'Unknown'; sourceMap[source] = (sourceMap[source] || 0) + 1; });
 
       if (charts.complaintSource) charts.complaintSource.destroy();
       charts.complaintSource = new Chart(ctx, {
@@ -2573,31 +2723,33 @@
           labels: Object.keys(sourceMap),
           datasets: [{
             data: Object.values(sourceMap),
-            backgroundColor: ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#06b6d4']
+            backgroundColor: ['#0ea5e9', '#8b5cf6', '#22c55e', '#f59e0b', '#ef4444', '#06b6d4']
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              compChartFilter = { type: 'source', value: Object.keys(sourceMap)[index] };
+              loadComplaintDashboard();
+            }
+          },
           plugins: {
-            legend: { position: 'bottom', labels: { color: '#94a3b8' } }
+            legend: { position: 'bottom', labels: { color: '#64748b' } }
           }
         }
       });
     }
 
     function renderComplaintComparisonTables(current, prev) {
-      // Train comparison
       const trainMap = {};
-      [...current, ...prev].forEach(c => {
-        if (!trainMap[c.trainName]) trainMap[c.trainName] = { current: 0, prev: 0 };
-      });
+      [...current, ...prev].forEach(c => { if (!trainMap[c.trainName]) trainMap[c.trainName] = { current: 0, prev: 0 }; });
       current.forEach(c => { if (trainMap[c.trainName]) trainMap[c.trainName].current++; });
       prev.forEach(c => { if (trainMap[c.trainName]) trainMap[c.trainName].prev++; });
 
-      const trainRows = Object.entries(trainMap)
-        .map(([name, data]) => ({ name, ...data, diff: data.current - data.prev }))
-        .sort((a, b) => b.current - a.current);
+      const trainRows = Object.entries(trainMap).map(([name, data]) => ({ name, ...data, diff: data.current - data.prev })).sort((a, b) => b.current - a.current);
 
       document.getElementById('compTrainTableBody').innerHTML = trainRows.map(r => `
         <tr>
@@ -2608,18 +2760,12 @@
         </tr>
       `).join('');
 
-      // Nature comparison
       const natureMap = {};
-      [...current, ...prev].forEach(c => {
-        const nature = c.complainNature || 'Unknown';
-        if (!natureMap[nature]) natureMap[nature] = { current: 0, prev: 0 };
-      });
+      [...current, ...prev].forEach(c => { const nature = c.complainNature || 'Unknown'; if (!natureMap[nature]) natureMap[nature] = { current: 0, prev: 0 }; });
       current.forEach(c => { if (natureMap[c.complainNature]) natureMap[c.complainNature].current++; });
       prev.forEach(c => { if (natureMap[c.complainNature]) natureMap[c.complainNature].prev++; });
 
-      const natureRows = Object.entries(natureMap)
-        .map(([name, data]) => ({ name, ...data, diff: data.current - data.prev }))
-        .sort((a, b) => b.current - a.current);
+      const natureRows = Object.entries(natureMap).map(([name, data]) => ({ name, ...data, diff: data.current - data.prev })).sort((a, b) => b.current - a.current);
 
       document.getElementById('compNatureTableBody').innerHTML = natureRows.map(r => `
         <tr>
@@ -2629,6 +2775,139 @@
           <td class="${r.diff >= 0 ? 'comparison-negative' : 'comparison-positive'}">${r.diff >= 0 ? '+' : ''}${r.diff}</td>
         </tr>
       `).join('');
+    }
+
+    // ==================== CASH DASHBOARD ====================
+    function loadCashDashboard() {
+      const fromDate = document.getElementById('cashDashFromDate')?.value;
+      const toDate = document.getElementById('cashDashToDate')?.value;
+      const yardFilter = document.getElementById('cashDashYardFilter')?.value;
+      const managerFilter = document.getElementById('cashDashManagerFilter')?.value;
+
+      let cashData = [...(appData.cash || [])];
+      let salesData = [...(appData.sales || [])];
+
+      if (fromDate) { cashData = cashData.filter(c => c.date >= fromDate); salesData = salesData.filter(s => s.date >= fromDate); }
+      if (toDate) { cashData = cashData.filter(c => c.date <= toDate); salesData = salesData.filter(s => s.date <= toDate); }
+      if (yardFilter) { cashData = cashData.filter(c => c.yard === yardFilter); salesData = salesData.filter(s => s.yard === yardFilter); }
+      if (managerFilter) { cashData = cashData.filter(c => { const train = appData.trainMasters.find(t => t.trainName === c.trainName); return train && train.trainManager === managerFilter; }); salesData = salesData.filter(s => s.trainManager === managerFilter); }
+
+      const gpCollected = salesData.reduce((sum, s) => sum + (Number(s.gpAchievement) || 0), 0);
+      const totalDeposit = cashData.reduce((sum, c) => sum + (Number(c.totalDeposit) || 0), 0);
+      const cashCounter = cashData.reduce((sum, c) => sum + (Number(c.cashDepositCounter) || 0), 0);
+      const onlineDeposit = cashData.reduce((sum, c) => sum + (Number(c.onlineDeposit) || 0), 0);
+      const difference = gpCollected - totalDeposit;
+      const pendingShortage = cashData.filter(c => {
+        const gp = Number(c.gpFromSales) || 0;
+        const deposit = Number(c.totalDeposit) || 0;
+        return deposit < gp && (!c.shortageReason || c.shortageReason === '');
+      }).length;
+
+      document.getElementById('cashKpiGpCollected').textContent = formatCurrency(gpCollected);
+      document.getElementById('cashKpiTotalDeposit').textContent = formatCurrency(totalDeposit);
+      document.getElementById('cashKpiDepositSub').textContent = `Cash: ${formatCurrency(cashCounter)} | Online: ${formatCurrency(onlineDeposit)}`;
+      document.getElementById('cashKpiCashCounter').textContent = formatCurrency(cashCounter);
+      document.getElementById('cashKpiOnlineDeposit').textContent = formatCurrency(onlineDeposit);
+      document.getElementById('cashKpiCount').textContent = cashData.length;
+      document.getElementById('cashKpiPendingShortage').textContent = pendingShortage;
+
+      const shortageCard = document.getElementById('shortageCard');
+      const excessCard = document.getElementById('excessCard');
+
+      if (difference > 0) {
+        shortageCard.style.display = 'block';
+        excessCard.style.display = 'none';
+        document.getElementById('cashKpiShortage').textContent = formatCurrency(difference);
+      } else if (difference < 0) {
+        shortageCard.style.display = 'none';
+        excessCard.style.display = 'block';
+        document.getElementById('cashKpiExcess').textContent = formatCurrency(Math.abs(difference));
+      } else {
+        shortageCard.style.display = 'none';
+        excessCard.style.display = 'none';
+      }
+
+      renderManagerCashTable(cashData, salesData);
+    }
+
+    function renderManagerCashTable(cashData, salesData) {
+      const managerMap = {};
+      
+      salesData.forEach(s => {
+        const manager = s.trainManager || 'Unassigned';
+        if (!managerMap[manager]) managerMap[manager] = { gpAchievement: 0, cashDeposit: 0, onlineDeposit: 0, totalDeposit: 0 };
+        managerMap[manager].gpAchievement += Number(s.gpAchievement) || 0;
+      });
+
+      cashData.forEach(c => {
+        const train = appData.trainMasters.find(t => t.trainName === c.trainName);
+        const manager = train?.trainManager || 'Unassigned';
+        if (!managerMap[manager]) managerMap[manager] = { gpAchievement: 0, cashDeposit: 0, onlineDeposit: 0, totalDeposit: 0 };
+        managerMap[manager].cashDeposit += Number(c.cashDepositCounter) || 0;
+        managerMap[manager].onlineDeposit += Number(c.onlineDeposit) || 0;
+        managerMap[manager].totalDeposit += Number(c.totalDeposit) || 0;
+      });
+
+      const rows = Object.entries(managerMap).map(([name, data]) => ({
+        name, ...data, difference: data.gpAchievement - data.totalDeposit
+      })).sort((a, b) => b.gpAchievement - a.gpAchievement);
+
+      document.getElementById('managerCashTableBody').innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.name}</td>
+          <td>${formatCurrency(r.gpAchievement)}</td>
+          <td>${formatCurrency(r.cashDeposit)}</td>
+          <td>${formatCurrency(r.onlineDeposit)}</td>
+          <td>${formatCurrency(r.totalDeposit)}</td>
+          <td class="${r.difference > 0 ? 'comparison-negative' : r.difference < 0 ? 'comparison-positive' : ''}">${r.difference > 0 ? '-' : r.difference < 0 ? '+' : ''}${formatCurrency(Math.abs(r.difference))}</td>
+          <td><span class="badge badge-${r.difference > 0 ? 'danger' : r.difference < 0 ? 'success' : 'info'}">${r.difference > 0 ? 'Shortage' : r.difference < 0 ? 'Excess' : 'Matched'}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function clearCashDashFilters() {
+      document.getElementById('cashDashFromDate').value = '';
+      document.getElementById('cashDashToDate').value = '';
+      document.getElementById('cashDashYardFilter').value = '';
+      document.getElementById('cashDashManagerFilter').value = '';
+      loadCashDashboard();
+    }
+
+    function updateCashGPFromSales() {
+      const date = document.getElementById('cashDate').value;
+      const trainId = document.getElementById('cashTrainId').value;
+      
+      if (date && trainId) {
+        const salesEntry = appData.sales.find(s => s.date === date && s.trainId == trainId);
+        if (salesEntry) {
+          document.getElementById('cashGpFromSales').value = salesEntry.gpAchievement || 0;
+        } else {
+          document.getElementById('cashGpFromSales').value = '';
+        }
+      }
+      checkShortage();
+    }
+
+    function checkShortage() {
+      const gp = Number(document.getElementById('cashGpFromSales').value) || 0;
+      const cash = Number(document.getElementById('cashDepositCounter').value) || 0;
+      const online = Number(document.getElementById('cashOnlineDeposit').value) || 0;
+      const total = cash + online;
+      
+      const shortageAlert = document.getElementById('shortageAlert');
+      const shortageReasonRow = document.getElementById('shortageReasonRow');
+      const shortageReason = document.getElementById('cashShortageReason');
+
+      if (gp > 0 && total < gp) {
+        shortageAlert.classList.remove('hidden');
+        shortageReasonRow.style.display = 'grid';
+        shortageReason.classList.add('required-field');
+      } else {
+        shortageAlert.classList.add('hidden');
+        shortageReasonRow.style.display = 'none';
+        shortageReason.classList.remove('required-field');
+        shortageReason.value = '';
+      }
     }
 
     // ==================== SALES PAGE FUNCTIONS ====================
@@ -2662,32 +2941,28 @@
       const managers = [...new Set(appData.trainMasters.map(t => t.trainManager))].filter(Boolean).sort();
       const yards = appData.yards || [];
 
-      document.getElementById('salesFilterTrain').innerHTML = '<option value="">All Trains</option>' + 
-        trains.map(t => `<option value="${t}">${t}</option>`).join('');
-      document.getElementById('salesFilterManager').innerHTML = '<option value="">All Managers</option>' + 
-        managers.map(m => `<option value="${m}">${m}</option>`).join('');
-      document.getElementById('salesFilterYard').innerHTML = '<option value="">All Yards</option>' + 
-        yards.map(y => `<option value="${y}">${y}</option>`).join('');
+      document.getElementById('salesFilterTrain').innerHTML = '<option value="">All Trains</option>' + trains.map(t => `<option value="${t}">${t}</option>`).join('');
+      document.getElementById('salesFilterManager').innerHTML = '<option value="">All Managers</option>' + managers.map(m => `<option value="${m}">${m}</option>`).join('');
+      document.getElementById('salesFilterYard').innerHTML = '<option value="">All Yards</option>' + yards.map(y => `<option value="${y}">${y}</option>`).join('');
     }
 
     function populateYardSelects() {
       const yards = appData.yards || [];
-      ['complaintYard', 'cashYard', 'cashFilterYard', 'masterYard'].forEach(id => {
+      ['complaintYard', 'cashYard', 'cashFilterYard', 'masterYard', 'cashDashYardFilter'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = yards.map(y => `<option value="${y}">${y}</option>`).join('');
       });
+      const managers = [...new Set(appData.trainMasters.map(t => t.trainManager))].filter(Boolean).sort();
+      const managerSelect = document.getElementById('cashDashManagerFilter');
+      if (managerSelect) managerSelect.innerHTML = '<option value="">All Managers</option>' + managers.map(m => `<option value="${m}">${m}</option>`).join('');
     }
 
     function filterTrains(query) {
       const items = document.querySelectorAll('#trainDropdown .searchable-dropdown-item');
-      items.forEach(item => {
-        item.style.display = item.textContent.toLowerCase().includes(query.toLowerCase()) ? 'block' : 'none';
-      });
+      items.forEach(item => { item.style.display = item.textContent.toLowerCase().includes(query.toLowerCase()) ? 'block' : 'none'; });
     }
 
-    function showTrainDropdown() {
-      document.getElementById('trainDropdown').classList.add('active');
-    }
+    function showTrainDropdown() { document.getElementById('trainDropdown').classList.add('active'); }
 
     function selectTrain(id, name, number) {
       document.getElementById('salesTrainId').value = id;
@@ -2710,14 +2985,14 @@
     function calculateSalesPct() {
       const target = Number(document.getElementById('salesTarget').value) || 0;
       const achievement = Number(document.getElementById('salesAchievement').value) || 0;
-      const pct = target > 0 ? ((achievement / target) * 100).toFixed(2) : 0;
+      const pct = target > 0 ? Math.round((achievement / target) * 100) : 0;
       document.getElementById('salesAchievementPct').value = pct + '%';
     }
 
     function calculateGpPct() {
       const target = Number(document.getElementById('salesGpTarget').value) || 0;
       const achievement = Number(document.getElementById('salesGpAchievement').value) || 0;
-      const pct = target > 0 ? ((achievement / target) * 100).toFixed(2) : 0;
+      const pct = target > 0 ? Math.round((achievement / target) * 100) : 0;
       document.getElementById('salesGpAchievementPct').value = pct + '%';
     }
 
@@ -2733,10 +3008,7 @@
       }
 
       const train = appData.trainMasters.find(t => t.id == trainId);
-      if (!train) {
-        showAlert('Train not found', 'error');
-        return;
-      }
+      if (!train) { showAlert('Train not found', 'error'); return; }
 
       const entry = {
         id: editingId || Date.now(),
@@ -2806,9 +3078,7 @@
       if (yardFilter) filtered = filtered.filter(s => s.yard === yardFilter);
       if (managerFilter) filtered = filtered.filter(s => s.trainManager === managerFilter);
 
-      if (currentUser.yard !== 'ALL') {
-        filtered = filtered.filter(s => s.yard === currentUser.yard);
-      }
+      if (currentUser.yard !== 'ALL') filtered = filtered.filter(s => s.yard === currentUser.yard);
 
       filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -2846,17 +3116,13 @@
       document.getElementById('salesTrainType').value = entry.trainType || '';
       document.getElementById('salesTarget').value = entry.salesTarget;
       document.getElementById('salesAchievement').value = entry.salesAchievement;
-      document.getElementById('salesAchievementPct').value = entry.salesTarget > 0 ? 
-        ((entry.salesAchievement / entry.salesTarget) * 100).toFixed(2) + '%' : '0%';
+      document.getElementById('salesAchievementPct').value = entry.salesTarget > 0 ? Math.round((entry.salesAchievement / entry.salesTarget) * 100) + '%' : '0%';
       document.getElementById('salesGpTarget').value = entry.gpTarget;
       document.getElementById('salesGpAchievement').value = entry.gpAchievement;
-      document.getElementById('salesGpAchievementPct').value = entry.gpTarget > 0 ? 
-        ((entry.gpAchievement / entry.gpTarget) * 100).toFixed(2) + '%' : '0%';
+      document.getElementById('salesGpAchievementPct').value = entry.gpTarget > 0 ? Math.round((entry.gpAchievement / entry.gpTarget) * 100) + '%' : '0%';
       document.getElementById('salesRemarks').value = entry.remarks || '';
 
       switchSalesTab('entry');
-      document.querySelectorAll('#page-sales .tab')[0].classList.add('active');
-      document.querySelectorAll('#page-sales .tab')[1].classList.remove('active');
     }
 
     function deleteSalesEntry(id) {
@@ -2873,10 +3139,8 @@
       populateYardSelects();
       
       const trains = [...new Set(appData.complaints.map(c => c.trainName))].filter(Boolean).sort();
-      document.getElementById('complaintFilterTrain').innerHTML = '<option value="">All Trains</option>' + 
-        trains.map(t => `<option value="${t}">${t}</option>`).join('');
-      document.getElementById('complaintFilterYard').innerHTML = '<option value="">All Yards</option>' + 
-        (appData.yards || []).map(y => `<option value="${y}">${y}</option>`).join('');
+      document.getElementById('complaintFilterTrain').innerHTML = '<option value="">All Trains</option>' + trains.map(t => `<option value="${t}">${t}</option>`).join('');
+      document.getElementById('complaintFilterYard').innerHTML = '<option value="">All Yards</option>' + (appData.yards || []).map(y => `<option value="${y}">${y}</option>`).join('');
       
       loadComplaintList();
     }
@@ -2894,10 +3158,7 @@
       const trainName = document.getElementById('complaintTrainName').value;
       const nature = document.getElementById('complaintNature').value;
 
-      if (!date || !trainName || !nature) {
-        showAlert('Please fill all required fields', 'error');
-        return;
-      }
+      if (!date || !trainName || !nature) { showAlert('Please fill all required fields', 'error'); return; }
 
       const complaint = {
         id: editingId || Date.now(),
@@ -2967,9 +3228,7 @@
       if (trainFilter) filtered = filtered.filter(c => c.trainName === trainFilter);
       if (yardFilter) filtered = filtered.filter(c => c.yard === yardFilter);
 
-      if (currentUser.yard !== 'ALL') {
-        filtered = filtered.filter(c => c.yard === currentUser.yard);
-      }
+      if (currentUser.yard !== 'ALL') filtered = filtered.filter(c => c.yard === currentUser.yard);
 
       filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -3012,8 +3271,6 @@
       document.getElementById('complaintRemarks').value = c.remarks || '';
 
       switchComplaintTab('entry');
-      document.querySelectorAll('#page-complaints .tab')[0].classList.add('active');
-      document.querySelectorAll('#page-complaints .tab')[1].classList.remove('active');
     }
 
     function deleteComplaint(id) {
@@ -3028,6 +3285,7 @@
     // ==================== CASH PAGE FUNCTIONS ====================
     function loadCashPage() {
       populateYardSelects();
+      loadCashDashboard();
       
       const dropdown = document.getElementById('cashTrainDropdown');
       const trains = appData.trainMasters || [];
@@ -3037,10 +3295,8 @@
         </div>
       `).join('');
 
-      document.getElementById('cashFilterYard').innerHTML = '<option value="">All Yards</option>' + 
-        (appData.yards || []).map(y => `<option value="${y}">${y}</option>`).join('');
-      document.getElementById('cashFilterTrain').innerHTML = '<option value="">All Trains</option>' + 
-        trains.map(t => `<option value="${t.trainName}">${t.trainName}</option>`).join('');
+      document.getElementById('cashFilterYard').innerHTML = '<option value="">All Yards</option>' + (appData.yards || []).map(y => `<option value="${y}">${y}</option>`).join('');
+      document.getElementById('cashFilterTrain').innerHTML = '<option value="">All Trains</option>' + trains.map(t => `<option value="${t.trainName}">${t.trainName}</option>`).join('');
       
       loadCashList();
     }
@@ -3055,20 +3311,17 @@
 
     function filterCashTrains(query) {
       const items = document.querySelectorAll('#cashTrainDropdown .searchable-dropdown-item');
-      items.forEach(item => {
-        item.style.display = item.textContent.toLowerCase().includes(query.toLowerCase()) ? 'block' : 'none';
-      });
+      items.forEach(item => { item.style.display = item.textContent.toLowerCase().includes(query.toLowerCase()) ? 'block' : 'none'; });
     }
 
-    function showCashTrainDropdown() {
-      document.getElementById('cashTrainDropdown').classList.add('active');
-    }
+    function showCashTrainDropdown() { document.getElementById('cashTrainDropdown').classList.add('active'); }
 
     function selectCashTrain(id, name, number) {
       document.getElementById('cashTrainId').value = id;
       document.getElementById('cashTrainSearch').value = name;
       document.getElementById('cashTrainNo').value = number;
       document.getElementById('cashTrainDropdown').classList.remove('active');
+      updateCashGPFromSales();
     }
 
     function calculateTotalDeposit() {
@@ -3080,9 +3333,17 @@
     function saveCashEntry() {
       const date = document.getElementById('cashDate').value;
       const yard = document.getElementById('cashYard').value;
+      const cashDeposit = Number(document.getElementById('cashDepositCounter').value) || 0;
+      const onlineDeposit = Number(document.getElementById('cashOnlineDeposit').value) || 0;
+      const gpFromSales = Number(document.getElementById('cashGpFromSales').value) || 0;
+      const shortageReason = document.getElementById('cashShortageReason').value;
 
-      if (!date || !yard) {
-        showAlert('Please fill all required fields', 'error');
+      if (!date || !yard) { showAlert('Please fill all required fields', 'error'); return; }
+
+      // Validate shortage reason if needed
+      if (gpFromSales > 0 && (cashDeposit + onlineDeposit) < gpFromSales && !shortageReason) {
+        showAlert('Please select a shortage reason. Cash + Online deposit is less than GP Achievement.', 'error');
+        document.getElementById('cashShortageReason').focus();
         return;
       }
 
@@ -3096,10 +3357,12 @@
         trainId: trainId,
         trainName: train ? train.trainName : '',
         trainNumber: train ? train.trainNumber : '',
+        gpFromSales: gpFromSales,
         gpCollected: Number(document.getElementById('cashGpCollected').value) || 0,
-        cashDepositCounter: Number(document.getElementById('cashDepositCounter').value) || 0,
-        onlineDeposit: Number(document.getElementById('cashOnlineDeposit').value) || 0,
-        totalDeposit: Number(document.getElementById('cashTotalDeposit').value) || 0,
+        cashDepositCounter: cashDeposit,
+        onlineDeposit: onlineDeposit,
+        totalDeposit: cashDeposit + onlineDeposit,
+        shortageReason: shortageReason,
         remarks: document.getElementById('cashRemarks').value
       };
 
@@ -3114,6 +3377,7 @@
       clearCashForm();
       showAlert('Cash entry saved successfully', 'success');
       loadCashList();
+      loadCashDashboard();
       loadDashboard();
     }
 
@@ -3125,11 +3389,15 @@
       document.getElementById('cashTrainId').value = '';
       document.getElementById('cashTrainSearch').value = '';
       document.getElementById('cashTrainNo').value = '';
+      document.getElementById('cashGpFromSales').value = '';
       document.getElementById('cashGpCollected').value = '';
       document.getElementById('cashDepositCounter').value = '';
       document.getElementById('cashOnlineDeposit').value = '';
       document.getElementById('cashTotalDeposit').value = '';
+      document.getElementById('cashShortageReason').value = '';
       document.getElementById('cashRemarks').value = '';
+      document.getElementById('shortageAlert').classList.add('hidden');
+      document.getElementById('shortageReasonRow').style.display = 'none';
     }
 
     function loadCashList() {
@@ -3145,9 +3413,7 @@
       if (yardFilter) filtered = filtered.filter(c => c.yard === yardFilter);
       if (trainFilter) filtered = filtered.filter(c => c.trainName === trainFilter);
 
-      if (currentUser.yard !== 'ALL') {
-        filtered = filtered.filter(c => c.yard === currentUser.yard);
-      }
+      if (currentUser.yard !== 'ALL') filtered = filtered.filter(c => c.yard === currentUser.yard);
 
       filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -3156,10 +3422,11 @@
           <td>${formatDate(c.date)}</td>
           <td>${c.yard}</td>
           <td>${c.trainName || '-'}</td>
-          <td>${formatCurrency(c.gpCollected)}</td>
+          <td>${formatCurrency(c.gpFromSales || c.gpCollected)}</td>
           <td>${formatCurrency(c.cashDepositCounter)}</td>
           <td>${formatCurrency(c.onlineDeposit)}</td>
           <td>${formatCurrency(c.totalDeposit)}</td>
+          <td>${c.shortageReason || '-'}</td>
           <td>
             <button class="btn-icon edit" onclick="editCashEntry(${c.id})"><i class="fas fa-edit"></i></button>
             <button class="btn-icon delete" onclick="deleteCashEntry(${c.id})"><i class="fas fa-trash"></i></button>
@@ -3180,15 +3447,16 @@
       document.getElementById('cashTrainId').value = c.trainId || '';
       document.getElementById('cashTrainSearch').value = c.trainName || '';
       document.getElementById('cashTrainNo').value = c.trainNumber || '';
+      document.getElementById('cashGpFromSales').value = c.gpFromSales || c.gpCollected || '';
       document.getElementById('cashGpCollected').value = c.gpCollected || '';
       document.getElementById('cashDepositCounter').value = c.cashDepositCounter || '';
       document.getElementById('cashOnlineDeposit').value = c.onlineDeposit || '';
       document.getElementById('cashTotalDeposit').value = c.totalDeposit || '';
+      document.getElementById('cashShortageReason').value = c.shortageReason || '';
       document.getElementById('cashRemarks').value = c.remarks || '';
 
+      checkShortage();
       switchCashTab('entry');
-      document.querySelectorAll('#page-cash .tab')[0].classList.add('active');
-      document.querySelectorAll('#page-cash .tab')[1].classList.remove('active');
     }
 
     function deleteCashEntry(id) {
@@ -3196,6 +3464,7 @@
       appData.cash = appData.cash.filter(c => c.id != id);
       saveData();
       loadCashList();
+      loadCashDashboard();
       loadDashboard();
       showAlert('Entry deleted', 'success');
     }
@@ -3203,12 +3472,8 @@
     // ==================== MASTERS PAGE FUNCTIONS ====================
     function loadMastersPage() {
       populateYardSelects();
-      
-      document.getElementById('masterClusterManager').innerHTML = 
-        (appData.clusterManagers || []).map(m => `<option value="${m}">${m}</option>`).join('');
-      document.getElementById('masterTrainManager').innerHTML = 
-        (appData.trainManagers || []).map(m => `<option value="${m}">${m}</option>`).join('');
-
+      document.getElementById('masterClusterManager').innerHTML = (appData.clusterManagers || []).map(m => `<option value="${m}">${m}</option>`).join('');
+      document.getElementById('masterTrainManager').innerHTML = (appData.trainManagers || []).map(m => `<option value="${m}">${m}</option>`).join('');
       loadMasterTable();
     }
 
@@ -3217,10 +3482,7 @@
       const number = document.getElementById('masterTrainNumber').value.trim();
       const yard = document.getElementById('masterYard').value;
 
-      if (!name || !number || !yard) {
-        showAlert('Please fill all required fields', 'error');
-        return;
-      }
+      if (!name || !number || !yard) { showAlert('Please fill all required fields', 'error'); return; }
 
       const train = {
         id: editingId || Date.now(),
@@ -3315,8 +3577,7 @@
 
     // ==================== USERS PAGE FUNCTIONS ====================
     function loadUsersPage() {
-      document.getElementById('userYard').innerHTML = '<option value="ALL">All Yards</option>' + 
-        (appData.yards || []).map(y => `<option value="${y}">${y}</option>`).join('');
+      document.getElementById('userYard').innerHTML = '<option value="ALL">All Yards</option>' + (appData.yards || []).map(y => `<option value="${y}">${y}</option>`).join('');
       loadUsersTable();
     }
 
@@ -3334,33 +3595,18 @@
 
     function saveUser() {
       const name = document.getElementById('userFullName').value.trim();
-      const email = document.getElementById('userEmail').value.trim();
+      const email = document.getElementById('userEmail').value.trim().toLowerCase();
       const password = document.getElementById('userPassword').value;
       const confirmPassword = document.getElementById('userConfirmPassword').value;
       const role = document.getElementById('userRole').value;
       const yard = document.getElementById('userYard').value;
 
-      if (!name || !email || !password) {
-        showAlert('Please fill all required fields', 'error');
-        return;
-      }
+      if (!name || !email || !password) { showAlert('Please fill all required fields', 'error'); return; }
+      if (password.length < 6) { showAlert('Password must be at least 6 characters', 'error'); return; }
+      if (password !== confirmPassword) { showAlert('Passwords do not match', 'error'); return; }
+      if (role === 'super_admin' && currentUser.email !== 'sandipnandi2000@gmail.com') { showAlert('Only the primary super admin can create super admin accounts', 'error'); return; }
 
-      if (password.length < 6) {
-        showAlert('Password must be at least 6 characters', 'error');
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        showAlert('Passwords do not match', 'error');
-        return;
-      }
-
-      if (role === 'super_admin' && currentUser.email !== 'sandipnandi2000@gmail.com') {
-        showAlert('Only the primary super admin can create super admin accounts', 'error');
-        return;
-      }
-
-      const existingIndex = appData.users.findIndex(u => u.email === email);
+      const existingIndex = appData.users.findIndex(u => u.email.toLowerCase() === email);
       
       const user = {
         id: existingIndex >= 0 ? appData.users[existingIndex].id : Date.now(),
@@ -3400,7 +3646,7 @@
         <tr>
           <td>${u.name}</td>
           <td>${u.email}</td>
-          <td>${ROLE_LABELS[u.role]}</td>
+          <td>${ROLE_LABELS[u.role] || u.role}</td>
           <td>${u.yard}</td>
           <td><span class="badge badge-${u.active ? 'success' : 'danger'}">${u.active ? 'Active' : 'Inactive'}</span></td>
           <td>
@@ -3429,10 +3675,7 @@
       if (!confirm('Are you sure you want to delete this user?')) return;
       
       const user = appData.users.find(u => u.id == id);
-      if (user && user.email === 'sandipnandi2000@gmail.com') {
-        showAlert('Cannot delete the primary super admin account', 'error');
-        return;
-      }
+      if (user && user.email === 'sandipnandi2000@gmail.com') { showAlert('Cannot delete the primary super admin account', 'error'); return; }
       
       appData.users = appData.users.filter(u => u.id != id);
       saveData();
@@ -3461,10 +3704,7 @@
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
-        if (!rows.length) {
-          showAlert('No data found in the Excel file', 'error');
-          return;
-        }
+        if (!rows.length) { showAlert('No data found in the Excel file', 'error'); return; }
 
         let imported = 0;
         let skipped = 0;
@@ -3485,12 +3725,8 @@
 
           let parsedDate = parseExcelDate(dateValue);
 
-          if (!trainName || !parsedDate) {
-            skipped++;
-            return;
-          }
+          if (!trainName || !parsedDate) { skipped++; return; }
 
-          // Find or create train master
           let train = appData.trainMasters.find(t => t.trainName === trainName && t.trainNumber === trainNumber);
           if (!train) {
             train = {
@@ -3575,10 +3811,7 @@
             remarks: getColumnValue(row, ['Remarks', 'remarks']) || 'Imported from Excel'
           };
 
-          if (complaint.date && complaint.trainName) {
-            appData.complaints.push(complaint);
-            imported++;
-          }
+          if (complaint.date && complaint.trainName) { appData.complaints.push(complaint); imported++; }
         });
 
         saveData();
@@ -3587,9 +3820,7 @@
         loadComplaintList();
         loadDashboard();
 
-      } catch (error) {
-        showAlert('Import failed: ' + error.message, 'error');
-      }
+      } catch (error) { showAlert('Import failed: ' + error.message, 'error'); }
     }
 
     async function importCashExcel(input) {
@@ -3607,6 +3838,7 @@
         rows.forEach(row => {
           const cashDepositCounter = Number(getColumnValue(row, ['Deposited in Cash', 'cashdeposit', 'Cash Deposit', 'DepositedinCash'])) || 0;
           const onlineDeposit = Number(getColumnValue(row, ['Deposited through Online', 'onlinedeposit', 'Online Deposit', 'DepositedthroughOnline'])) || 0;
+          const gpFromSales = Number(getColumnValue(row, ['GP Achievement', 'gpachievement', 'GP From Sales'])) || 0;
           
           const entry = {
             id: Date.now() + Math.random(),
@@ -3614,28 +3846,26 @@
             yard: getColumnValue(row, ['Yard', 'yard']) || appData.yards[0] || '',
             trainName: getColumnValue(row, ['Train Name', 'trainname', 'Train']) || '',
             trainNumber: getColumnValue(row, ['Train Number', 'trainnumber', 'TrainNo']) || '',
+            gpFromSales: gpFromSales,
             gpCollected: Number(getColumnValue(row, ['GP Collected', 'gpcollected', 'CashCollected'])) || 0,
             cashDepositCounter: cashDepositCounter,
             onlineDeposit: onlineDeposit,
             totalDeposit: cashDepositCounter + onlineDeposit,
+            shortageReason: getColumnValue(row, ['Shortage Reason', 'shortagereason', 'Reason']) || '',
             remarks: getColumnValue(row, ['Remarks', 'remarks']) || 'Imported from Excel'
           };
 
-          if (entry.date && entry.yard) {
-            appData.cash.push(entry);
-            imported++;
-          }
+          if (entry.date && entry.yard) { appData.cash.push(entry); imported++; }
         });
 
         saveData();
         input.value = '';
         showAlert(`${imported} cash entries imported successfully`, 'success');
         loadCashList();
+        loadCashDashboard();
         loadDashboard();
 
-      } catch (error) {
-        showAlert('Import failed: ' + error.message, 'error');
-      }
+      } catch (error) { showAlert('Import failed: ' + error.message, 'error'); }
     }
 
     async function importMasterExcel(input) {
@@ -3665,13 +3895,8 @@
           };
 
           if (train.trainName) {
-            const existing = appData.trainMasters.find(t => 
-              t.trainName === train.trainName && t.trainNumber === train.trainNumber
-            );
-            if (!existing) {
-              appData.trainMasters.push(train);
-              imported++;
-            }
+            const existing = appData.trainMasters.find(t => t.trainName === train.trainName && t.trainNumber === train.trainNumber);
+            if (!existing) { appData.trainMasters.push(train); imported++; }
           }
         });
 
@@ -3680,9 +3905,7 @@
         showAlert(`${imported} train masters imported successfully`, 'success');
         loadMasterTable();
 
-      } catch (error) {
-        showAlert('Import failed: ' + error.message, 'error');
-      }
+      } catch (error) { showAlert('Import failed: ' + error.message, 'error'); }
     }
 
     function getColumnValue(row, possibleNames) {
@@ -3699,24 +3922,16 @@
 
     function parseExcelDate(value) {
       if (!value) return '';
-      
-      if (value instanceof Date) {
-        return value.toISOString().split('T')[0];
-      }
-      
+      if (value instanceof Date) return value.toISOString().split('T')[0];
       if (typeof value === 'number') {
         const excelEpoch = new Date(1899, 11, 30);
         const date = new Date(excelEpoch.getTime() + value * 24 * 60 * 60 * 1000);
         return date.toISOString().split('T')[0];
       }
-      
       if (typeof value === 'string') {
         const date = new Date(value);
-        if (!isNaN(date.getTime())) {
-          return date.toISOString().split('T')[0];
-        }
+        if (!isNaN(date.getTime())) return date.toISOString().split('T')[0];
       }
-      
       return '';
     }
 
@@ -3762,17 +3977,35 @@
     }
 
     function downloadCashSample() {
+      // Create Excel with dropdown for shortage reason
       const data = [{
         'Date': new Date().toISOString().split('T')[0],
         'Yard': 'Howrah',
         'Train Name': 'Sample Express',
         'Train Number': '12345',
-        'GP Collected': 50000,
+        'GP Achievement': 50000,
         'Deposited in Cash': 30000,
         'Deposited through Online': 15000,
+        'Shortage Reason': 'Cash Not Deposited',
         'Remarks': 'Daily collection'
       }];
-      downloadExcel(data, 'cash_import_sample.xlsx');
+      
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(data);
+      
+      // Add dropdown for Shortage Reason column
+      const shortageReasons = ['Cash Not Deposited', 'Shortage in Cash', 'Pending Collection', 'Manager Absent', 'Bank Holiday', 'Other'];
+      ws['!dataValidation'] = {
+        F2: {
+          type: 'list',
+          allowBlank: true,
+          formula1: '"' + shortageReasons.join(',') + '"',
+          showDropDown: true
+        }
+      };
+      
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+      XLSX.writeFile(wb, 'cash_import_sample.xlsx');
     }
 
     function downloadMasterSample() {
@@ -3790,33 +4023,20 @@
       downloadExcel(data, 'master_import_sample.xlsx');
     }
 
-    function downloadMasterData() {
-      downloadExcel(appData.trainMasters, 'train_master_export.xlsx');
+    function downloadMasterData() { downloadExcel(appData.trainMasters, 'train_master_export.xlsx'); }
+    function downloadSalesDashboardExcel() { downloadExcel(getFilteredSales(), `sales_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`); }
+    function downloadSalesDashboardPdf() { window.print(); }
+    function downloadComplaintDashboardExcel() { downloadExcel(getFilteredComplaints(), `complaint_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`); }
+    function downloadComplaintDashboardPdf() { window.print(); }
+    function downloadCashDashboardExcel() { 
+      const fromDate = document.getElementById('cashDashFromDate')?.value;
+      const toDate = document.getElementById('cashDashToDate')?.value;
+      let cashData = [...(appData.cash || [])];
+      if (fromDate) cashData = cashData.filter(c => c.date >= fromDate);
+      if (toDate) cashData = cashData.filter(c => c.date <= toDate);
+      downloadExcel(cashData, `cash_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`); 
     }
-
-    function downloadSalesDashboardExcel() {
-      const filtered = getFilteredSales();
-      downloadExcel(filtered, `sales_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`);
-    }
-
-    function downloadSalesDashboardPdf() {
-      const originalTitle = document.title;
-      document.title = 'Sales Dashboard Report - RK Group';
-      window.print();
-      document.title = originalTitle;
-    }
-
-    function downloadComplaintDashboardExcel() {
-      const filtered = getFilteredComplaints();
-      downloadExcel(filtered, `complaint_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`);
-    }
-
-    function downloadComplaintDashboardPdf() {
-      const originalTitle = document.title;
-      document.title = 'Complaint Dashboard Report - RK Group';
-      window.print();
-      document.title = originalTitle;
-    }
+    function downloadCashDashboardPdf() { window.print(); }
 
     function downloadExcel(data, filename) {
       const wb = XLSX.utils.book_new();
@@ -3850,35 +4070,25 @@
             showAlert('Backup restored successfully', 'success');
             loadDashboard();
           }
-        } catch (error) {
-          showAlert('Invalid backup file', 'error');
-        }
+        } catch (error) { showAlert('Invalid backup file', 'error'); }
       };
       reader.readAsText(file);
       input.value = '';
     }
 
     async function resetAndImportSales(input) {
-      if (!confirm('This will DELETE ALL existing sales data and replace with the uploaded file. Continue?')) {
-        input.value = '';
-        return;
-      }
+      if (!confirm('This will DELETE ALL existing sales data and replace with the uploaded file. Continue?')) { input.value = ''; return; }
       appData.sales = [];
       await importSalesExcel(input);
     }
 
-    function syncToCloud() {
-      showAlert('Cloud sync feature requires Firebase configuration', 'info');
-    }
-
-    function syncFromCloud() {
-      showAlert('Cloud sync feature requires Firebase configuration', 'info');
-    }
+    function syncToCloud() { showAlert('Cloud sync feature requires Firebase configuration', 'info'); }
+    function syncFromCloud() { showAlert('Cloud sync feature requires Firebase configuration', 'info'); }
 
     // ==================== UTILITY FUNCTIONS ====================
     function formatCurrency(value) {
       if (!value || isNaN(value)) return '₹0';
-      return '₹' + Number(value).toLocaleString('en-IN');
+      return '₹' + Math.round(Number(value)).toLocaleString('en-IN');
     }
 
     function formatDate(dateStr) {
@@ -3897,9 +4107,7 @@
       setTimeout(() => alert.remove(), 3000);
     }
 
-    function closeModal() {
-      document.getElementById('editModal').classList.remove('active');
-    }
+    function closeModal() { document.getElementById('editModal').classList.remove('active'); }
 
     // Make functions globally available
     window.handleLogin = handleLogin;
@@ -3952,6 +4160,8 @@
     window.downloadSalesDashboardPdf = downloadSalesDashboardPdf;
     window.downloadComplaintDashboardExcel = downloadComplaintDashboardExcel;
     window.downloadComplaintDashboardPdf = downloadComplaintDashboardPdf;
+    window.downloadCashDashboardExcel = downloadCashDashboardExcel;
+    window.downloadCashDashboardPdf = downloadCashDashboardPdf;
     window.downloadBackup = downloadBackup;
     window.restoreBackup = restoreBackup;
     window.resetAndImportSales = resetAndImportSales;
@@ -3960,9 +4170,14 @@
     window.closeModal = closeModal;
     window.clearSalesFilters = clearSalesFilters;
     window.clearComplaintFilters = clearComplaintFilters;
+    window.clearCashDashFilters = clearCashDashFilters;
     window.applySingleDate = applySingleDate;
     window.setDefaultComparisonRange = setDefaultComparisonRange;
     window.filterByBucket = filterByBucket;
+    window.clearChartFilter = clearChartFilter;
+    window.clearCompChartFilter = clearCompChartFilter;
+    window.updateCashGPFromSales = updateCashGPFromSales;
+    window.checkShortage = checkShortage;
   </script>
 </body>
 </html>
