@@ -14,7 +14,19 @@
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html { font-size: 14px; }
-    body { font-family: 'Inter', sans-serif; margin: 0; background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #e0f2fe 100%); min-height: 100vh; color: #1e293b; overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; margin: 0; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%); min-height: 100vh; color: #1e293b; overflow-x: hidden; }
+    
+    /* Subtle Railway Track Pattern Background */
+    body::before { 
+      content: ''; 
+      position: fixed; 
+      top: 0; left: 0; right: 0; bottom: 0; 
+      background: 
+        repeating-linear-gradient(90deg, transparent 0px, transparent 48px, rgba(148, 163, 184, 0.03) 48px, rgba(148, 163, 184, 0.03) 50px),
+        repeating-linear-gradient(0deg, transparent 0px, transparent 98px, rgba(148, 163, 184, 0.02) 98px, rgba(148, 163, 184, 0.02) 100px);
+      pointer-events: none; 
+      z-index: -1;
+    }
     
     /* Train Animation Background */
     .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 16px; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%); position: relative; overflow: hidden; }
@@ -37,6 +49,22 @@
     .login-logo p { color: #64748b; margin-top: 6px; font-size: 13px; }
     .login-logo .tagline { font-size: 11px; color: #94a3b8; margin-top: 4px; }
     
+    /* Developer Info Below Login */
+    .login-developer-info { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; z-index: 2; }
+    .dev-card { background: rgba(255, 255, 255, 0.95); border-radius: 10px; padding: 10px 18px; text-align: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px); }
+    .dev-icon { font-size: 16px; color: #0ea5e9; margin-bottom: 4px; }
+    .dev-name { font-size: 12px; color: #475569; margin-bottom: 4px; }
+    .dev-name strong { color: #0369a1; font-weight: 700; }
+    .dev-contact { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; font-size: 10px; color: #64748b; }
+    .dev-contact span { display: flex; align-items: center; gap: 3px; }
+    .dev-contact i { color: #22c55e; font-size: 9px; }
+    
+    @media (max-width: 768px) {
+      .login-developer-info { position: relative; bottom: auto; margin-top: 16px; padding: 0 16px; }
+      .dev-card { padding: 8px 14px; }
+      .dev-contact { flex-direction: row; gap: 8px; font-size: 9px; }
+    }
+    
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: #475569; }
     .form-group input, .form-group select { width: 100%; padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; background: #fff; color: #1e293b; transition: all 0.3s; }
@@ -56,7 +84,8 @@
     
     .app-container { display: none; }
     .sidebar { width: 260px; background: #fff; border-right: 1px solid #e2e8f0; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 100; box-shadow: 4px 0 20px rgba(0,0,0,0.05); transition: transform 0.3s ease; }
-    .sidebar-header { padding: 16px; border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); }
+    .sidebar-header { padding: 16px; border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); position: relative; overflow: hidden; }
+    .sidebar-header::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 10px, transparent 10px, transparent 14px); }
     .sidebar-header .logo { display: flex; align-items: center; gap: 10px; }
     .sidebar-header .logo i { font-size: 24px; color: #fff; animation: trainBounce 2s ease-in-out infinite; }
     .sidebar-header .logo span { font-size: 16px; font-weight: 700; color: #fff; }
@@ -70,23 +99,32 @@
     .nav-item i { font-size: 16px; width: 20px; text-align: center; }
     
     .main-content { margin-left: 260px; min-height: 100vh; background: #f8fafc; transition: margin-left 0.3s ease; }
-    .top-bar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .top-bar { background: linear-gradient(180deg, #fff 0%, #f8fafc 100%); border-bottom: 1px solid #e2e8f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: relative; }
+    .top-bar::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: repeating-linear-gradient(90deg, #cbd5e1 0px, #cbd5e1 6px, transparent 6px, transparent 10px); opacity: 0.4; }
     .top-bar h2 { font-size: 16px; font-weight: 600; color: #1e293b; margin: 0; }
     .top-bar-actions { display: flex; gap: 8px; }
     .content-area { padding: 16px; }
-    .card { background: #fff; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .card { background: #fff; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; overflow: hidden; }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #0ea5e9, #0284c7, #0369a1, #0ea5e9); background-size: 200% 100%; animation: trackLine 3s linear infinite; }
+    @keyframes trackLine { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
-    .card-title { font-size: 15px; font-weight: 600; color: #1e293b; margin: 0; }
+    .card-title { font-size: 15px; font-weight: 600; color: #1e293b; margin: 0; display: flex; align-items: center; gap: 8px; }
+    .card-title::before { content: ''; display: inline-block; width: 4px; height: 16px; background: linear-gradient(180deg, #0ea5e9, #0284c7); border-radius: 2px; }
     .card-subtitle { font-size: 12px; color: #64748b; margin-top: 4px; }
     .grid { display: grid; gap: 16px; }
     .grid-2 { grid-template-columns: repeat(2, 1fr); }
     .grid-3 { grid-template-columns: repeat(3, 1fr); }
     .grid-4 { grid-template-columns: repeat(4, 1fr); }
-    .kpi-card { background: linear-gradient(135deg, #fff 0%, #f8fafc 100%); border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .kpi-card { background: linear-gradient(135deg, #fff 0%, #f8fafc 100%); border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; overflow: hidden; }
+    .kpi-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: repeating-linear-gradient(90deg, #cbd5e1 0px, #cbd5e1 8px, transparent 8px, transparent 12px); opacity: 0.5; }
     .kpi-card.success { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-color: #86efac; }
+    .kpi-card.success::after { background: repeating-linear-gradient(90deg, #86efac 0px, #86efac 8px, transparent 8px, transparent 12px); }
     .kpi-card.warning { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-color: #fcd34d; }
+    .kpi-card.warning::after { background: repeating-linear-gradient(90deg, #fcd34d 0px, #fcd34d 8px, transparent 8px, transparent 12px); }
     .kpi-card.danger { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-color: #fca5a5; }
+    .kpi-card.danger::after { background: repeating-linear-gradient(90deg, #fca5a5 0px, #fca5a5 8px, transparent 8px, transparent 12px); }
     .kpi-card.info { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-color: #7dd3fc; }
+    .kpi-card.info::after { background: repeating-linear-gradient(90deg, #7dd3fc 0px, #7dd3fc 8px, transparent 8px, transparent 12px); }
     .kpi-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; font-weight: 500; }
     .kpi-value { font-size: 22px; font-weight: 700; color: #1e293b; }
     .kpi-sub { font-size: 11px; color: #94a3b8; margin-top: 4px; }
@@ -314,6 +352,18 @@
       <button class="btn btn-primary" style="width: 100%;" onclick="handleLogin()">
         <i class="fas fa-sign-in-alt"></i> Login
       </button>
+    </div>
+    
+    <!-- Developer Info - Below Login Box -->
+    <div class="login-developer-info">
+      <div class="dev-card">
+        <div class="dev-icon"><i class="fas fa-code"></i></div>
+        <div class="dev-name">Developed by <strong>Sandip Nandi</strong></div>
+        <div class="dev-contact">
+          <span><i class="fas fa-phone-alt"></i> +91 8584833366</span>
+          <span><i class="fas fa-envelope"></i> sandipnandi2000@gmail.com</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -876,7 +926,7 @@
               <div class="card-header">
                 <div>
                   <h3 class="card-title">Train-wise Complaint Count</h3>
-                  <p class="card-subtitle" style="font-size: 11px; color: #dc2626;"><i class="fas fa-exclamation-circle"></i> Trains in RED have increased complaints (sorted worst first)</p>
+                  <p class="card-subtitle" style="font-size: 11px; color: #dc2626;"><i class="fas fa-exclamation-circle"></i> RED = Recent period has MORE complaints than older period (BAD)</p>
                 </div>
                 <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('compTrainTable', 'train_complaint_comparison')">
                   <i class="fas fa-file-excel"></i>
@@ -2962,37 +3012,54 @@
 
 
     // ==================== HELPER: Get Manager from Train Number (first 5 digits) ====================
-    function getManagerFromTrainNumber(trainNo) {
-      if (!trainNo) return 'Unassigned';
+    function getManagerFromTrainNumber(trainNo, trainName) {
+      if (!trainNo && !trainName) return 'Unassigned';
       
       // Extract first 5 digits from train number
-      const trainNum5 = String(trainNo).replace(/\D/g, '').substring(0, 5);
-      if (!trainNum5) return 'Unassigned';
+      const trainNum5 = trainNo ? String(trainNo).replace(/\D/g, '').substring(0, 5) : '';
       
       // First try to find in train master data using first 5 digits
-      const trainMaster = appData.trainMasters.find(t => {
-        const masterNum5 = String(t.trainNumber).replace(/\D/g, '').substring(0, 5);
-        return masterNum5 === trainNum5;
-      });
+      if (trainNum5) {
+        const trainMaster = appData.trainMasters.find(t => {
+          const masterNum5 = String(t.trainNumber).replace(/\D/g, '').substring(0, 5);
+          return masterNum5 === trainNum5;
+        });
+        
+        if (trainMaster && trainMaster.trainManager && trainMaster.trainManager !== 'Unassigned') {
+          return trainMaster.trainManager;
+        }
+      }
       
-      if (trainMaster && trainMaster.trainManager) {
-        return trainMaster.trainManager;
+      // Try matching by train name
+      if (trainName) {
+        const trainByName = appData.trainMasters.find(t => 
+          t.trainName && t.trainName.toLowerCase() === trainName.toLowerCase()
+        );
+        if (trainByName && trainByName.trainManager && trainByName.trainManager !== 'Unassigned') {
+          return trainByName.trainManager;
+        }
       }
       
       // If not found in master, try to get from sales data
-      const salesEntry = appData.sales.find(s => {
-        const salesNum5 = String(s.trainNumber).replace(/\D/g, '').substring(0, 5);
-        return salesNum5 === trainNum5;
-      });
-      
-      if (salesEntry && salesEntry.trainManager) {
-        return salesEntry.trainManager;
+      if (trainNum5) {
+        const salesEntry = appData.sales.find(s => {
+          const salesNum5 = String(s.trainNumber).replace(/\D/g, '').substring(0, 5);
+          return salesNum5 === trainNum5;
+        });
+        
+        if (salesEntry && salesEntry.trainManager && salesEntry.trainManager !== 'Unassigned') {
+          return salesEntry.trainManager;
+        }
       }
       
-      // Try matching by train name if train number doesn't match
-      const trainByName = appData.trainMasters.find(t => t.trainName === trainNo);
-      if (trainByName && trainByName.trainManager) {
-        return trainByName.trainManager;
+      // Try sales data by train name
+      if (trainName) {
+        const salesByName = appData.sales.find(s => 
+          s.trainName && s.trainName.toLowerCase() === trainName.toLowerCase()
+        );
+        if (salesByName && salesByName.trainManager && salesByName.trainManager !== 'Unassigned') {
+          return salesByName.trainManager;
+        }
       }
       
       return 'Unassigned';
@@ -3202,22 +3269,28 @@
       const ctx = document.getElementById('managerComplaintChart');
       if (!ctx) return;
 
-      // Build manager complaint map using train number (first 5 digits)
+      // Build manager complaint map using train number (first 5 digits) and train name
       const managerMap = {};
       
       current.forEach(c => {
-        const manager = getManagerFromTrainNumber(c.trainNo || c.trainName);
+        const manager = getManagerFromTrainNumber(c.trainNo, c.trainName);
         if (!managerMap[manager]) managerMap[manager] = { current: 0, prev: 0 };
         managerMap[manager].current++;
       });
 
       prev.forEach(c => {
-        const manager = getManagerFromTrainNumber(c.trainNo || c.trainName);
+        const manager = getManagerFromTrainNumber(c.trainNo, c.trainName);
         if (!managerMap[manager]) managerMap[manager] = { current: 0, prev: 0 };
         managerMap[manager].prev++;
       });
 
-      const managers = Object.keys(managerMap);
+      // Filter out 'Unassigned' if there are actual managers, otherwise keep it
+      let managers = Object.keys(managerMap);
+      const hasRealManagers = managers.some(m => m !== 'Unassigned');
+      if (hasRealManagers) {
+        managers = managers.filter(m => m !== 'Unassigned');
+      }
+      
       const totalCurrent = current.length || 1;
       
       // Colors for donut chart
@@ -3275,29 +3348,47 @@
       const ctx = document.getElementById('natureAnalysisChart');
       if (!ctx) return;
 
-      // Use actual complainNature values (not categories)
+      // Use complaintType or complainNature - whichever has data
       const natureMap = {};
+      
+      // Initialize map with all unique values from both periods
       [...current, ...prev].forEach(c => {
-        const nature = c.complainNature || 'Unknown';
-        if (!natureMap[nature]) natureMap[nature] = { current: 0, prev: 0 };
+        // Use complainNature first, fallback to complaintType, then to 'Unknown'
+        const nature = c.complainNature || c.complaintType || 'Unknown';
+        if (nature) {
+          if (!natureMap[nature]) natureMap[nature] = { current: 0, prev: 0 };
+        }
       });
 
+      // Count Period 1 complaints
       current.forEach(c => {
-        const nature = c.complainNature || 'Unknown';
-        if (natureMap[nature]) natureMap[nature].current++;
+        const nature = c.complainNature || c.complaintType || 'Unknown';
+        if (natureMap[nature] !== undefined) {
+          natureMap[nature].current++;
+        }
       });
 
+      // Count Period 2 complaints
       prev.forEach(c => {
-        const nature = c.complainNature || 'Unknown';
-        if (natureMap[nature]) natureMap[nature].prev++;
+        const nature = c.complainNature || c.complaintType || 'Unknown';
+        if (natureMap[nature] !== undefined) {
+          natureMap[nature].prev++;
+        }
       });
 
       // Sort by Period 1 count (descending) and take top 15
       const sortedNatures = Object.entries(natureMap)
+        .filter(([name, data]) => data.current > 0 || data.prev > 0) // Only show natures with complaints
         .sort((a, b) => b[1].current - a[1].current)
         .slice(0, 15);
       
       const natures = sortedNatures.map(n => n[0]);
+      
+      // If no natures found, show a message
+      if (natures.length === 0) {
+        if (charts.natureAnalysis) charts.natureAnalysis.destroy();
+        return;
+      }
 
       if (charts.natureAnalysis) charts.natureAnalysis.destroy();
       charts.natureAnalysis = new Chart(ctx, {
@@ -3322,6 +3413,43 @@
     }
 
     function renderComplaintComparisonTables(current, prev) {
+      // Get date ranges for table headers
+      const fromDate1 = document.getElementById('compFromDate1')?.value;
+      const toDate1 = document.getElementById('compToDate1')?.value;
+      const fromDate2 = document.getElementById('compFromDate2')?.value;
+      const toDate2 = document.getElementById('compToDate2')?.value;
+      
+      // Format date ranges for display
+      const p1Label = fromDate1 && toDate1 ? `${formatShortDate(fromDate1)}-${formatShortDate(toDate1)}` : 'Period 1';
+      const p2Label = fromDate2 && toDate2 ? `${formatShortDate(fromDate2)}-${formatShortDate(toDate2)}` : 'Period 2';
+      
+      // Update table headers
+      const trainTable = document.getElementById('compTrainTable');
+      if (trainTable) {
+        const headerRow = trainTable.querySelector('thead tr');
+        if (headerRow) {
+          headerRow.innerHTML = `
+            <th>Train Name</th>
+            <th>${p1Label}</th>
+            <th>${p2Label}</th>
+            <th>Increase (+Bad)</th>
+          `;
+        }
+      }
+      
+      const natureTable = document.getElementById('compNatureTable');
+      if (natureTable) {
+        const headerRow = natureTable.querySelector('thead tr');
+        if (headerRow) {
+          headerRow.innerHTML = `
+            <th>Complaint Nature</th>
+            <th>${p1Label}</th>
+            <th>${p2Label}</th>
+            <th>Difference</th>
+          `;
+        }
+      }
+      
       // Train-wise comparison - RESTRUCTURED
       // Show trains with INCREASED complaints (P1 > P2) in RED at the TOP
       // Sort by complaint increase (worst first - highest increase at top)
@@ -3363,11 +3491,23 @@
 
       // Nature-wise comparison - sorted by Period 1 count
       const natureMap = {};
-      [...current, ...prev].forEach(c => { const nature = c.complainNature || 'Unknown'; if (!natureMap[nature]) natureMap[nature] = { current: 0, prev: 0 }; });
-      current.forEach(c => { if (natureMap[c.complainNature]) natureMap[c.complainNature].current++; });
-      prev.forEach(c => { if (natureMap[c.complainNature]) natureMap[c.complainNature].prev++; });
+      [...current, ...prev].forEach(c => { 
+        const nature = c.complainNature || c.complaintType || 'Unknown'; 
+        if (nature) {
+          if (!natureMap[nature]) natureMap[nature] = { current: 0, prev: 0 }; 
+        }
+      });
+      current.forEach(c => { 
+        const nature = c.complainNature || c.complaintType || 'Unknown';
+        if (natureMap[nature] !== undefined) natureMap[nature].current++; 
+      });
+      prev.forEach(c => { 
+        const nature = c.complainNature || c.complaintType || 'Unknown';
+        if (natureMap[nature] !== undefined) natureMap[nature].prev++; 
+      });
 
       const natureRows = Object.entries(natureMap)
+        .filter(([name, data]) => data.current > 0 || data.prev > 0)
         .map(([name, data]) => ({ name, ...data, diff: data.current - data.prev }))
         .sort((a, b) => b.current - a.current);
 
@@ -3379,6 +3519,14 @@
           <td class="${r.diff >= 0 ? 'comparison-negative' : 'comparison-positive'}">${r.diff >= 0 ? '+' : ''}${r.diff}</td>
         </tr>
       `).join('');
+    }
+    
+    // Helper function to format short date (DD MMM)
+    function formatShortDate(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return dateStr;
+      return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
     }
 
     // ==================== CASH DASHBOARD ====================
