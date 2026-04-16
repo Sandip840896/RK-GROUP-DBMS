@@ -9,6 +9,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -2029,6 +2033,47 @@
 
   <script>
 
+    // ==================== FIREBASE CONFIGURATION ====================
+    // RK GROUP INTEGRATED DBMS - Firebase Configuration
+    // Project: RK GROUP INTEGRATED DBMS
+    // Database Rules: Read/Write allowed until 2026-05-10
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyDDo8ZwC9Gedxr06tKB_gw9esQ9cKePoHE",
+      authDomain: "rk-group-intigrated-dbms.firebaseapp.com",
+      databaseURL: "https://rk-group-intigrated-dbms-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "rk-group-intigrated-dbms",
+      storageBucket: "rk-group-intigrated-dbms.firebasestorage.app",
+      messagingSenderId: "599328785773",
+      appId: "1:599328785773:web:49d5555c0e7d7edc648664"
+    };
+
+    // Initialize Firebase
+    let firebaseApp = null;
+    let firebaseDb = null;
+    let firebaseInitialized = false;
+
+    function initFirebase() {
+      try {
+        // Check if config has been updated from placeholder
+        if (FIREBASE_CONFIG.apiKey === "YOUR_API_KEY_HERE" || 
+            FIREBASE_CONFIG.apiKey === "" ||
+            !FIREBASE_CONFIG.apiKey) {
+          console.log('Firebase config not set - using local storage only');
+          return false;
+        }
+        
+        firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+        firebaseDb = firebase.database();
+        firebaseInitialized = true;
+        console.log('Firebase initialized successfully');
+        return true;
+      } catch (error) {
+        console.error('Firebase initialization error:', error);
+        firebaseInitialized = false;
+        return false;
+      }
+    }
+
     // ==================== APP DATA & STATE ====================
     const DEFAULT_DATA = {
       users: [
@@ -2099,6 +2144,7 @@
       loadData();
       setupEventListeners();
       setDefaultDates();
+      initFirebase(); // Initialize Firebase if configured
     }
 
     function loadData() {
@@ -2121,6 +2167,7 @@
 
     function saveData() {
       localStorage.setItem('rkGroupData', JSON.stringify(appData));
+      autoSyncToCloud(); // Auto-sync to cloud if Firebase is configured
     }
 
     function resetToDefault() {
@@ -4577,6 +4624,33 @@
       document.getElementById('summaryComplaints').textContent = (appData.complaints || []).length;
       document.getElementById('summaryCash').textContent = (appData.cash || []).length;
       document.getElementById('summaryYards').textContent = (appData.yards || []).length;
+      
+      // Update cloud status
+      updateCloudStatus();
+    }
+
+    function updateCloudStatus() {
+      const statusDiv = document.getElementById('cloudStatus');
+      if (!statusDiv) return;
+      
+      if (!firebaseInitialized) {
+        const isConfigured = FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY_HERE" && FIREBASE_CONFIG.apiKey !== "";
+        if (isConfigured) {
+          // Try to initialize
+          initFirebase();
+        }
+      }
+      
+      if (firebaseInitialized) {
+        statusDiv.innerHTML = '<span style="color: #22c55e;"><i class="fas fa-check-circle"></i> Firebase Connected</span>';
+      } else {
+        const isConfigured = FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY_HERE" && FIREBASE_CONFIG.apiKey !== "";
+        if (isConfigured) {
+          statusDiv.innerHTML = '<span style="color: #f59e0b;"><i class="fas fa-exclamation-triangle"></i> Firebase Configured but not connected</span>';
+        } else {
+          statusDiv.innerHTML = '<span style="color: #ef4444;"><i class="fas fa-times-circle"></i> Firebase Not Configured - Update FIREBASE_CONFIG in code</span>';
+        }
+      }
     }
 
     // ==================== IMPORT/EXPORT FUNCTIONS ====================
@@ -4960,8 +5034,95 @@
       await importSalesExcel(input);
     }
 
-    function syncToCloud() { showAlert('Cloud sync feature requires Firebase configuration', 'info'); }
-    function syncFromCloud() { showAlert('Cloud sync feature requires Firebase configuration', 'info'); }
+    // ==================== FIREBASE SYNC FUNCTIONS ====================
+    async function syncToCloud() {
+      if (!firebaseInitialized) {
+        // Try to initialize Firebase
+        if (!initFirebase()) {
+          showAlert('Firebase not configured. Please update FIREBASE_CONFIG in the code with your actual Firebase credentials.', 'warning');
+          return;
+        }
+      }
+      
+      try {
+        showAlert('Syncing data to cloud...', 'info');
+        
+        const dataToSync = {
+          users: appData.users,
+          yards: appData.yards,
+          clusterManagers: appData.clusterManagers,
+          trainManagers: appData.trainManagers,
+          trainMasters: appData.trainMasters,
+          sales: appData.sales,
+          complaints: appData.complaints,
+          cash: appData.cash,
+          lastSync: new Date().toISOString()
+        };
+        
+        await firebaseDb.ref('rkGroupData').set(dataToSync);
+        showAlert('Data synced to cloud successfully!', 'success');
+        console.log('Data synced to Firebase at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Sync to cloud error:', error);
+        showAlert('Failed to sync to cloud: ' + error.message, 'error');
+      }
+    }
+
+    async function syncFromCloud() {
+      if (!firebaseInitialized) {
+        // Try to initialize Firebase
+        if (!initFirebase()) {
+          showAlert('Firebase not configured. Please update FIREBASE_CONFIG in the code with your actual Firebase credentials.', 'warning');
+          return;
+        }
+      }
+      
+      try {
+        showAlert('Fetching data from cloud...', 'info');
+        
+        const snapshot = await firebaseDb.ref('rkGroupData').once('value');
+        const cloudData = snapshot.val();
+        
+        if (!cloudData) {
+          showAlert('No data found in cloud. Sync to cloud first.', 'warning');
+          return;
+        }
+        
+        // Merge cloud data with local data
+        if (cloudData.users) appData.users = cloudData.users;
+        if (cloudData.yards) appData.yards = cloudData.yards;
+        if (cloudData.clusterManagers) appData.clusterManagers = cloudData.clusterManagers;
+        if (cloudData.trainManagers) appData.trainManagers = cloudData.trainManagers;
+        if (cloudData.trainMasters) appData.trainMasters = cloudData.trainMasters;
+        if (cloudData.sales) appData.sales = cloudData.sales;
+        if (cloudData.complaints) appData.complaints = cloudData.complaints;
+        if (cloudData.cash) appData.cash = cloudData.cash;
+        
+        saveData();
+        
+        const lastSync = cloudData.lastSync ? new Date(cloudData.lastSync).toLocaleString() : 'Unknown';
+        showAlert(`Data synced from cloud successfully! Last sync: ${lastSync}`, 'success');
+        console.log('Data synced from Firebase. Last sync:', lastSync);
+        
+        // Refresh current page
+        const currentPage = document.querySelector('.nav-item.active')?.getAttribute('data-page') || 'dashboard';
+        showPage(currentPage);
+      } catch (error) {
+        console.error('Sync from cloud error:', error);
+        showAlert('Failed to sync from cloud: ' + error.message, 'error');
+      }
+    }
+
+    // Auto-sync to cloud when data changes (if Firebase is configured)
+    function autoSyncToCloud() {
+      if (firebaseInitialized) {
+        // Debounce sync to avoid too many writes
+        clearTimeout(window.syncTimeout);
+        window.syncTimeout = setTimeout(() => {
+          syncToCloud().catch(err => console.error('Auto-sync error:', err));
+        }, 5000);
+      }
+    }
 
     // ==================== UTILITY FUNCTIONS ====================
     function formatCurrency(value) {
