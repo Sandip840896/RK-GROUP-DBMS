@@ -44,6 +44,24 @@
     
     /* Track Lines */
     .track-lines { position: absolute; bottom: 30px; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 30px, transparent 30px, transparent 40px); }
+    .rk-watermark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.08;
+      font-size: min(18vw, 180px);
+      font-weight: 800;
+      letter-spacing: 8px;
+      color: #ffffff;
+      text-transform: uppercase;
+      transform: rotate(-10deg);
+      user-select: none;
+    }
+    .rk-watermark i { margin-right: 18px; font-size: 0.8em; }
     
     .login-box { background: rgba(255, 255, 255, 0.98); border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.3); position: relative; z-index: 1; }
     .login-logo { text-align: center; margin-bottom: 20px; }
@@ -53,20 +71,24 @@
     .login-logo p { color: #64748b; margin-top: 6px; font-size: 13px; }
     .login-logo .tagline { font-size: 11px; color: #94a3b8; margin-top: 4px; }
     
-    /* Developer Info Below Login */
-    .login-developer-info { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; z-index: 2; }
-    .dev-card { background: rgba(255, 255, 255, 0.95); border-radius: 10px; padding: 10px 18px; text-align: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px); }
-    .dev-icon { font-size: 16px; color: #0ea5e9; margin-bottom: 4px; }
-    .dev-name { font-size: 12px; color: #475569; margin-bottom: 4px; }
-    .dev-name strong { color: #0369a1; font-weight: 700; }
-    .dev-contact { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; font-size: 10px; color: #64748b; }
+    /* Developer Info Below Login - Subtle styling */
+    .login-developer-info { position: absolute; bottom: 8px; left: 0; right: 0; display: flex; justify-content: center; z-index: 2; }
+    .dev-card { background: rgba(255, 255, 255, 0.75); border-radius: 8px; padding: 6px 14px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.2); }
+    .dev-icon { display: none; }
+    .dev-name { font-size: 11px; color: rgba(255,255,255,0.9); margin-bottom: 2px; }
+    .dev-name strong { color: #fff; font-weight: 600; }
+    .dev-contact { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; font-size: 10px; color: rgba(255,255,255,0.8); }
     .dev-contact span { display: flex; align-items: center; gap: 3px; }
-    .dev-contact i { color: #22c55e; font-size: 9px; }
+    .dev-contact i { color: rgba(255,255,255,0.7); font-size: 9px; }
     
     @media (max-width: 768px) {
-      .login-developer-info { position: relative; bottom: auto; margin-top: 16px; padding: 0 16px; }
-      .dev-card { padding: 8px 14px; }
-      .dev-contact { flex-direction: row; gap: 8px; font-size: 9px; }
+      .login-developer-info { position: relative; bottom: auto; margin-top: 12px; padding: 0 16px; }
+      .dev-card { background: rgba(255, 255, 255, 0.85); padding: 8px 14px; }
+      .dev-name { color: #475569; }
+      .dev-name strong { color: #0369a1; }
+      .dev-contact { flex-direction: row; gap: 8px; font-size: 9px; color: #64748b; }
+      .dev-contact i { color: #22c55e; }
+      .rk-watermark { font-size: min(26vw, 120px); letter-spacing: 4px; }
     }
     
     .form-group { margin-bottom: 16px; }
@@ -224,6 +246,8 @@
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     .comparison-positive { color: #16a34a; font-weight: 600; }
     .comparison-negative { color: #dc2626; font-weight: 600; }
+    .complaint-variance-positive { color: #dc2626; font-weight: 600; }
+    .complaint-variance-neutral { color: #64748b; font-weight: 600; }
     .chart-filter-active { position: relative; }
     .chart-filter-active::after { content: 'Click to Clear Filter'; position: absolute; top: 8px; right: 8px; background: #0ea5e9; color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; cursor: pointer; }
     .required-field { border-color: #fca5a5 !important; background: #fef2f2 !important; }
@@ -240,6 +264,12 @@
     /* High complaint highlighting */
     .high-complaint { background: #fef2f2 !important; }
     .high-complaint td { color: #dc2626; font-weight: 600; }
+    
+    /* Table total/summary row */
+    .table-total-row { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important; }
+    .table-total-row td { font-weight: 700; color: #0369a1; border-top: 2px solid #7dd3fc; }
+    .table-total-row.summary { background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%) !important; }
+    .table-total-row.summary td { color: #854d0e; border-top: 2px solid #fcd34d; }
     
     /* Nature tag styles */
     .nature-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 500; }
@@ -335,6 +365,7 @@
     <div class="train-animation">
       <i class="fas fa-train train-icon-anim"></i>
     </div>
+    <div class="rk-watermark"><i class="fas fa-train"></i>RK Group</div>
     <div class="track-lines"></div>
     
     <div class="login-box">
@@ -355,6 +386,9 @@
       </div>
       <button class="btn btn-primary" style="width: 100%;" onclick="handleLogin()">
         <i class="fas fa-sign-in-alt"></i> Login
+      </button>
+      <button class="btn btn-ghost" style="width: 100%; margin-top: 10px;" onclick="useDemoLogin()">
+        <i class="fas fa-eye"></i> Use Demo View Login
       </button>
     </div>
     
@@ -461,7 +495,7 @@
             <div class="card-header">
               <div>
                 <h3 class="card-title">Sales Filters</h3>
-                <p class="card-subtitle">Filter dashboard data by date range, train, manager, or yard</p>
+                <p class="card-subtitle">Choose single period or comparison mode, then filter by train, manager, and yard</p>
               </div>
               <div class="action-btns">
                 <button class="btn btn-warning btn-sm" onclick="clearSalesFilters()">
@@ -472,11 +506,39 @@
                 </button>
               </div>
             </div>
+
+            <div class="date-range-section" style="margin-top: 10px;">
+              <div class="date-range-row">
+                <div class="date-range-item" style="max-width: 260px;">
+                  <label>Dashboard Mode</label>
+                  <select id="dashDateMode" onchange="handleSalesDateModeChange()">
+                    <option value="single">Single Period (Single Date / Date Range)</option>
+                    <option value="comparison">Comparison (P1 vs P2)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="date-range-section primary" id="dashSingleRangeSection">
+              <div class="date-range-title">
+                <i class="fas fa-calendar-check"></i> Single Period Selection
+              </div>
+              <div class="date-range-row">
+                <div class="date-range-item">
+                  <label>From Date</label>
+                  <input type="date" id="dashSingleFromDate" onchange="loadDashboard()">
+                </div>
+                <div class="date-range-item">
+                  <label>To Date (Optional)</label>
+                  <input type="date" id="dashSingleToDate" onchange="loadDashboard()">
+                </div>
+              </div>
+            </div>
             
             <!-- Date Range 1 (From Date Range) -->
-            <div class="date-range-section primary">
+            <div class="date-range-section primary" id="dashPeriod1Section">
               <div class="date-range-title">
-                <i class="fas fa-calendar-alt"></i> From Date Range (Period 1)
+                <i class="fas fa-calendar-alt"></i> Period 1
               </div>
               <div class="date-range-row">
                 <div class="date-range-item">
@@ -509,9 +571,9 @@
             </div>
             
             <!-- Date Range 2 (To Date Range / Comparison) -->
-            <div class="date-range-section comparison">
+            <div class="date-range-section comparison" id="dashPeriod2Section">
               <div class="date-range-title comparison">
-                <i class="fas fa-exchange-alt"></i> To Date Range (Period 2 - Comparison)
+                <i class="fas fa-exchange-alt"></i> Period 2 (Comparison)
               </div>
               <div class="date-range-row">
                 <div class="date-range-item">
@@ -743,7 +805,7 @@
             <div class="card-header">
               <div>
                 <h3 class="card-title">Train Rank Table</h3>
-                <p class="card-subtitle">Ranking based on performance metrics (Max 10 marks)</p>
+                <p class="card-subtitle">Weighted rank using achievement, deposit discipline, and complaint control</p>
               </div>
               <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('rankTable', 'train_ranking')">
                 <i class="fas fa-file-excel"></i>
@@ -757,8 +819,13 @@
                     <th>Train</th>
                     <th>Sales %</th>
                     <th>GP %</th>
-                    <th>Total</th>
+                    <th>Cash/GP %</th>
                     <th>Complaints</th>
+                    <th>Sales Score (40)</th>
+                    <th>GP Score (35)</th>
+                    <th>Cash Score (15)</th>
+                    <th>Complaint Score (10)</th>
+                    <th>Total Score</th>
                   </tr>
                 </thead>
                 <tbody id="rankTableBody"></tbody>
@@ -774,7 +841,7 @@
             <div class="card-header">
               <div>
                 <h3 class="card-title">Complaint Filters</h3>
-                <p class="card-subtitle">Filter complaints by date range, train, status, or yard</p>
+                <p class="card-subtitle">Choose single period or comparison mode, then filter by train, status, and yard</p>
               </div>
               <div class="action-btns">
                 <button class="btn btn-warning btn-sm" onclick="clearComplaintFilters()">
@@ -785,11 +852,39 @@
                 </button>
               </div>
             </div>
+
+            <div class="date-range-section" style="margin-top: 10px;">
+              <div class="date-range-row">
+                <div class="date-range-item" style="max-width: 260px;">
+                  <label>Dashboard Mode</label>
+                  <select id="compDateMode" onchange="handleComplaintDateModeChange()">
+                    <option value="single">Single Period (Single Date / Date Range)</option>
+                    <option value="comparison">Comparison (P1 vs P2)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="date-range-section primary" id="compSingleRangeSection">
+              <div class="date-range-title">
+                <i class="fas fa-calendar-check"></i> Single Period Selection
+              </div>
+              <div class="date-range-row">
+                <div class="date-range-item">
+                  <label>From Date</label>
+                  <input type="date" id="compSingleFromDate" onchange="loadComplaintDashboard()">
+                </div>
+                <div class="date-range-item">
+                  <label>To Date (Optional)</label>
+                  <input type="date" id="compSingleToDate" onchange="loadComplaintDashboard()">
+                </div>
+              </div>
+            </div>
             
             <!-- Date Range 1 (From Date Range) -->
-            <div class="date-range-section primary">
+            <div class="date-range-section primary" id="compPeriod1Section">
               <div class="date-range-title">
-                <i class="fas fa-calendar-alt"></i> From Date Range (Period 1)
+                <i class="fas fa-calendar-alt"></i> Period 1
               </div>
               <div class="date-range-row">
                 <div class="date-range-item">
@@ -825,9 +920,9 @@
             </div>
             
             <!-- Date Range 2 (To Date Range / Comparison) -->
-            <div class="date-range-section comparison">
+            <div class="date-range-section comparison" id="compPeriod2Section">
               <div class="date-range-title comparison">
-                <i class="fas fa-exchange-alt"></i> To Date Range (Period 2 - Comparison)
+                <i class="fas fa-exchange-alt"></i> Period 2 (Comparison)
               </div>
               <div class="date-range-row">
                 <div class="date-range-item">
@@ -853,74 +948,105 @@
           </div>
 
           <!-- KPI Cards -->
-          <div class="grid grid-4">
+          <div class="grid grid-3">
             <div class="kpi-card info">
-              <div class="kpi-label">Period 1 (From Range)</div>
-              <div class="kpi-value" id="compKpiTotal">0</div>
-              <div class="kpi-sub" id="compKpiTotalRange">-</div>
-            </div>
-            <div class="kpi-card warning">
-              <div class="kpi-label">Period 1 Complaints</div>
+              <div class="kpi-label">Period 1</div>
               <div class="kpi-value" id="compKpiCurrent">0</div>
               <div class="kpi-sub" id="compKpiCurrentRange">-</div>
             </div>
             <div class="kpi-card success">
-              <div class="kpi-label">Period 2 (To Range)</div>
+              <div class="kpi-label">Period 2</div>
               <div class="kpi-value" id="compKpiPrevious">0</div>
               <div class="kpi-sub" id="compKpiPreviousRange">-</div>
             </div>
             <div class="kpi-card" id="compKpiVarianceCard">
-              <div class="kpi-label">Variance (P1 - P2)</div>
+              <div class="kpi-label">Variance (P2 - P1)</div>
               <div class="kpi-value" id="compKpiVariance">0</div>
-              <div class="kpi-sub">+ve = Increased (Bad)</div>
+              <div class="kpi-sub" id="compKpiVarianceSub">Positive value indicates increase in complaints</div>
+            </div>
+          </div>
+
+          <!-- Long Daily Trend -->
+          <div class="card" id="complaintTrendCard" style="margin-top: 16px;">
+            <h3 class="card-title">Daily Complaint Trend (P1 vs P2) <small style="font-size: 10px; color: #64748b;">- 2 line comparison</small></h3>
+            <div class="chart-container" style="height: 320px;">
+              <canvas id="complaintTrendChart"></canvas>
             </div>
           </div>
 
           <!-- Charts Row 1 -->
           <div class="grid grid-2" style="margin-top: 16px;">
-            <div class="card" id="complaintTrendCard">
-              <h3 class="card-title">Daily Complaint Trend <small style="font-size: 10px; color: #64748b;">- Click to filter</small></h3>
-              <div class="chart-container">
-                <canvas id="complaintTrendChart"></canvas>
-              </div>
-            </div>
             <div class="card" id="complaintStatusCard">
               <h3 class="card-title">Status Comparison <small style="font-size: 10px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="complaintStatusChart"></canvas>
               </div>
             </div>
-          </div>
-
-          <!-- Charts Row 2 -->
-          <div class="grid grid-2" style="margin-top: 16px;">
             <div class="card" id="complaintTrainCard">
               <h3 class="card-title">Train-wise Comparison <small style="font-size: 10px; color: #64748b;">- Click to filter</small></h3>
               <div class="chart-container">
                 <canvas id="complaintTrainChart"></canvas>
               </div>
             </div>
+          </div>
+
+          <!-- Charts Row 2 -->
+          <div class="grid grid-2" style="margin-top: 16px;">
+            <div class="card" id="natureAnalysisCard">
+              <h3 class="card-title">Nature-wise Complaint Analysis <small style="font-size: 10px; color: #64748b;">- P1 vs P2</small></h3>
+              <div class="chart-container">
+                <canvas id="natureAnalysisChart"></canvas>
+              </div>
+            </div>
+            <div class="card" id="managerComplaintCard">
+              <h3 class="card-title">Manager-wise Complaint Contribution <small style="font-size: 10px; color: #64748b;">- Donut chart</small></h3>
+              <div class="chart-container">
+                <canvas id="managerComplaintChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row 3 -->
+          <div class="grid grid-2" style="margin-top: 16px;">
+            <div class="card">
+              <h3 class="card-title">Yard-wise Complaint Contribution</h3>
+              <div class="chart-container">
+                <canvas id="complaintYardChart"></canvas>
+              </div>
+            </div>
             <div class="card" id="complaintSourceCard">
-              <h3 class="card-title">Complaint Source Mix <small style="font-size: 10px; color: #64748b;">- Click to filter</small></h3>
+              <h3 class="card-title">Complaint Source Mix <small style="font-size: 10px; color: #64748b;">- Legend shown at right side</small></h3>
               <div class="chart-container">
                 <canvas id="complaintSourceChart"></canvas>
               </div>
             </div>
           </div>
 
-          <!-- Manager-wise Complaint % Chart -->
+          <!-- Top Complaining Trains Table -->
           <div class="card" style="margin-top: 16px;">
-            <h3 class="card-title">Manager-wise Complaint Distribution <small style="font-size: 10px; color: #64748b;">- Based on Train Number (first 5 digits)</small></h3>
-            <div class="chart-container">
-              <canvas id="managerComplaintChart"></canvas>
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Top 10 Complaining Trains</h3>
+                <p class="card-subtitle">Trains with highest complaint counts in Period 1</p>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('topTrainsTable', 'top_complaining_trains')">
+                <i class="fas fa-file-excel"></i>
+              </button>
             </div>
-          </div>
-
-          <!-- Nature-wise Analysis Chart -->
-          <div class="card" style="margin-top: 16px;">
-            <h3 class="card-title">Nature-wise Complaint Analysis <small style="font-size: 10px; color: #64748b;">- P1 vs P2 comparison</small></h3>
-            <div class="chart-container">
-              <canvas id="natureAnalysisChart"></canvas>
+            <div class="table-container">
+              <table id="topTrainsTable">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Train Name</th>
+                    <th>Manager</th>
+                    <th>Total Complaints</th>
+                    <th>Open</th>
+                    <th>Closed</th>
+                  </tr>
+                </thead>
+                <tbody id="topTrainsTableBody"></tbody>
+              </table>
             </div>
           </div>
 
@@ -930,7 +1056,7 @@
               <div class="card-header">
                 <div>
                   <h3 class="card-title">Train-wise Complaint Count</h3>
-                  <p class="card-subtitle" style="font-size: 11px; color: #dc2626;"><i class="fas fa-exclamation-circle"></i> RED = Recent period has MORE complaints than older period (BAD)</p>
+                  <p class="card-subtitle" style="font-size: 11px; color: #dc2626;"><i class="fas fa-exclamation-circle"></i> Only positive variance values are highlighted in red</p>
                 </div>
                 <button class="btn btn-ghost btn-sm" onclick="downloadTableExcel('compTrainTable', 'train_complaint_comparison')">
                   <i class="fas fa-file-excel"></i>
@@ -943,7 +1069,7 @@
                       <th>Train Name</th>
                       <th>Period 1</th>
                       <th>Period 2</th>
-                      <th>Increase (+Bad)</th>
+                      <th>Variance (P2-P1)</th>
                     </tr>
                   </thead>
                   <tbody id="compTrainTableBody"></tbody>
@@ -1014,7 +1140,7 @@
                 </div>
                 <div class="form-field">
                   <label>Date *</label>
-                  <input type="date" id="salesDate" value="">
+                  <input type="date" id="salesDate" value="" onchange="refreshSalesTargetForDate()">
                 </div>
                 <div class="form-field">
                   <label>Train Number</label>
@@ -1048,7 +1174,7 @@
               <div class="form-row">
                 <div class="form-field">
                   <label>Sales Target</label>
-                  <input type="number" id="salesTarget" readonly>
+                  <input type="number" step="1" id="salesTarget" readonly>
                 </div>
                 <div class="form-field">
                   <label>Sales Achievement *</label>
@@ -1063,7 +1189,7 @@
               <div class="form-row">
                 <div class="form-field">
                   <label>GP Target</label>
-                  <input type="number" id="salesGpTarget" readonly>
+                  <input type="number" step="1" id="salesGpTarget" readonly>
                 </div>
                 <div class="form-field">
                   <label>GP Achievement *</label>
@@ -1291,6 +1417,30 @@
                   <i class="fas fa-undo"></i> Clear
                 </button>
               </div>
+
+              <div class="card" style="margin-top: 16px;">
+                <div class="card-header">
+                  <div>
+                    <h3 class="card-title">Open Complaints Queue</h3>
+                    <p class="card-subtitle">Every new complaint starts in Open status. Edit to close/update.</p>
+                  </div>
+                </div>
+                <div class="table-container">
+                  <table id="openComplaintQueueTable">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>ID</th>
+                        <th>Train</th>
+                        <th>Nature</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="openComplaintQueueBody"></tbody>
+                  </table>
+                </div>
+              </div>
             </div>
 
             <div id="complaintListTab" class="hidden">
@@ -1514,6 +1664,14 @@
                   <label>Train Number</label>
                   <input type="text" id="cashTrainNo" readonly>
                 </div>
+                <div class="form-field">
+                  <label>Train Manager</label>
+                  <input type="text" id="cashTrainManager" readonly>
+                </div>
+                <div class="form-field">
+                  <label>Rake Manager</label>
+                  <input type="text" id="cashRakeManager" readonly>
+                </div>
               </div>
 
               <div class="form-row">
@@ -1695,26 +1853,38 @@
             <div class="form-row">
               <div class="form-field">
                 <label>Cluster Manager</label>
-                <select id="masterClusterManager"></select>
+                <select id="masterClusterManager" onchange="onMasterClusterChange()"></select>
               </div>
               <div class="form-field">
                 <label>Train Manager</label>
-                <select id="masterTrainManager"></select>
+                <select id="masterTrainManager" onchange="onMasterTrainManagerChange()"></select>
               </div>
               <div class="form-field">
                 <label>Rake Manager</label>
-                <input type="text" id="masterRakeManager">
+                <select id="masterRakeManager"></select>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-field">
-                <label>Sales Target (Monthly)</label>
-                <input type="number" id="masterSalesTarget" placeholder="Enter amount">
+                <label>Sales Target (Period)</label>
+                <input type="number" step="1" id="masterSalesTarget" placeholder="Enter amount">
               </div>
               <div class="form-field">
-                <label>GP Target (Monthly)</label>
-                <input type="number" id="masterGpTarget" placeholder="Enter amount">
+                <label>GP Target (Period)</label>
+                <input type="number" step="1" id="masterGpTarget" placeholder="Enter amount">
+              </div>
+              <div class="form-field">
+                <label>Validity Start Date *</label>
+                <input type="date" id="masterValidFrom">
+              </div>
+              <div class="form-field">
+                <label>Validity End Date</label>
+                <input type="date" id="masterValidTo">
+              </div>
+              <div class="form-field">
+                <label>Valid For Days (optional)</label>
+                <input type="number" id="masterValidDays" min="1" placeholder="Example: 30">
               </div>
             </div>
 
@@ -1752,8 +1922,19 @@
               <div>
                 <label style="display: block; margin-bottom: 6px; font-size: 12px; color: #475569; font-weight: 500;">Add Train Manager</label>
                 <div style="display: flex; gap: 6px;">
+                  <select id="newTrainManagerCluster" style="flex: 1; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b; font-size: 14px;"></select>
                   <input type="text" id="newTrainManager" placeholder="Manager name" style="flex: 1; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b; font-size: 14px;">
                   <button class="btn btn-success btn-sm" onclick="addTrainManager()">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 6px; font-size: 12px; color: #475569; font-weight: 500;">Add Rake Manager</label>
+                <div style="display: flex; gap: 6px;">
+                  <select id="newRakeManagerTrain" style="flex: 1; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b; font-size: 14px;"></select>
+                  <input type="text" id="newRakeManager" placeholder="Rake manager name" style="flex: 1; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; color: #1e293b; font-size: 14px;">
+                  <button class="btn btn-success btn-sm" onclick="addRakeManager()">
                     <i class="fas fa-plus"></i>
                   </button>
                 </div>
@@ -1778,8 +1959,12 @@
                     <th>Type</th>
                     <th>Cluster</th>
                     <th>Manager</th>
+                    <th>Rake Manager</th>
+                    <th>Valid From</th>
+                    <th>Valid To</th>
                     <th>Sales Target</th>
                     <th>GP Target</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody id="masterTableBody"></tbody>
@@ -1824,10 +2009,11 @@
                   <select id="userRole" onchange="onRoleChange()">
                     <option value="csd_entry">CSD Entry (Complaints)</option>
                     <option value="collecting_team">Collecting Team (Sales)</option>
-                    <option value="cash_team">Cash Team (Deposits)</option>
-                    <option value="ops_manager">Ops Manager (View Only)</option>
-                    <option value="admin">Admin (Full Access)</option>
-                    <option value="super_admin">Super Admin</option>
+            <option value="cash_team">Cash Team (Deposits)</option>
+            <option value="ops_manager">Ops Manager (View Only)</option>
+            <option value="demo_viewer">Demo Viewer (Read Only)</option>
+            <option value="admin">Admin (Full Access)</option>
+            <option value="super_admin">Super Admin</option>
                   </select>
                 </div>
                 <div class="form-field">
@@ -1981,7 +2167,7 @@
           <i class="fas fa-headset"></i> Support: +91 8584833366 | sandipnandi2000@gmail.com
         </div>
         <div class="copyright">
-          © 2024 RK Group - Railway Catering Management System
+          © 2026 RK Group - Railway Catering Management System
         </div>
       </div>
     </main>
@@ -2038,7 +2224,7 @@
     // Project: RK GROUP INTEGRATED DBMS
     // Database Rules: Read/Write allowed until 2026-05-10
     const FIREBASE_CONFIG = {
-      apiKey: "AIzaSyDDo8ZwC9Gedxr06tKB_gw9esQ9cKePoHE",
+      apiKey: "AIzaSyDDo8ZwC9Gedxro6tKB_gw9esQ9cKePoHE",
       authDomain: "rk-group-intigrated-dbms.firebaseapp.com",
       databaseURL: "https://rk-group-intigrated-dbms-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "rk-group-intigrated-dbms",
@@ -2077,11 +2263,15 @@
     // ==================== APP DATA & STATE ====================
     const DEFAULT_DATA = {
       users: [
-        { id: 1, name: 'Super Admin', email: 'sandipnandi2000@gmail.com', password: 'Sanju@1234', role: 'super_admin', yard: 'ALL', active: true }
+        { id: 1, name: 'Super Admin', email: 'sandipnandi2000@gmail.com', password: 'Sanju@1234', role: 'super_admin', yard: 'ALL', active: true },
+        { id: 2, name: 'Demo User', email: 'demo', password: 'Demo@1234', role: 'demo_viewer', yard: 'ALL', active: true }
       ],
       yards: ['Howrah', 'Sealdah', 'Kharagpur', 'Asansol', 'Malda', 'Siliguri'],
       clusterManagers: ['Manager A', 'Manager B', 'Manager C'],
       trainManagers: ['TM1', 'TM2', 'TM3', 'TM4', 'TM5'],
+      rakeManagers: [],
+      trainManagerHierarchy: {},
+      rakeManagerHierarchy: {},
       trainMasters: [],
       sales: [],
       complaints: [],
@@ -2123,7 +2313,8 @@
       csd_entry: ['dashboard', 'complaintDashboard', 'complaints'],
       collecting_team: ['dashboard', 'sales'],
       cash_team: ['dashboard', 'cash'],
-      ops_manager: ['dashboard', 'complaintDashboard']
+      ops_manager: ['dashboard', 'complaintDashboard'],
+      demo_viewer: ['dashboard', 'complaintDashboard', 'sales', 'complaints', 'cash', 'masters']
     };
 
     const ROLE_LABELS = {
@@ -2132,7 +2323,8 @@
       csd_entry: 'CSD Entry',
       collecting_team: 'Collecting Team',
       cash_team: 'Cash Team',
-      ops_manager: 'Ops Manager'
+      ops_manager: 'Ops Manager',
+      demo_viewer: 'Demo Viewer (Read Only)'
     };
 
     // ==================== INITIALIZATION ====================
@@ -2154,15 +2346,55 @@
         if (!appData.yards) appData.yards = DEFAULT_DATA.yards;
         if (!appData.clusterManagers) appData.clusterManagers = DEFAULT_DATA.clusterManagers;
         if (!appData.trainManagers) appData.trainManagers = DEFAULT_DATA.trainManagers;
+        if (!appData.rakeManagers) appData.rakeManagers = DEFAULT_DATA.rakeManagers;
+        if (!appData.trainManagerHierarchy) appData.trainManagerHierarchy = DEFAULT_DATA.trainManagerHierarchy;
+        if (!appData.rakeManagerHierarchy) appData.rakeManagerHierarchy = DEFAULT_DATA.rakeManagerHierarchy;
         if (!appData.trainMasters) appData.trainMasters = DEFAULT_DATA.trainMasters;
         if (!appData.sales) appData.sales = DEFAULT_DATA.sales;
         if (!appData.complaints) appData.complaints = DEFAULT_DATA.complaints;
         if (!appData.cash) appData.cash = DEFAULT_DATA.cash;
         if (!appData.users) appData.users = DEFAULT_DATA.users;
+        hydrateManagerHierarchyFromMasters();
+        ensureSystemUsers();
       } else {
         appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
         saveData();
       }
+    }
+
+    function hydrateManagerHierarchyFromMasters() {
+      if (!appData.trainManagerHierarchy) appData.trainManagerHierarchy = {};
+      if (!appData.rakeManagerHierarchy) appData.rakeManagerHierarchy = {};
+      if (!Array.isArray(appData.rakeManagers)) appData.rakeManagers = [];
+      (appData.trainMasters || []).forEach(t => {
+        if (t.trainManager && t.clusterManager && !appData.trainManagerHierarchy[t.trainManager]) {
+          appData.trainManagerHierarchy[t.trainManager] = t.clusterManager;
+        }
+        if (t.rakeManager && t.trainManager && !appData.rakeManagerHierarchy[t.rakeManager]) {
+          appData.rakeManagerHierarchy[t.rakeManager] = t.trainManager;
+        }
+      });
+      appData.rakeManagers = [...new Set([...(appData.rakeManagers || []), ...Object.keys(appData.rakeManagerHierarchy)])].sort();
+    }
+
+    function ensureSystemUsers() {
+      if (!Array.isArray(appData.users)) appData.users = [];
+      const hasDemo = appData.users.some(u => (u.email || '').toLowerCase() === 'demo');
+      if (!hasDemo) {
+        appData.users.push({ id: Date.now(), name: 'Demo User', email: 'demo', password: 'Demo@1234', role: 'demo_viewer', yard: 'ALL', active: true });
+      }
+    }
+
+    function isReadOnlyUser() {
+      return currentUser && currentUser.role === 'demo_viewer';
+    }
+
+    function ensureEditable(actionLabel = 'perform this action') {
+      if (isReadOnlyUser()) {
+        showAlert(`Demo login is view-only. You cannot ${actionLabel}.`, 'warning');
+        return false;
+      }
+      return true;
     }
 
     function saveData() {
@@ -2193,6 +2425,12 @@
       document.getElementById('salesDate') && (document.getElementById('salesDate').value = today);
       document.getElementById('complaintDate') && (document.getElementById('complaintDate').value = today);
       document.getElementById('cashDate') && (document.getElementById('cashDate').value = today);
+      document.getElementById('dashDateMode') && (document.getElementById('dashDateMode').value = 'single');
+      document.getElementById('compDateMode') && (document.getElementById('compDateMode').value = 'single');
+      document.getElementById('dashSingleFromDate') && (document.getElementById('dashSingleFromDate').value = today);
+      document.getElementById('dashSingleToDate') && (document.getElementById('dashSingleToDate').value = today);
+      document.getElementById('compSingleFromDate') && (document.getElementById('compSingleFromDate').value = today);
+      document.getElementById('compSingleToDate') && (document.getElementById('compSingleToDate').value = today);
     }
 
     // ==================== MOBILE SIDEBAR ====================
@@ -2233,6 +2471,12 @@
       }
     }
 
+    function useDemoLogin() {
+      document.getElementById('loginEmail').value = 'demo';
+      document.getElementById('loginPassword').value = 'Demo@1234';
+      handleLogin();
+    }
+
     function handleLogout() {
       currentUser = null;
       document.getElementById('loginScreen').style.display = 'flex';
@@ -2248,7 +2492,34 @@
       document.getElementById('userName').textContent = currentUser.name;
       document.getElementById('userRoleDisplay').textContent = ROLE_LABELS[currentUser.role] || currentUser.role;
       setupNavigation();
+      setupReadOnlyUi();
       showPage('dashboard');
+    }
+
+    function setupReadOnlyUi() {
+      const readOnly = isReadOnlyUser();
+      document.querySelectorAll('.top-bar-actions button').forEach(btn => {
+        btn.style.display = readOnly ? 'none' : '';
+      });
+      const hideIfReadOnly = [
+        'button[onclick*="save"]',
+        'button[onclick*="delete"]',
+        'button[onclick*="addYard"]',
+        'button[onclick*="addClusterManager"]',
+        'button[onclick*="addTrainManager"]',
+        'button[onclick*="import"]',
+        'button[onclick*="syncToCloud"]',
+        'button[onclick*="restoreBackup"]',
+        'button[onclick*="resetAndImportSales"]'
+      ];
+      hideIfReadOnly.forEach(selector => {
+        document.querySelectorAll(selector).forEach(btn => {
+          btn.style.display = readOnly ? 'none' : '';
+        });
+      });
+      document.querySelectorAll('input[type="file"]').forEach(input => {
+        input.disabled = !!readOnly;
+      });
     }
 
     function setupNavigation() {
@@ -2280,8 +2551,14 @@
       // Close sidebar on mobile when changing pages
       closeSidebar();
 
-      if (page === 'dashboard') { loadDashboard(); populateDashboardFilters(); }
-      else if (page === 'complaintDashboard') { loadComplaintDashboard(); populateComplaintDashboardFilters(); }
+      if (page === 'dashboard') { 
+        populateDashboardFilters();
+        handleSalesDateModeChange();
+      }
+      else if (page === 'complaintDashboard') { 
+        populateComplaintDashboardFilters();
+        handleComplaintDateModeChange();
+      }
       else if (page === 'sales') loadSalesPage();
       else if (page === 'complaints') loadComplaintsPage();
       else if (page === 'cash') loadCashPage();
@@ -2304,12 +2581,15 @@
       // Set Period 1 (Current Month MTD)
       document.getElementById('dashFromDate1').value = currentMonthStart.toISOString().split('T')[0];
       document.getElementById('dashToDate1').value = yesterday.toISOString().split('T')[0];
+      document.getElementById('dashSingleFromDate').value = currentMonthStart.toISOString().split('T')[0];
+      document.getElementById('dashSingleToDate').value = yesterday.toISOString().split('T')[0];
       
       // Set Period 2 (Last Month same period)
       document.getElementById('dashFromDate2').value = lastMonthStart.toISOString().split('T')[0];
       document.getElementById('dashToDate2').value = lastMonthEnd.toISOString().split('T')[0];
+      document.getElementById('dashDateMode').value = 'comparison';
       
-      loadDashboard();
+      handleSalesDateModeChange();
       showAlert('Date ranges set: Current Month MTD vs Last Month same period', 'success');
     }
 
@@ -2326,13 +2606,46 @@
       // Set Period 1 (Current Month MTD)
       document.getElementById('compFromDate1').value = currentMonthStart.toISOString().split('T')[0];
       document.getElementById('compToDate1').value = yesterday.toISOString().split('T')[0];
+      document.getElementById('compSingleFromDate').value = currentMonthStart.toISOString().split('T')[0];
+      document.getElementById('compSingleToDate').value = yesterday.toISOString().split('T')[0];
       
       // Set Period 2 (Last Month same period)
       document.getElementById('compFromDate2').value = lastMonthStart.toISOString().split('T')[0];
       document.getElementById('compToDate2').value = lastMonthEnd.toISOString().split('T')[0];
+      document.getElementById('compDateMode').value = 'comparison';
       
-      loadComplaintDashboard();
+      handleComplaintDateModeChange();
       showAlert('Date ranges set: Current Month MTD vs Last Month same period', 'success');
+    }
+
+    function getSalesDateMode() {
+      return document.getElementById('dashDateMode')?.value || 'single';
+    }
+
+    function getComplaintDateMode() {
+      return document.getElementById('compDateMode')?.value || 'single';
+    }
+
+    function handleSalesDateModeChange() {
+      const mode = getSalesDateMode();
+      const single = document.getElementById('dashSingleRangeSection');
+      const p1 = document.getElementById('dashPeriod1Section');
+      const p2 = document.getElementById('dashPeriod2Section');
+      if (single) single.style.display = mode === 'single' ? 'block' : 'none';
+      if (p1) p1.style.display = mode === 'comparison' ? 'block' : 'none';
+      if (p2) p2.style.display = mode === 'comparison' ? 'block' : 'none';
+      loadDashboard();
+    }
+
+    function handleComplaintDateModeChange() {
+      const mode = getComplaintDateMode();
+      const single = document.getElementById('compSingleRangeSection');
+      const p1 = document.getElementById('compPeriod1Section');
+      const p2 = document.getElementById('compPeriod2Section');
+      if (single) single.style.display = mode === 'single' ? 'block' : 'none';
+      if (p1) p1.style.display = mode === 'comparison' ? 'block' : 'none';
+      if (p2) p2.style.display = mode === 'comparison' ? 'block' : 'none';
+      loadComplaintDashboard();
     }
 
     // ==================== FILTER FUNCTIONS ====================
@@ -2340,13 +2653,22 @@
       let filtered = [...(appData.sales || [])];
       
       let fromDate, toDate;
-      
-      if (period === 1) {
-        fromDate = document.getElementById('dashFromDate1')?.value;
-        toDate = document.getElementById('dashToDate1')?.value;
-      } else if (period === 2) {
-        fromDate = document.getElementById('dashFromDate2')?.value;
-        toDate = document.getElementById('dashToDate2')?.value;
+      const mode = getSalesDateMode();
+
+      if (mode === 'single') {
+        if (period === 2) return [];
+        if (period === 1) {
+          fromDate = document.getElementById('dashSingleFromDate')?.value;
+          toDate = document.getElementById('dashSingleToDate')?.value || fromDate;
+        }
+      } else {
+        if (period === 1) {
+          fromDate = document.getElementById('dashFromDate1')?.value;
+          toDate = document.getElementById('dashToDate1')?.value;
+        } else if (period === 2) {
+          fromDate = document.getElementById('dashFromDate2')?.value;
+          toDate = document.getElementById('dashToDate2')?.value;
+        }
       }
       
       const trainFilter = document.getElementById('dashTrainFilter')?.value;
@@ -2404,13 +2726,22 @@
       let filtered = [...(appData.complaints || [])];
       
       let fromDate, toDate;
-      
-      if (period === 1) {
-        fromDate = document.getElementById('compFromDate1')?.value;
-        toDate = document.getElementById('compToDate1')?.value;
-      } else if (period === 2) {
-        fromDate = document.getElementById('compFromDate2')?.value;
-        toDate = document.getElementById('compToDate2')?.value;
+      const mode = getComplaintDateMode();
+
+      if (mode === 'single') {
+        if (period === 2) return [];
+        if (period === 1) {
+          fromDate = document.getElementById('compSingleFromDate')?.value;
+          toDate = document.getElementById('compSingleToDate')?.value || fromDate;
+        }
+      } else {
+        if (period === 1) {
+          fromDate = document.getElementById('compFromDate1')?.value;
+          toDate = document.getElementById('compToDate1')?.value;
+        } else if (period === 2) {
+          fromDate = document.getElementById('compFromDate2')?.value;
+          toDate = document.getElementById('compToDate2')?.value;
+        }
       }
       
       const trainFilter = document.getElementById('compDashTrainFilter')?.value;
@@ -2465,6 +2796,9 @@
     }
 
     function clearSalesFilters() {
+      document.getElementById('dashDateMode').value = 'single';
+      document.getElementById('dashSingleFromDate').value = '';
+      document.getElementById('dashSingleToDate').value = '';
       document.getElementById('dashFromDate1').value = '';
       document.getElementById('dashToDate1').value = '';
       document.getElementById('dashFromDate2').value = '';
@@ -2475,7 +2809,7 @@
       salesBucketFilter = null;
       gpBucketFilter = null;
       chartFilter = { type: null, value: null };
-      loadDashboard();
+      handleSalesDateModeChange();
     }
 
     function clearChartFilter() {
@@ -2483,7 +2817,15 @@
       loadDashboard();
     }
 
+    function applyChartFilter(type, value) {
+      chartFilter = { type, value: decodeURIComponent(value) };
+      loadDashboard();
+    }
+
     function clearComplaintFilters() {
+      document.getElementById('compDateMode').value = 'single';
+      document.getElementById('compSingleFromDate').value = '';
+      document.getElementById('compSingleToDate').value = '';
       document.getElementById('compFromDate1').value = '';
       document.getElementById('compToDate1').value = '';
       document.getElementById('compFromDate2').value = '';
@@ -2492,7 +2834,7 @@
       document.getElementById('compDashStatusFilter').value = '';
       document.getElementById('compDashYardFilter').value = '';
       compChartFilter = { type: null, value: null };
-      loadComplaintDashboard();
+      handleComplaintDateModeChange();
     }
 
     function clearCompChartFilter() {
@@ -2513,19 +2855,23 @@
 
     // ==================== SALES DASHBOARD ====================
     function loadDashboard() {
+      const dateMode = getSalesDateMode();
       // Get data for both periods
       const salesP1 = getFilteredSales(1);
       const salesP2 = getFilteredSales(2);
       
       // Get complaints for Period 1 date range
-      const fromDate1 = document.getElementById('dashFromDate1')?.value;
-      const toDate1 = document.getElementById('dashToDate1')?.value;
+      const fromDate1 = dateMode === 'single' ? document.getElementById('dashSingleFromDate')?.value : document.getElementById('dashFromDate1')?.value;
+      const toDate1 = dateMode === 'single' ? (document.getElementById('dashSingleToDate')?.value || fromDate1) : document.getElementById('dashToDate1')?.value;
       let complaints = [...(appData.complaints || [])];
       if (fromDate1) complaints = complaints.filter(c => c.date >= fromDate1);
       if (toDate1) complaints = complaints.filter(c => c.date <= toDate1);
       if (currentUser.yard !== 'ALL') complaints = complaints.filter(c => c.yard === currentUser.yard);
       
-      const cash = appData.cash || [];
+      let cash = [...(appData.cash || [])];
+      if (fromDate1) cash = cash.filter(c => c.date >= fromDate1);
+      if (toDate1) cash = cash.filter(c => c.date <= toDate1);
+      if (currentUser.yard !== 'ALL') cash = cash.filter(c => c.yard === currentUser.yard);
 
       // Calculate KPIs for Period 1
       const salesTargetP1 = salesP1.reduce((sum, s) => sum + (Number(s.salesTarget) || 0), 0);
@@ -2562,15 +2908,24 @@
         Math.min((gpAchievementP1 / gpTargetP1) * 100, 100) + '%' : '0%';
 
       // Update Period 2 KPIs
+      // Variance = P2 - P1 (Positive = growth = Good, Negative = decline = Bad)
       document.getElementById('kpiSalesAchievementP2').textContent = formatCurrency(salesAchievementP2);
-      const salesVariance = salesAchievementP1 - salesAchievementP2;
-      document.getElementById('kpiSalesVariance').textContent = 'Variance: ' + (salesVariance >= 0 ? '+' : '') + formatCurrency(salesVariance);
-      document.getElementById('kpiSalesVariance').className = salesVariance >= 0 ? 'kpi-sub comparison-positive' : 'kpi-sub comparison-negative';
+      const salesVariance = salesAchievementP2 - salesAchievementP1;
+      document.getElementById('kpiSalesVariance').textContent = dateMode === 'comparison'
+        ? 'Variance (P2-P1): ' + (salesVariance >= 0 ? '+' : '') + formatCurrency(salesVariance)
+        : 'Comparison disabled in single period mode';
+      document.getElementById('kpiSalesVariance').className = dateMode === 'comparison'
+        ? (salesVariance >= 0 ? 'kpi-sub comparison-positive' : 'kpi-sub comparison-negative')
+        : 'kpi-sub';
       
       document.getElementById('kpiGpAchievementP2').textContent = formatCurrency(gpAchievementP2);
-      const gpVariance = gpAchievementP1 - gpAchievementP2;
-      document.getElementById('kpiGpVariance').textContent = 'Variance: ' + (gpVariance >= 0 ? '+' : '') + formatCurrency(gpVariance);
-      document.getElementById('kpiGpVariance').className = gpVariance >= 0 ? 'kpi-sub comparison-positive' : 'kpi-sub comparison-negative';
+      const gpVariance = gpAchievementP2 - gpAchievementP1;
+      document.getElementById('kpiGpVariance').textContent = dateMode === 'comparison'
+        ? 'Variance (P2-P1): ' + (gpVariance >= 0 ? '+' : '') + formatCurrency(gpVariance)
+        : 'Comparison disabled in single period mode';
+      document.getElementById('kpiGpVariance').className = dateMode === 'comparison'
+        ? (gpVariance >= 0 ? 'kpi-sub comparison-positive' : 'kpi-sub comparison-negative')
+        : 'kpi-sub';
 
       document.getElementById('kpiOpenComplaints').textContent = openComplaints;
       document.getElementById('kpiComplaintSub').textContent = closedComplaints + ' closed | ' + totalComplaints + ' total';
@@ -2591,7 +2946,15 @@
 
       // Render tables
       renderTopBottomTables(salesP1);
-      renderPeriodComparisonTable(salesP1, salesP2);
+      if (dateMode === 'comparison') {
+        renderPeriodComparisonTable(salesP1, salesP2);
+      } else {
+        document.getElementById('momTableBody').innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align:center; color:#64748b;">Enable Comparison Mode to view P1 vs P2 table.</td>
+          </tr>
+        `;
+      }
       renderRankTable(salesP1, complaints, cash);
 
       // Update filter displays
@@ -2600,14 +2963,21 @@
     }
 
     function updateActiveFiltersDisplay() {
+      const dateMode = getSalesDateMode();
       const fromDate1 = document.getElementById('dashFromDate1')?.value;
       const toDate1 = document.getElementById('dashToDate1')?.value;
       const fromDate2 = document.getElementById('dashFromDate2')?.value;
       const toDate2 = document.getElementById('dashToDate2')?.value;
+      const singleFrom = document.getElementById('dashSingleFromDate')?.value;
+      const singleTo = document.getElementById('dashSingleToDate')?.value || singleFrom;
       
       const filters = [];
-      if (fromDate1 && toDate1) filters.push('P1: ' + fromDate1 + ' to ' + toDate1);
-      if (fromDate2 && toDate2) filters.push('P2: ' + fromDate2 + ' to ' + toDate2);
+      if (dateMode === 'single') {
+        if (singleFrom) filters.push('Single: ' + singleFrom + (singleTo && singleTo !== singleFrom ? ' to ' + singleTo : ''));
+      } else {
+        if (fromDate1 && toDate1) filters.push('P1: ' + fromDate1 + ' to ' + toDate1);
+        if (fromDate2 && toDate2) filters.push('P2: ' + fromDate2 + ' to ' + toDate2);
+      }
       
       const display = document.getElementById('activeFilters');
       if (display) display.innerHTML = filters.length > 0 ? '<strong>Active Date Ranges:</strong> ' + filters.join(' | ') : '';
@@ -2953,8 +3323,22 @@
       const top10 = trainPerformance.slice(0, 10);
       const bottom10 = [...trainPerformance].reverse().slice(0, 10);
 
-      document.getElementById('topTrainTableBody').innerHTML = top10.map(t => `
-        <tr>
+      // Calculate totals
+      const top10TotalSales = top10.reduce((sum, t) => sum + t.salesAmount, 0);
+      const top10TotalGP = top10.reduce((sum, t) => sum + t.gpAmount, 0);
+      const bottom10TotalSales = bottom10.reduce((sum, t) => sum + t.salesAmount, 0);
+      const bottom10TotalGP = bottom10.reduce((sum, t) => sum + t.gpAmount, 0);
+
+      document.getElementById('topTrainTableBody').innerHTML = 
+        `<tr class="table-total-row">
+          <td><strong>Total (Top 10)</strong></td>
+          <td>-</td>
+          <td>-</td>
+          <td><strong>${formatCurrency(top10TotalSales)}</strong></td>
+          <td><strong>${formatCurrency(top10TotalGP)}</strong></td>
+        </tr>` +
+        top10.map(t => `
+        <tr style="cursor:pointer;" onclick="applyChartFilter('train','${encodeURIComponent(t.name)}')">
           <td>${t.name}</td>
           <td>${t.salesPct}%</td>
           <td>${t.gpPct}%</td>
@@ -2963,8 +3347,16 @@
         </tr>
       `).join('');
 
-      document.getElementById('bottomTrainTableBody').innerHTML = bottom10.map(t => `
-        <tr>
+      document.getElementById('bottomTrainTableBody').innerHTML = 
+        `<tr class="table-total-row">
+          <td><strong>Total (Bottom 10)</strong></td>
+          <td>-</td>
+          <td>-</td>
+          <td><strong>${formatCurrency(bottom10TotalSales)}</strong></td>
+          <td><strong>${formatCurrency(bottom10TotalGP)}</strong></td>
+        </tr>` +
+        bottom10.map(t => `
+        <tr style="cursor:pointer;" onclick="applyChartFilter('train','${encodeURIComponent(t.name)}')">
           <td>${t.name}</td>
           <td>${t.salesPct}%</td>
           <td>${t.gpPct}%</td>
@@ -2991,17 +3383,37 @@
       });
 
       // Sort by GP variance (highest growth first)
+      // Variance = P2 - P1 (Positive = growth = Good/Green, Negative = decline = Bad/Red)
       const rows = Object.entries(trainMap).map(([name, data]) => ({
         name, 
         p1Sales: data.p1Sales, 
         p2Sales: data.p2Sales,
-        salesVariance: data.p1Sales - data.p2Sales,
+        salesVariance: data.p2Sales - data.p1Sales,
         p1GP: data.p1GP, 
         p2GP: data.p2GP,
-        gpVariance: data.p1GP - data.p2GP
+        gpVariance: data.p2GP - data.p1GP
       })).sort((a, b) => b.gpVariance - a.gpVariance);
 
-      document.getElementById('momTableBody').innerHTML = rows.map(r => `
+      // Calculate totals
+      const totalP1Sales = rows.reduce((sum, r) => sum + r.p1Sales, 0);
+      const totalP2Sales = rows.reduce((sum, r) => sum + r.p2Sales, 0);
+      const totalSalesVar = totalP2Sales - totalP1Sales;
+      const totalP1GP = rows.reduce((sum, r) => sum + r.p1GP, 0);
+      const totalP2GP = rows.reduce((sum, r) => sum + r.p2GP, 0);
+      const totalGPVar = totalP2GP - totalP1GP;
+
+      document.getElementById('momTableBody').innerHTML = 
+        // Total row first
+        `<tr class="table-total-row">
+          <td><strong>Total (${rows.length} Trains)</strong></td>
+          <td><strong>${formatCurrency(totalP1Sales)}</strong></td>
+          <td><strong>${formatCurrency(totalP2Sales)}</strong></td>
+          <td class="${totalSalesVar >= 0 ? 'comparison-positive' : 'comparison-negative'}"><strong>${totalSalesVar >= 0 ? '+' : ''}${formatCurrency(totalSalesVar)}</strong></td>
+          <td><strong>${formatCurrency(totalP1GP)}</strong></td>
+          <td><strong>${formatCurrency(totalP2GP)}</strong></td>
+          <td class="${totalGPVar >= 0 ? 'comparison-positive' : 'comparison-negative'}"><strong>${totalGPVar >= 0 ? '+' : ''}${formatCurrency(totalGPVar)}</strong></td>
+        </tr>` +
+        rows.map(r => `
         <tr>
           <td>${r.name}</td>
           <td>${formatCurrency(r.p1Sales)}</td>
@@ -3031,30 +3443,90 @@
       const ranked = Object.entries(trainMap).map(([name, data]) => {
         const salesPct = data.salesTarget > 0 ? (data.salesAchievement / data.salesTarget) * 100 : 0;
         const gpPct = data.gpTarget > 0 ? (data.gpAchievement / data.gpTarget) * 100 : 0;
-        
-        const salesMarks = salesPct >= 90 ? 4 : salesPct >= 80 ? 3 : salesPct >= 70 ? 2 : 1;
-        const gpMarks = gpPct >= 90 ? 4 : gpPct >= 80 ? 3 : gpPct >= 70 ? 2 : 1;
-        const cashMarks = data.cashDeposited > 0 ? 1 : 0;
-        const complaintMarks = data.complaints === 0 ? 1 : 0;
-        
+        const cashVsGpPct = data.gpAchievement > 0 ? (data.cashDeposited / data.gpAchievement) * 100 : 0;
+        const complaintPenaltyFactor = Math.min(data.complaints, 10);
+
+        // Weighted scoring model (100 points total)
+        const salesScore = Math.max(0, Math.min(40, (salesPct / 100) * 40));
+        const gpScore = Math.max(0, Math.min(35, (gpPct / 100) * 35));
+        const cashScore = Math.max(0, Math.min(15, (cashVsGpPct / 100) * 15));
+        const complaintScore = Math.max(0, 10 - complaintPenaltyFactor);
+        const totalScore = salesScore + gpScore + cashScore + complaintScore;
+
         return {
-          name, salesPct: Math.round(salesPct), gpPct: Math.round(gpPct),
-          salesMarks, gpMarks, cashMarks, complaintMarks,
-          totalMarks: salesMarks + gpMarks + cashMarks + complaintMarks,
-          complaintCount: data.complaints
+          name,
+          salesPct,
+          gpPct,
+          cashVsGpPct,
+          complaintCount: data.complaints,
+          salesScore,
+          gpScore,
+          cashScore,
+          complaintScore,
+          totalScore
         };
-      }).sort((a, b) => b.totalMarks - a.totalMarks);
+      }).sort((a, b) => b.totalScore - a.totalScore);
 
       document.getElementById('rankTableBody').innerHTML = ranked.map((t, i) => `
         <tr>
           <td>${i + 1}</td>
           <td>${t.name}</td>
-          <td>${t.salesPct}%</td>
-          <td>${t.gpPct}%</td>
-          <td><strong>${t.totalMarks}</strong></td>
+          <td>${Math.round(t.salesPct)}%</td>
+          <td>${Math.round(t.gpPct)}%</td>
+          <td>${Math.round(t.cashVsGpPct)}%</td>
           <td>${t.complaintCount}</td>
+          <td>${t.salesScore.toFixed(1)}</td>
+          <td>${t.gpScore.toFixed(1)}</td>
+          <td>${t.cashScore.toFixed(1)}</td>
+          <td>${t.complaintScore.toFixed(1)}</td>
+          <td><strong>${t.totalScore.toFixed(1)}</strong></td>
         </tr>
       `).join('');
+    }
+
+    function getComparableDate(dateValue) {
+      return dateValue ? String(dateValue).slice(0, 10) : '';
+    }
+
+    function getEffectiveMaster(trainNumber, trainName, dateValue) {
+      const day = getComparableDate(dateValue);
+      const no5 = normalizeTrainNo(trainNumber);
+      const nameKey = normalizeText(trainName);
+      const matched = (appData.trainMasters || []).filter(t => {
+        const tNo5 = normalizeTrainNo(t.trainNumber);
+        const numberMatch = no5 && tNo5 && no5 === tNo5;
+        const nameMatch = !no5 && nameKey && normalizeText(t.trainName) === nameKey;
+        return numberMatch || nameMatch;
+      });
+
+      if (!matched.length) return null;
+      const valid = matched.filter(t => {
+        const from = t.validFrom || '';
+        const to = t.validTo || '';
+        if (!day) return true;
+        if (from && day < from) return false;
+        if (to && day > to) return false;
+        return true;
+      });
+
+      const pool = valid.length ? valid : matched;
+      return pool.sort((a, b) => (b.validFrom || '').localeCompare(a.validFrom || ''))[0];
+    }
+
+    function refreshSalesTargetForDate() {
+      const trainId = document.getElementById('salesTrainId')?.value;
+      const saleDate = document.getElementById('salesDate')?.value;
+      if (!trainId || !saleDate) return;
+      const selected = (appData.trainMasters || []).find(t => t.id == trainId);
+      if (!selected) return;
+      const effective = getEffectiveMaster(selected.trainNumber, selected.trainName, saleDate) || selected;
+      document.getElementById('salesTarget').value = Math.round(Number(effective.salesTarget) || 0);
+      document.getElementById('salesGpTarget').value = Math.round(Number(effective.gpTarget) || 0);
+      document.getElementById('salesClusterManager').value = effective.clusterManager || '';
+      document.getElementById('salesTrainManager').value = effective.trainManager || '';
+      document.getElementById('salesRakeManager').value = effective.rakeManager || '';
+      calculateSalesPct();
+      calculateGpPct();
     }
 
 
@@ -3114,21 +3586,19 @@
 
     // ==================== COMPLAINT DASHBOARD ====================
     function loadComplaintDashboard() {
+      const dateMode = getComplaintDateMode();
       // Get data for both periods
-      const complaintsP1 = getFilteredComplaints(1);
-      const complaintsP2 = getFilteredComplaints(2);
+      const complaintsP1 = getFilteredComplaints(1); // Current/Period 1
+      const complaintsP2 = getFilteredComplaints(2); // Previous/Period 2
       
-      const variance = complaintsP1.length - complaintsP2.length;
+      // Variance = P2 - P1
+      const variance = complaintsP2.length - complaintsP1.length;
 
       // Get date ranges for display
-      const fromDate1 = document.getElementById('compFromDate1')?.value;
-      const toDate1 = document.getElementById('compToDate1')?.value;
+      const fromDate1 = dateMode === 'single' ? document.getElementById('compSingleFromDate')?.value : document.getElementById('compFromDate1')?.value;
+      const toDate1 = dateMode === 'single' ? (document.getElementById('compSingleToDate')?.value || fromDate1) : document.getElementById('compToDate1')?.value;
       const fromDate2 = document.getElementById('compFromDate2')?.value;
       const toDate2 = document.getElementById('compToDate2')?.value;
-
-      document.getElementById('compKpiTotal').textContent = complaintsP1.length;
-      document.getElementById('compKpiTotalRange').textContent = fromDate1 && toDate1 ? 
-        `${fromDate1} to ${toDate1}` : 'No date range selected';
       
       document.getElementById('compKpiCurrent').textContent = complaintsP1.length;
       document.getElementById('compKpiCurrentRange').textContent = fromDate1 && toDate1 ? 
@@ -3136,19 +3606,36 @@
       
       document.getElementById('compKpiPrevious').textContent = complaintsP2.length;
       document.getElementById('compKpiPreviousRange').textContent = fromDate2 && toDate2 ? 
-        `${fromDate2} to ${toDate2}` : 'Period 2';
+        `${fromDate2} to ${toDate2}` : (dateMode === 'single' ? 'Comparison disabled' : 'Period 2');
       
       document.getElementById('compKpiVariance').textContent = (variance >= 0 ? '+' : '') + variance;
       
       const varianceCard = document.getElementById('compKpiVarianceCard');
-      varianceCard.className = 'kpi-card ' + (variance > 0 ? 'danger' : variance < 0 ? 'success' : 'info');
+      const varianceSub = document.getElementById('compKpiVarianceSub');
+      if (dateMode === 'single') {
+        varianceCard.className = 'kpi-card info';
+        varianceSub.textContent = 'Comparison disabled in single period mode';
+      } else if (variance > 0) {
+        varianceCard.className = 'kpi-card danger';
+        varianceSub.textContent = 'Complaints increased';
+      } else if (variance < 0) {
+        varianceCard.className = 'kpi-card success';
+        varianceSub.textContent = 'Complaints reduced';
+      } else {
+        varianceCard.className = 'kpi-card info';
+        varianceSub.textContent = 'No change';
+      }
 
       renderComplaintTrendChart(complaintsP1, complaintsP2);
       renderComplaintStatusChart(complaintsP1, complaintsP2);
       renderComplaintTrainChart(complaintsP1, complaintsP2);
-      renderComplaintSourceChart([...complaintsP1, ...complaintsP2]);
+      renderComplaintSourceChart(complaintsP1);
+      renderComplaintYardChart(complaintsP1, complaintsP2);
       renderManagerComplaintChart(complaintsP1, complaintsP2);
       renderNatureAnalysisChart(complaintsP1, complaintsP2);
+
+      renderTopTrainsTable(complaintsP1, complaintsP2);
+      
       renderComplaintComparisonTables(complaintsP1, complaintsP2);
       updateCompChartFilterDisplay();
     }
@@ -3306,7 +3793,42 @@
             }
           },
           plugins: {
-            legend: { position: 'bottom', labels: { color: '#64748b', font: { size: 10 } } }
+            legend: { position: 'right', labels: { color: '#64748b', font: { size: 10 } } }
+          }
+        }
+      });
+    }
+
+    function renderComplaintYardChart(current, prev) {
+      const ctx = document.getElementById('complaintYardChart');
+      if (!ctx) return;
+
+      const yardMap = {};
+      [...current, ...prev].forEach(c => {
+        const yard = c.yard || 'Unknown';
+        if (!yardMap[yard]) yardMap[yard] = { p1: 0, p2: 0 };
+      });
+      current.forEach(c => { yardMap[c.yard || 'Unknown'].p1++; });
+      prev.forEach(c => { yardMap[c.yard || 'Unknown'].p2++; });
+
+      const yards = Object.keys(yardMap);
+      if (charts.complaintYard) charts.complaintYard.destroy();
+      charts.complaintYard = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: yards,
+          datasets: [
+            { label: 'P1', data: yards.map(y => yardMap[y].p1), backgroundColor: '#0ea5e9', borderRadius: 4 },
+            { label: 'P2', data: yards.map(y => yardMap[y].p2), backgroundColor: '#f59e0b', borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { color: '#64748b', font: { size: 10 } } } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
           }
         }
       });
@@ -3459,6 +3981,214 @@
       });
     }
 
+    // ==================== NEW COMPLAINT ANALYSIS CHARTS ====================
+    
+    function renderComplaintTypeChart(current, prev) {
+      const ctx = document.getElementById('complaintTypeChart');
+      if (!ctx) return;
+
+      // Combine all complaints and count by type
+      const allComplaints = [...current, ...prev];
+      const typeMap = {};
+      
+      allComplaints.forEach(c => {
+        const type = c.complaintType || 'Unknown';
+        typeMap[type] = (typeMap[type] || 0) + 1;
+      });
+
+      const types = Object.keys(typeMap);
+      const counts = Object.values(typeMap);
+      
+      // Colors for pie chart
+      const colors = ['#0ea5e9', '#f59e0b', '#22c55e', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6'];
+
+      if (charts.complaintType) charts.complaintType.destroy();
+      charts.complaintType = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: types,
+          datasets: [{
+            data: counts,
+            backgroundColor: colors,
+            borderWidth: 2,
+            borderColor: '#fff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { 
+              position: 'right', 
+              labels: { 
+                color: '#64748b', 
+                font: { size: 10 },
+                generateLabels: function(chart) {
+                  const data = chart.data;
+                  const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                  return data.labels.map((label, i) => ({
+                    text: `${label} (${data.datasets[0].data[i]}) - ${Math.round((data.datasets[0].data[i]/total)*100)}%`,
+                    fillStyle: data.datasets[0].backgroundColor[i],
+                    hidden: false,
+                    index: i
+                  }));
+                }
+              } 
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const value = context.dataset.data[context.dataIndex];
+                  const pct = Math.round((value / total) * 100);
+                  return `${context.label}: ${value} (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderManagerResolutionChart(current, prev) {
+      const ctx = document.getElementById('managerResolutionChart');
+      if (!ctx) return;
+
+      // Combine all complaints
+      const allComplaints = [...current, ...prev];
+      
+      // Build manager resolution map
+      const managerMap = {};
+      
+      allComplaints.forEach(c => {
+        const manager = getManagerFromTrainNumber(c.trainNo, c.trainName);
+        if (!managerMap[manager]) {
+          managerMap[manager] = { open: 0, closed: 0, inProgress: 0 };
+        }
+        if (c.status === 'Open') managerMap[manager].open++;
+        else if (c.status === 'Closed') managerMap[manager].closed++;
+        else if (c.status === 'In Progress') managerMap[manager].inProgress++;
+      });
+
+      // Filter out unassigned if there are real managers
+      let managers = Object.keys(managerMap);
+      const hasRealManagers = managers.some(m => m !== 'Unassigned');
+      if (hasRealManagers) {
+        managers = managers.filter(m => m !== 'Unassigned');
+      }
+
+      if (charts.managerResolution) charts.managerResolution.destroy();
+      charts.managerResolution = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: managers,
+          datasets: [
+            { label: 'Open', data: managers.map(m => managerMap[m].open), backgroundColor: '#ef4444', borderRadius: 4 },
+            { label: 'In Progress', data: managers.map(m => managerMap[m].inProgress), backgroundColor: '#f59e0b', borderRadius: 4 },
+            { label: 'Closed', data: managers.map(m => managerMap[m].closed), backgroundColor: '#22c55e', borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#64748b', font: { size: 10 } } } },
+          scales: {
+            y: { beginAtZero: true, stacked: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            x: { stacked: true, grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } }
+          }
+        }
+      });
+    }
+
+    function renderSourceTrendChart(current, prev) {
+      const ctx = document.getElementById('sourceTrendChart');
+      if (!ctx) return;
+
+      // Combine all complaints
+      const allComplaints = [...current, ...prev];
+      
+      // Get unique sources
+      const sources = [...new Set(allComplaints.map(c => c.source || 'Unknown'))];
+      
+      // Get all unique dates
+      const allDates = [...new Set(allComplaints.map(c => c.date))].sort();
+      
+      // Build datasets for each source
+      const datasets = sources.map((source, index) => {
+        const colors = ['#0ea5e9', '#f59e0b', '#22c55e', '#ef4444', '#8b5cf6', '#06b6d4'];
+        const data = allDates.map(date => {
+          return allComplaints.filter(c => c.date === date && (c.source || 'Unknown') === source).length;
+        });
+        
+        return {
+          label: source,
+          data: data,
+          borderColor: colors[index % colors.length],
+          backgroundColor: colors[index % colors.length] + '20',
+          fill: false,
+          tension: 0.4,
+          pointRadius: 3
+        };
+      });
+
+      if (charts.sourceTrend) charts.sourceTrend.destroy();
+      charts.sourceTrend = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: allDates,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#64748b', font: { size: 10 } } } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } }
+          }
+        }
+      });
+    }
+
+    function renderTopTrainsTable(current, prev) {
+      const tbody = document.getElementById('topTrainsTableBody');
+      if (!tbody) return;
+
+      // Count complaints by train for Period 1 (current)
+      const trainMap = {};
+      current.forEach(c => {
+        if (!trainMap[c.trainName]) {
+          trainMap[c.trainName] = { 
+            total: 0, 
+            open: 0, 
+            closed: 0, 
+            inProgress: 0,
+            manager: getManagerFromTrainNumber(c.trainNo, c.trainName)
+          };
+        }
+        trainMap[c.trainName].total++;
+        if (c.status === 'Open') trainMap[c.trainName].open++;
+        else if (c.status === 'Closed') trainMap[c.trainName].closed++;
+        else if (c.status === 'In Progress') trainMap[c.trainName].inProgress++;
+      });
+
+      // Sort by total complaints (descending) and take top 10
+      const sortedTrains = Object.entries(trainMap)
+        .sort((a, b) => b[1].total - a[1].total)
+        .slice(0, 10);
+
+      tbody.innerHTML = sortedTrains.map(([name, data], index) => `
+        <tr class="${data.total >= 5 ? 'high-complaint' : ''}" style="cursor:pointer;" onclick="applyComplaintFilter('train','${encodeURIComponent(name)}')">
+          <td>${index + 1}</td>
+          <td>${name}</td>
+          <td>${data.manager}</td>
+          <td><strong>${data.total}</strong></td>
+          <td><span class="badge badge-danger">${data.open}</span></td>
+          <td><span class="badge badge-success">${data.closed}</span></td>
+        </tr>
+      `).join('');
+    }
+
     function renderComplaintComparisonTables(current, prev) {
       // Get date ranges for table headers
       const fromDate1 = document.getElementById('compFromDate1')?.value;
@@ -3467,8 +4197,11 @@
       const toDate2 = document.getElementById('compToDate2')?.value;
       
       // Format date ranges for display
+      const mode = getComplaintDateMode();
       const p1Label = fromDate1 && toDate1 ? `${formatShortDate(fromDate1)}-${formatShortDate(toDate1)}` : 'Period 1';
-      const p2Label = fromDate2 && toDate2 ? `${formatShortDate(fromDate2)}-${formatShortDate(toDate2)}` : 'Period 2';
+      const p2Label = mode === 'single'
+        ? 'Comparison Disabled'
+        : (fromDate2 && toDate2 ? `${formatShortDate(fromDate2)}-${formatShortDate(toDate2)}` : 'Period 2');
       
       // Update table headers
       const trainTable = document.getElementById('compTrainTable');
@@ -3479,7 +4212,7 @@
             <th>Train Name</th>
             <th>${p1Label}</th>
             <th>${p2Label}</th>
-            <th>Increase (+Bad)</th>
+            <th>Difference (P2-P1)</th>
           `;
         }
       }
@@ -3492,14 +4225,17 @@
             <th>Complaint Nature</th>
             <th>${p1Label}</th>
             <th>${p2Label}</th>
-            <th>Difference</th>
+            <th>Difference (P2-P1)</th>
           `;
         }
       }
-      
-      // Train-wise comparison - RESTRUCTURED
-      // Show trains with INCREASED complaints (P1 > P2) in RED at the TOP
-      // Sort by complaint increase (worst first - highest increase at top)
+
+      if (mode === 'single') {
+        const noCompareRow = `<tr><td colspan="4" style="text-align:center; color:#64748b;">Enable Comparison Mode to view P1 vs P2 variance.</td></tr>`;
+        document.getElementById('compTrainTableBody').innerHTML = noCompareRow;
+        document.getElementById('compNatureTableBody').innerHTML = noCompareRow;
+        return;
+      }
       
       const trainMap = {};
       [...current, ...prev].forEach(c => { 
@@ -3508,35 +4244,42 @@
       current.forEach(c => { if (trainMap[c.trainName]) trainMap[c.trainName].current++; });
       prev.forEach(c => { if (trainMap[c.trainName]) trainMap[c.trainName].prev++; });
 
-      // Calculate increase (P1 - P2) - positive means complaints increased (BAD)
       const trainRows = Object.entries(trainMap)
         .map(([name, data]) => ({ 
           name, 
           current: data.current, 
           prev: data.prev, 
-          increase: data.current - data.prev,
-          hasIncreased: data.current > data.prev
-        }));
-
-      // Separate into increased and decreased/unchanged
-      const increasedTrains = trainRows.filter(r => r.hasIncreased).sort((a, b) => b.increase - a.increase);
-      const otherTrains = trainRows.filter(r => !r.hasIncreased).sort((a, b) => b.current - a.current);
+          diff: data.prev - data.current  // P2 - P1
+        }))
+        .sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff));
       
-      // Combine: increased trains first (in red), then others
-      const sortedTrains = [...increasedTrains, ...otherTrains];
+      // Calculate totals
+      const totalCurrent = trainRows.reduce((sum, r) => sum + r.current, 0);
+      const totalPrev = trainRows.reduce((sum, r) => sum + r.prev, 0);
+      const totalDiff = totalPrev - totalCurrent;
 
-      document.getElementById('compTrainTableBody').innerHTML = sortedTrains.map(r => `
-        <tr class="${r.hasIncreased ? 'high-complaint' : ''}">
+      document.getElementById('compTrainTableBody').innerHTML = 
+        // Total row first
+        `<tr class="table-total-row summary">
+          <td><strong>Total (${trainRows.length} Trains)</strong></td>
+          <td><strong>${totalCurrent}</strong></td>
+          <td><strong>${totalPrev}</strong></td>
+          <td class="${totalDiff > 0 ? 'complaint-variance-positive' : 'complaint-variance-neutral'}">
+            <strong>${totalDiff > 0 ? '+' : ''}${totalDiff}</strong>
+          </td>
+        </tr>` +
+        trainRows.map(r => `
+        <tr>
           <td>${r.name}</td>
           <td>${r.current}</td>
           <td>${r.prev}</td>
-          <td class="${r.increase > 0 ? 'comparison-negative' : r.increase < 0 ? 'comparison-positive' : ''}">
-            ${r.increase > 0 ? '+' : ''}${r.increase}
+          <td class="${r.diff > 0 ? 'complaint-variance-positive' : 'complaint-variance-neutral'}">
+            ${r.diff > 0 ? '+' : ''}${r.diff}
           </td>
         </tr>
       `).join('');
 
-      // Nature-wise comparison - sorted by Period 1 count
+      // Nature-wise comparison - same logic
       const natureMap = {};
       [...current, ...prev].forEach(c => { 
         const nature = c.complainNature || c.complaintType || 'Unknown'; 
@@ -3555,15 +4298,36 @@
 
       const natureRows = Object.entries(natureMap)
         .filter(([name, data]) => data.current > 0 || data.prev > 0)
-        .map(([name, data]) => ({ name, ...data, diff: data.current - data.prev }))
-        .sort((a, b) => b.current - a.current);
+        .map(([name, data]) => ({ 
+          name, 
+          ...data, 
+          diff: data.prev - data.current  // P2 - P1
+        }))
+        .sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff));
+      
+      // Calculate totals
+      const natureTotalCurrent = natureRows.reduce((sum, r) => sum + r.current, 0);
+      const natureTotalPrev = natureRows.reduce((sum, r) => sum + r.prev, 0);
+      const natureTotalDiff = natureTotalPrev - natureTotalCurrent;
 
-      document.getElementById('compNatureTableBody').innerHTML = natureRows.map(r => `
-        <tr class="${r.current >= 3 ? 'high-complaint' : ''}">
+      document.getElementById('compNatureTableBody').innerHTML = 
+        // Total row first
+        `<tr class="table-total-row summary">
+          <td><strong>Total (${natureRows.length} Categories)</strong></td>
+          <td><strong>${natureTotalCurrent}</strong></td>
+          <td><strong>${natureTotalPrev}</strong></td>
+          <td class="${natureTotalDiff > 0 ? 'complaint-variance-positive' : 'complaint-variance-neutral'}">
+            <strong>${natureTotalDiff > 0 ? '+' : ''}${natureTotalDiff}</strong>
+          </td>
+        </tr>` +
+        natureRows.map(r => `
+        <tr>
           <td>${r.name}</td>
           <td>${r.current}</td>
           <td>${r.prev}</td>
-          <td class="${r.diff >= 0 ? 'comparison-negative' : 'comparison-positive'}">${r.diff >= 0 ? '+' : ''}${r.diff}</td>
+          <td class="${r.diff > 0 ? 'complaint-variance-positive' : 'complaint-variance-neutral'}">
+            ${r.diff > 0 ? '+' : ''}${r.diff}
+          </td>
         </tr>
       `).join('');
     }
@@ -3650,8 +4414,26 @@
       const rows = Object.entries(managerMap).map(([name, data]) => ({
         name, ...data, difference: data.gpAchievement - data.totalDeposit
       })).sort((a, b) => b.gpAchievement - a.gpAchievement);
+      
+      // Calculate totals
+      const totalGP = rows.reduce((sum, r) => sum + r.gpAchievement, 0);
+      const totalCash = rows.reduce((sum, r) => sum + r.cashDeposit, 0);
+      const totalOnline = rows.reduce((sum, r) => sum + r.onlineDeposit, 0);
+      const totalDeposit = rows.reduce((sum, r) => sum + r.totalDeposit, 0);
+      const totalDiff = totalGP - totalDeposit;
 
-      document.getElementById('managerCashTableBody').innerHTML = rows.map(r => `
+      document.getElementById('managerCashTableBody').innerHTML = 
+        // Total row first
+        `<tr class="table-total-row">
+          <td><strong>Total (${rows.length} Managers)</strong></td>
+          <td><strong>${formatCurrency(totalGP)}</strong></td>
+          <td><strong>${formatCurrency(totalCash)}</strong></td>
+          <td><strong>${formatCurrency(totalOnline)}</strong></td>
+          <td><strong>${formatCurrency(totalDeposit)}</strong></td>
+          <td class="${totalDiff > 0 ? 'comparison-negative' : totalDiff < 0 ? 'comparison-positive' : ''}"><strong>${totalDiff > 0 ? '-' : totalDiff < 0 ? '+' : ''}${formatCurrency(Math.abs(totalDiff))}</strong></td>
+          <td><span class="badge badge-${totalDiff > 0 ? 'danger' : totalDiff < 0 ? 'success' : 'info'}"><strong>${totalDiff > 0 ? 'Short' : totalDiff < 0 ? 'Excess' : 'Match'}</strong></span></td>
+        </tr>` +
+        rows.map(r => `
         <tr>
           <td>${r.name}</td>
           <td>${formatCurrency(r.gpAchievement)}</td>
@@ -3755,6 +4537,11 @@
       const managers = [...new Set(appData.trainMasters.map(t => t.trainManager))].filter(Boolean).sort();
       const managerSelect = document.getElementById('cashDashManagerFilter');
       if (managerSelect) managerSelect.innerHTML = '<option value="">All Managers</option>' + managers.map(m => `<option value="${m}">${m}</option>`).join('');
+      const clusterSelect = document.getElementById('newTrainManagerCluster');
+      if (clusterSelect) clusterSelect.innerHTML = '<option value="">Select Cluster</option>' + (appData.clusterManagers || []).map(c => `<option value="${c}">${c}</option>`).join('');
+      const trainMgrSelect = document.getElementById('newRakeManagerTrain');
+      const allTrainManagers = [...new Set([...(appData.trainManagers || []), ...Object.keys(appData.trainManagerHierarchy || {})])].sort();
+      if (trainMgrSelect) trainMgrSelect.innerHTML = '<option value="">Select Train Manager</option>' + allTrainManagers.map(m => `<option value="${m}">${m}</option>`).join('');
     }
 
     function filterTrains(query) {
@@ -3771,14 +4558,15 @@
       
       const train = appData.trainMasters.find(t => t.id == id);
       if (train) {
-        document.getElementById('salesTrainNo').value = train.trainNumber;
+        document.getElementById('salesTrainNo').value = normalizeTrainNo(train.trainNumber) || train.trainNumber || '';
         document.getElementById('salesYard').value = train.yard;
         document.getElementById('salesClusterManager').value = train.clusterManager || '';
         document.getElementById('salesTrainManager').value = train.trainManager || '';
         document.getElementById('salesRakeManager').value = train.rakeManager || '';
         document.getElementById('salesTrainType').value = train.trainType || '';
-        document.getElementById('salesTarget').value = train.salesTarget || '';
-        document.getElementById('salesGpTarget').value = train.gpTarget || '';
+        document.getElementById('salesTarget').value = Math.round(Number(train.salesTarget) || 0);
+        document.getElementById('salesGpTarget').value = Math.round(Number(train.gpTarget) || 0);
+        refreshSalesTargetForDate();
       }
     }
 
@@ -3804,6 +4592,7 @@
     }
 
     function validateAndSaveSalesEntry() {
+      if (!ensureEditable('save entries')) return;
       const trainId = document.getElementById('salesTrainId').value;
       const date = document.getElementById('salesDate').value;
       const salesAchievement = document.getElementById('salesAchievement').value;
@@ -3860,6 +4649,7 @@
     }
 
     function saveSalesEntryDirect() {
+      if (!ensureEditable('save entries')) return;
       const trainId = document.getElementById('salesTrainId').value;
       const date = document.getElementById('salesDate').value;
       const salesAchievement = document.getElementById('salesAchievement').value;
@@ -3867,6 +4657,7 @@
 
       const train = appData.trainMasters.find(t => t.id == trainId);
       if (!train) { showAlert('Train not found', 'error'); return; }
+      const effectiveTrain = getEffectiveMaster(train.trainNumber, train.trainName, date) || train;
 
       const entry = {
         id: editingId || Date.now(),
@@ -3874,15 +4665,15 @@
         month: new Date(date).toLocaleString('en-US', { month: 'short' }),
         trainId: trainId,
         trainName: train.trainName,
-        trainNumber: train.trainNumber,
-        yard: train.yard,
-        clusterManager: train.clusterManager,
-        trainManager: train.trainManager,
-        rakeManager: train.rakeManager,
-        trainType: train.trainType,
-        salesTarget: Number(train.salesTarget) || 0,
+        trainNumber: normalizeTrainNo(train.trainNumber) || train.trainNumber || '',
+        yard: effectiveTrain.yard || train.yard,
+        clusterManager: effectiveTrain.clusterManager || '',
+        trainManager: effectiveTrain.trainManager || '',
+        rakeManager: effectiveTrain.rakeManager || '',
+        trainType: effectiveTrain.trainType || train.trainType,
+        salesTarget: Math.round(Number(effectiveTrain.salesTarget) || 0),
         salesAchievement: Math.round(Number(salesAchievement)),
-        gpTarget: Number(train.gpTarget) || 0,
+        gpTarget: Math.round(Number(effectiveTrain.gpTarget) || 0),
         gpAchievement: Math.round(Number(gpAchievement)),
         remarks: document.getElementById('salesRemarks').value
       };
@@ -3941,6 +4732,10 @@
       if (currentUser.yard !== 'ALL') filtered = filtered.filter(s => s.yard === currentUser.yard);
 
       filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const rowActions = (id) => isReadOnlyUser()
+        ? '<span style="font-size:11px;color:#64748b;">View only</span>'
+        : `<button class="btn-icon edit" onclick="editSalesEntry(${id})"><i class="fas fa-edit"></i></button>
+           <button class="btn-icon delete" onclick="deleteSalesEntry(${id})"><i class="fas fa-trash"></i></button>`;
 
       document.getElementById('salesTableBody').innerHTML = filtered.map(s => `
         <tr>
@@ -3951,14 +4746,19 @@
           <td>${formatCurrency(s.gpAchievement)}</td>
           <td>${s.remarks || '-'}</td>
           <td>
-            <button class="btn-icon edit" onclick="editSalesEntry(${s.id})"><i class="fas fa-edit"></i></button>
-            <button class="btn-icon delete" onclick="deleteSalesEntry(${s.id})"><i class="fas fa-trash"></i></button>
+            ${rowActions(s.id)}
           </td>
         </tr>
       `).join('');
     }
 
+    function applyComplaintFilter(type, value) {
+      compChartFilter = { type, value: decodeURIComponent(value) };
+      loadComplaintDashboard();
+    }
+
     function editSalesEntry(id) {
+      if (!ensureEditable('edit entries')) return;
       const entry = appData.sales.find(s => s.id == id);
       if (!entry) return;
 
@@ -3986,6 +4786,7 @@
     }
 
     function deleteSalesEntry(id) {
+      if (!ensureEditable('delete entries')) return;
       if (!confirm('Are you sure you want to delete this entry?')) return;
       appData.sales = appData.sales.filter(s => s.id != id);
       saveData();
@@ -4004,6 +4805,7 @@
       document.getElementById('complaintFilterYard').innerHTML = '<option value="">All Yards</option>' + (appData.yards || []).map(y => `<option value="${y}">${y}</option>`).join('');
       
       loadComplaintList();
+      loadOpenComplaintQueue();
     }
 
     function populateComplaintTrainDropdown() {
@@ -4027,7 +4829,7 @@
       document.getElementById('complaintTrainName').value = name;
       document.getElementById('complaintTrainSearch').value = name;
       document.getElementById('complaintTrainDropdown').classList.remove('active');
-      document.getElementById('complaintTrainNo').value = number;
+      document.getElementById('complaintTrainNo').value = normalizeTrainNo(number) || number || '';
       document.getElementById('complaintTrainType').value = type;
       if (yard) document.getElementById('complaintYard').value = yard;
     }
@@ -4041,19 +4843,21 @@
     }
 
     function saveComplaint() {
+      if (!ensureEditable('save entries')) return;
       const date = document.getElementById('complaintDate').value;
       const trainName = document.getElementById('complaintTrainName').value;
       const nature = document.getElementById('complaintNature').value;
 
       if (!date || !trainName || !nature) { showAlert('Please fill all required fields', 'error'); return; }
 
+      const isEdit = editingId && editingType === 'complaint';
       const complaint = {
         id: editingId || Date.now(),
         date: date,
         complaintId: document.getElementById('complaintId').value || 'CMP' + Date.now(),
         source: document.getElementById('complaintSource').value,
-        status: document.getElementById('complaintStatus').value,
-        trainNo: document.getElementById('complaintTrainNo').value,
+        status: isEdit ? document.getElementById('complaintStatus').value : 'Open',
+        trainNo: normalizeTrainNo(document.getElementById('complaintTrainNo').value),
         trainName: trainName,
         trainType: document.getElementById('complaintTrainType').value,
         yard: document.getElementById('complaintYard').value,
@@ -4077,6 +4881,7 @@
       clearComplaintForm();
       showAlert('Complaint saved successfully', 'success');
       loadComplaintList();
+      loadOpenComplaintQueue();
       loadDashboard();
     }
 
@@ -4119,6 +4924,10 @@
       if (currentUser.yard !== 'ALL') filtered = filtered.filter(c => c.yard === currentUser.yard);
 
       filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const rowActions = (id) => isReadOnlyUser()
+        ? '<span style="font-size:11px;color:#64748b;">View only</span>'
+        : `<button class="btn-icon edit" onclick="editComplaint(${id})"><i class="fas fa-edit"></i></button>
+           <button class="btn-icon delete" onclick="deleteComplaint(${id})"><i class="fas fa-trash"></i></button>`;
 
       document.getElementById('complaintTableBody').innerHTML = filtered.map(c => `
         <tr>
@@ -4128,9 +4937,26 @@
           <td><span class="nature-tag nature-${getNatureCategory(c.complainNature)}">${c.complainNature}</span></td>
           <td><span class="badge badge-${c.status === 'Open' ? 'danger' : c.status === 'In Progress' ? 'warning' : 'success'}">${c.status}</span></td>
           <td>
-            <button class="btn-icon edit" onclick="editComplaint(${c.id})"><i class="fas fa-edit"></i></button>
-            <button class="btn-icon delete" onclick="deleteComplaint(${c.id})"><i class="fas fa-trash"></i></button>
+            ${rowActions(c.id)}
           </td>
+        </tr>
+      `).join('');
+    }
+
+    function loadOpenComplaintQueue() {
+      const tbody = document.getElementById('openComplaintQueueBody');
+      if (!tbody) return;
+      let rows = [...(appData.complaints || [])].filter(c => c.status === 'Open');
+      if (currentUser.yard !== 'ALL') rows = rows.filter(c => c.yard === currentUser.yard);
+      rows.sort((a, b) => new Date(b.date) - new Date(a.date));
+      tbody.innerHTML = rows.slice(0, 100).map(c => `
+        <tr>
+          <td>${formatDate(c.date)}</td>
+          <td>${c.complaintId || '-'}</td>
+          <td>${c.trainName || '-'}</td>
+          <td>${c.complainNature || c.complaintType || '-'}</td>
+          <td><span class="badge badge-danger">${c.status}</span></td>
+          <td>${isReadOnlyUser() ? '<span style="font-size:11px;color:#64748b;">View only</span>' : `<button class="btn-icon edit" onclick="editComplaint(${c.id})"><i class="fas fa-edit"></i></button>`}</td>
         </tr>
       `).join('');
     }
@@ -4141,6 +4967,7 @@
     }
 
     function editComplaint(id) {
+      if (!ensureEditable('edit entries')) return;
       const c = appData.complaints.find(x => x.id == id);
       if (!c) return;
 
@@ -4168,10 +4995,12 @@
     }
 
     function deleteComplaint(id) {
+      if (!ensureEditable('delete entries')) return;
       if (!confirm('Are you sure you want to delete this complaint?')) return;
       appData.complaints = appData.complaints.filter(c => c.id != id);
       saveData();
       loadComplaintList();
+      loadOpenComplaintQueue();
       loadDashboard();
       showAlert('Complaint deleted', 'success');
     }
@@ -4213,8 +5042,12 @@
     function selectCashTrain(id, name, number) {
       document.getElementById('cashTrainId').value = id;
       document.getElementById('cashTrainSearch').value = name;
-      document.getElementById('cashTrainNo').value = number;
+      document.getElementById('cashTrainNo').value = normalizeTrainNo(number) || number || '';
       document.getElementById('cashTrainDropdown').classList.remove('active');
+      const date = document.getElementById('cashDate').value;
+      const effective = getEffectiveMaster(number, name, date);
+      document.getElementById('cashTrainManager').value = effective?.trainManager || '';
+      document.getElementById('cashRakeManager').value = effective?.rakeManager || '';
       updateCashGPFromSales();
     }
 
@@ -4225,6 +5058,7 @@
     }
 
     function saveCashEntry() {
+      if (!ensureEditable('save entries')) return;
       const date = document.getElementById('cashDate').value;
       const yard = document.getElementById('cashYard').value;
       const cashDeposit = Number(document.getElementById('cashDepositCounter').value) || 0;
@@ -4242,6 +5076,7 @@
 
       const trainId = document.getElementById('cashTrainId').value;
       const train = trainId ? appData.trainMasters.find(t => t.id == trainId) : null;
+      const effective = train ? (getEffectiveMaster(train.trainNumber, train.trainName, date) || train) : null;
 
       const entry = {
         id: editingId || Date.now(),
@@ -4249,7 +5084,9 @@
         yard: yard,
         trainId: trainId,
         trainName: train ? train.trainName : '',
-        trainNumber: train ? train.trainNumber : '',
+        trainNumber: train ? (normalizeTrainNo(train.trainNumber) || train.trainNumber || '') : '',
+        trainManager: effective?.trainManager || '',
+        rakeManager: effective?.rakeManager || '',
         gpFromSales: gpFromSales,
         gpCollected: Number(document.getElementById('cashGpCollected')?.value) || 0,
         cashDepositCounter: cashDeposit,
@@ -4282,6 +5119,8 @@
       document.getElementById('cashTrainId').value = '';
       document.getElementById('cashTrainSearch').value = '';
       document.getElementById('cashTrainNo').value = '';
+      document.getElementById('cashTrainManager').value = '';
+      document.getElementById('cashRakeManager').value = '';
       document.getElementById('cashGpFromSales').value = '';
       document.getElementById('cashGpCollected') && (document.getElementById('cashGpCollected').value = '');
       document.getElementById('cashDepositCounter').value = '';
@@ -4309,6 +5148,10 @@
       if (currentUser.yard !== 'ALL') filtered = filtered.filter(c => c.yard === currentUser.yard);
 
       filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const rowActions = (id) => isReadOnlyUser()
+        ? '<span style="font-size:11px;color:#64748b;">View only</span>'
+        : `<button class="btn-icon edit" onclick="editCashEntry(${id})"><i class="fas fa-edit"></i></button>
+           <button class="btn-icon delete" onclick="deleteCashEntry(${id})"><i class="fas fa-trash"></i></button>`;
 
       document.getElementById('cashTableBody').innerHTML = filtered.map(c => `
         <tr>
@@ -4321,14 +5164,14 @@
           <td>${formatCurrency(c.totalDeposit)}</td>
           <td>${c.shortageReason || '-'}</td>
           <td>
-            <button class="btn-icon edit" onclick="editCashEntry(${c.id})"><i class="fas fa-edit"></i></button>
-            <button class="btn-icon delete" onclick="deleteCashEntry(${c.id})"><i class="fas fa-trash"></i></button>
+            ${rowActions(c.id)}
           </td>
         </tr>
       `).join('');
     }
 
     function editCashEntry(id) {
+      if (!ensureEditable('edit entries')) return;
       const c = appData.cash.find(x => x.id == id);
       if (!c) return;
 
@@ -4340,6 +5183,8 @@
       document.getElementById('cashTrainId').value = c.trainId || '';
       document.getElementById('cashTrainSearch').value = c.trainName || '';
       document.getElementById('cashTrainNo').value = c.trainNumber || '';
+      document.getElementById('cashTrainManager').value = c.trainManager || '';
+      document.getElementById('cashRakeManager').value = c.rakeManager || '';
       document.getElementById('cashGpFromSales').value = c.gpFromSales || c.gpCollected || '';
       if (document.getElementById('cashGpCollected')) document.getElementById('cashGpCollected').value = c.gpCollected || '';
       document.getElementById('cashDepositCounter').value = c.cashDepositCounter || '';
@@ -4353,6 +5198,7 @@
     }
 
     function deleteCashEntry(id) {
+      if (!ensureEditable('delete entries')) return;
       if (!confirm('Are you sure you want to delete this entry?')) return;
       appData.cash = appData.cash.filter(c => c.id != id);
       saveData();
@@ -4366,8 +5212,14 @@
     // ==================== MASTERS PAGE FUNCTIONS ====================
     function loadMastersPage() {
       populateYardSelects();
-      document.getElementById('masterClusterManager').innerHTML = (appData.clusterManagers || []).map(m => `<option value="${m}">${m}</option>`).join('');
-      document.getElementById('masterTrainManager').innerHTML = (appData.trainManagers || []).map(m => `<option value="${m}">${m}</option>`).join('');
+      const clusters = appData.clusterManagers || [];
+      document.getElementById('masterClusterManager').innerHTML = '<option value="">Select Cluster Manager</option>' + clusters.map(m => `<option value="${m}">${m}</option>`).join('');
+      const allTrainManagers = [...new Set([...(appData.trainManagers || []), ...Object.keys(appData.trainManagerHierarchy || {})])].sort();
+      document.getElementById('masterTrainManager').innerHTML = '<option value="">Select Train Manager</option>' + allTrainManagers.map(m => `<option value="${m}">${m}</option>`).join('');
+      const allRakeManagers = [...new Set([...(appData.rakeManagers || []), ...Object.keys(appData.rakeManagerHierarchy || {})])].sort();
+      document.getElementById('masterRakeManager').innerHTML = '<option value="">Select Rake Manager</option>' + allRakeManagers.map(m => `<option value="${m}">${m}</option>`).join('');
+      onMasterClusterChange();
+      onMasterTrainManagerChange();
       
       updateMasterTargetDisplay();
       
@@ -4391,12 +5243,64 @@
       document.getElementById('yardsCount').textContent = appData.yards.length;
     }
 
-    function saveTrainMaster() {
-      const name = document.getElementById('masterTrainName').value.trim();
-      const number = document.getElementById('masterTrainNumber').value.trim();
-      const yard = document.getElementById('masterYard').value;
+    function onMasterClusterChange() {
+      const cluster = document.getElementById('masterClusterManager')?.value || '';
+      const trainManagerSelect = document.getElementById('masterTrainManager');
+      if (!trainManagerSelect) return;
+      const allTrainManagers = [...new Set([...(appData.trainManagers || []), ...Object.keys(appData.trainManagerHierarchy || {})])].sort();
+      const filtered = allTrainManagers.filter(tm => {
+        const linkedCluster = appData.trainManagerHierarchy?.[tm];
+        return !cluster || !linkedCluster || linkedCluster === cluster;
+      });
+      const current = trainManagerSelect.value;
+      trainManagerSelect.innerHTML = '<option value="">Select Train Manager</option>' + filtered.map(tm => `<option value="${tm}">${tm}</option>`).join('');
+      if (filtered.includes(current)) trainManagerSelect.value = current;
+      onMasterTrainManagerChange();
+    }
 
-      if (!name || !number || !yard) { showAlert('Please fill all required fields', 'error'); return; }
+    function onMasterTrainManagerChange() {
+      const trainManager = document.getElementById('masterTrainManager')?.value || '';
+      const rakeSelect = document.getElementById('masterRakeManager');
+      if (!rakeSelect) return;
+      const allRakes = [...new Set([...(appData.rakeManagers || []), ...Object.keys(appData.rakeManagerHierarchy || {})])].sort();
+      const filtered = allRakes.filter(rm => {
+        const linkedTrainManager = appData.rakeManagerHierarchy?.[rm];
+        return !trainManager || !linkedTrainManager || linkedTrainManager === trainManager;
+      });
+      const current = rakeSelect.value;
+      rakeSelect.innerHTML = '<option value="">Select Rake Manager</option>' + filtered.map(rm => `<option value="${rm}">${rm}</option>`).join('');
+      if (filtered.includes(current)) rakeSelect.value = current;
+    }
+
+    function saveTrainMaster() {
+      if (!ensureEditable('save master data')) return;
+      const name = document.getElementById('masterTrainName').value.trim();
+      const number = normalizeTrainNo(document.getElementById('masterTrainNumber').value.trim());
+      const yard = document.getElementById('masterYard').value;
+      const clusterManager = document.getElementById('masterClusterManager').value;
+      const trainManager = document.getElementById('masterTrainManager').value;
+      const rakeManager = document.getElementById('masterRakeManager').value;
+      const validFrom = document.getElementById('masterValidFrom').value;
+      let validTo = document.getElementById('masterValidTo').value;
+      const validDays = Number(document.getElementById('masterValidDays').value) || 0;
+
+      if (!name || !number || !yard || !validFrom) { showAlert('Please fill all required fields including validity start date', 'error'); return; }
+      if (!validTo && validDays > 0) {
+        const d = new Date(validFrom);
+        d.setDate(d.getDate() + validDays - 1);
+        validTo = d.toISOString().split('T')[0];
+      }
+      if (validTo && validTo < validFrom) { showAlert('Validity end date cannot be before start date', 'error'); return; }
+      if (trainManager && clusterManager && appData.trainManagerHierarchy?.[trainManager] && appData.trainManagerHierarchy[trainManager] !== clusterManager) {
+        showAlert('Selected Train Manager reports to a different Cluster Manager. Please correct hierarchy.', 'error');
+        return;
+      }
+      if (rakeManager && trainManager && appData.rakeManagerHierarchy?.[rakeManager] && appData.rakeManagerHierarchy[rakeManager] !== trainManager) {
+        showAlert('Selected Rake Manager reports to a different Train Manager. Please correct hierarchy.', 'error');
+        return;
+      }
+
+      ensureYardExists(yard);
 
       const train = {
         id: editingId || Date.now(),
@@ -4404,17 +5308,32 @@
         trainNumber: number,
         yard: yard,
         trainType: document.getElementById('masterTrainType').value,
-        clusterManager: document.getElementById('masterClusterManager').value,
-        trainManager: document.getElementById('masterTrainManager').value,
-        rakeManager: document.getElementById('masterRakeManager').value,
+        clusterManager: clusterManager,
+        trainManager: trainManager,
+        rakeManager: rakeManager,
         salesTarget: Math.round(Number(document.getElementById('masterSalesTarget').value)) || 0,
-        gpTarget: Math.round(Number(document.getElementById('masterGpTarget').value)) || 0
+        gpTarget: Math.round(Number(document.getElementById('masterGpTarget').value)) || 0,
+        validFrom: validFrom,
+        validTo: validTo || ''
       };
+
+      if (trainManager && clusterManager) appData.trainManagerHierarchy[trainManager] = clusterManager;
+      if (rakeManager && trainManager) appData.rakeManagerHierarchy[rakeManager] = trainManager;
+      if (rakeManager && !appData.rakeManagers.includes(rakeManager)) appData.rakeManagers.push(rakeManager);
 
       if (editingId && editingType === 'master') {
         const index = appData.trainMasters.findIndex(t => t.id == editingId);
         if (index >= 0) appData.trainMasters[index] = train;
       } else {
+        const dupe = appData.trainMasters.find(t =>
+          (normalizeTrainNo(t.trainNumber) === number) &&
+          (t.validFrom || '') === validFrom &&
+          (t.validTo || '') === (validTo || '')
+        );
+        if (dupe) {
+          showAlert('A target master already exists for this train and validity period. Please edit that entry.', 'error');
+          return;
+        }
         appData.trainMasters.push(train);
       }
 
@@ -4434,28 +5353,71 @@
       document.getElementById('masterYard').value = appData.yards[0] || '';
       document.getElementById('masterTrainType').value = 'WCB';
       document.getElementById('masterClusterManager').value = '';
+      onMasterClusterChange();
       document.getElementById('masterTrainManager').value = '';
+      onMasterTrainManagerChange();
       document.getElementById('masterRakeManager').value = '';
       document.getElementById('masterSalesTarget').value = '';
       document.getElementById('masterGpTarget').value = '';
+      document.getElementById('masterValidFrom').value = '';
+      document.getElementById('masterValidTo').value = '';
+      document.getElementById('masterValidDays').value = '';
     }
 
     function loadMasterTable() {
-      document.getElementById('masterTableBody').innerHTML = (appData.trainMasters || []).map(t => `
-        <tr>
+      const canEdit = currentUser && (currentUser.role === 'admin' || currentUser.role === 'super_admin');
+      const sorted = [...(appData.trainMasters || [])].sort((a, b) => {
+        const n = String(a.trainName || '').localeCompare(String(b.trainName || ''));
+        if (n !== 0) return n;
+        return String(b.validFrom || '').localeCompare(String(a.validFrom || ''));
+      });
+      document.getElementById('masterTableBody').innerHTML = sorted.map(t => `
+        <tr ${canEdit ? `ondblclick="editMasterRow(${t.id})" style="cursor:pointer;"` : ''}>
           <td>${t.trainName}</td>
-          <td>${t.trainNumber}</td>
+          <td>${normalizeTrainNo(t.trainNumber) || t.trainNumber || ''}</td>
           <td>${t.yard}</td>
           <td>${t.trainType}</td>
           <td>${t.clusterManager || '-'}</td>
           <td>${t.trainManager || '-'}</td>
+          <td>${t.rakeManager || '-'}</td>
+          <td>${t.validFrom || '-'}</td>
+          <td>${t.validTo || 'Open'}</td>
           <td>${formatCurrency(t.salesTarget)}</td>
           <td>${formatCurrency(t.gpTarget)}</td>
+          <td>${canEdit ? `<button class="btn-icon edit" onclick="editMasterRow(${t.id})"><i class="fas fa-edit"></i></button>` : '<span style="font-size:11px;color:#64748b;">View</span>'}</td>
         </tr>
       `).join('');
     }
 
+    function editMasterRow(id) {
+      const canEdit = currentUser && (currentUser.role === 'admin' || currentUser.role === 'super_admin');
+      if (!canEdit) {
+        showAlert('Only Admin and Super Admin can edit train master.', 'warning');
+        return;
+      }
+      const t = (appData.trainMasters || []).find(x => x.id == id);
+      if (!t) return;
+      editingId = id;
+      editingType = 'master';
+      document.getElementById('masterTrainName').value = t.trainName || '';
+      document.getElementById('masterTrainNumber').value = normalizeTrainNo(t.trainNumber) || t.trainNumber || '';
+      document.getElementById('masterYard').value = t.yard || (appData.yards[0] || '');
+      document.getElementById('masterTrainType').value = t.trainType || 'WCB';
+      document.getElementById('masterClusterManager').value = t.clusterManager || '';
+      onMasterClusterChange();
+      document.getElementById('masterTrainManager').value = t.trainManager || '';
+      onMasterTrainManagerChange();
+      document.getElementById('masterRakeManager').value = t.rakeManager || '';
+      document.getElementById('masterSalesTarget').value = Math.round(Number(t.salesTarget) || 0);
+      document.getElementById('masterGpTarget').value = Math.round(Number(t.gpTarget) || 0);
+      document.getElementById('masterValidFrom').value = t.validFrom || '';
+      document.getElementById('masterValidTo').value = t.validTo || '';
+      document.getElementById('masterValidDays').value = '';
+      showAlert('Master loaded for editing. Update and click Save Train.', 'success');
+    }
+
     function addYard() {
+      if (!ensureEditable('add master data')) return;
       const yard = document.getElementById('newYard').value.trim();
       if (!yard) return;
       if (!appData.yards.includes(yard)) {
@@ -4468,6 +5430,7 @@
     }
 
     function addClusterManager() {
+      if (!ensureEditable('add master data')) return;
       const manager = document.getElementById('newClusterManager').value.trim();
       if (!manager) return;
       if (!appData.clusterManagers.includes(manager)) {
@@ -4480,15 +5443,31 @@
     }
 
     function addTrainManager() {
+      if (!ensureEditable('add master data')) return;
       const manager = document.getElementById('newTrainManager').value.trim();
-      if (!manager) return;
+      const cluster = document.getElementById('newTrainManagerCluster').value;
+      if (!manager || !cluster) { showAlert('Select cluster manager and enter train manager name', 'error'); return; }
       if (!appData.trainManagers.includes(manager)) {
         appData.trainManagers.push(manager);
-        saveData();
-        loadMastersPage();
-        document.getElementById('newTrainManager').value = '';
-        showAlert('Train manager added', 'success');
       }
+      appData.trainManagerHierarchy[manager] = cluster;
+      saveData();
+      loadMastersPage();
+      document.getElementById('newTrainManager').value = '';
+      showAlert('Train manager added with reporting hierarchy', 'success');
+    }
+
+    function addRakeManager() {
+      if (!ensureEditable('add master data')) return;
+      const name = document.getElementById('newRakeManager').value.trim();
+      const trainManager = document.getElementById('newRakeManagerTrain').value;
+      if (!name || !trainManager) { showAlert('Select train manager and enter rake manager name', 'error'); return; }
+      if (!appData.rakeManagers.includes(name)) appData.rakeManagers.push(name);
+      appData.rakeManagerHierarchy[name] = trainManager;
+      saveData();
+      loadMastersPage();
+      document.getElementById('newRakeManager').value = '';
+      showAlert('Rake manager added with reporting hierarchy', 'success');
     }
 
     // ==================== USERS PAGE FUNCTIONS ====================
@@ -4510,6 +5489,7 @@
     }
 
     function saveUser() {
+      if (!ensureEditable('manage users')) return;
       const name = document.getElementById('userFullName').value.trim();
       const email = document.getElementById('userEmail').value.trim().toLowerCase();
       const password = document.getElementById('userPassword').value;
@@ -4605,6 +5585,7 @@
     }
 
     function deleteUser(id) {
+      if (!ensureEditable('manage users')) return;
       if (!confirm('Are you sure you want to delete this user?')) return;
       
       const user = appData.users.find(u => u.id == id);
@@ -4654,7 +5635,41 @@
     }
 
     // ==================== IMPORT/EXPORT FUNCTIONS ====================
+    function normalizeTrainNo(trainNo) {
+      return String(trainNo || '').replace(/\D/g, '').substring(0, 5);
+    }
+
+    function normalizeText(value) {
+      return String(value || '').trim().toLowerCase();
+    }
+
+    function buildTrainKey(trainNumber, trainName) {
+      const num5 = normalizeTrainNo(trainNumber);
+      if (num5) return `no:${num5}`;
+      return `name:${normalizeText(trainName)}`;
+    }
+
+    function ensureYardExists(yard) {
+      const clean = String(yard || '').trim();
+      if (!clean) return;
+      if (!appData.yards.includes(clean)) {
+        appData.yards.push(clean);
+      }
+    }
+
+    function findTrainByKey(trainNumber, trainName) {
+      const targetNo5 = normalizeTrainNo(trainNumber);
+      const targetName = normalizeText(trainName);
+      return appData.trainMasters.find(t => {
+        const masterNo5 = normalizeTrainNo(t.trainNumber);
+        if (targetNo5 && masterNo5 && targetNo5 === masterNo5) return true;
+        if (!targetNo5 && targetName && normalizeText(t.trainName) === targetName) return true;
+        return false;
+      });
+    }
+
     async function importSalesExcel(input) {
+      if (!ensureEditable('import data')) { input.value = ''; return; }
       const file = input.files[0];
       if (!file) return;
 
@@ -4687,12 +5702,16 @@
 
           if (!trainName || !parsedDate) { skipped++; return; }
 
-          let train = appData.trainMasters.find(t => t.trainName === trainName && t.trainNumber === trainNumber);
+          const normalizedTrainNo = normalizeTrainNo(trainNumber);
+          const stableTrainNo = normalizedTrainNo || String(trainNumber || '').trim();
+          ensureYardExists(yard);
+
+          let train = findTrainByKey(stableTrainNo, trainName);
           if (!train) {
             train = {
               id: Date.now() + Math.random(),
               trainName: trainName,
-              trainNumber: trainNumber || '',
+              trainNumber: stableTrainNo,
               yard: yard || appData.yards[0] || 'Howrah',
               clusterManager: clusterManager || '',
               trainManager: trainManager || '',
@@ -4710,7 +5729,7 @@
             month: new Date(parsedDate).toLocaleString('en-US', { month: 'short' }),
             trainId: train.id,
             trainName: trainName,
-            trainNumber: trainNumber || '',
+            trainNumber: stableTrainNo,
             yard: yard || train.yard,
             clusterManager: clusterManager || train.clusterManager,
             trainManager: trainManager || train.trainManager,
@@ -4740,6 +5759,7 @@
     }
 
     async function importComplaintExcel(input) {
+      if (!ensureEditable('import data')) { input.value = ''; return; }
       const file = input.files[0];
       if (!file) return;
 
@@ -4758,7 +5778,7 @@
             complaintId: getColumnValue(row, ['Complaint ID', 'complaintid', 'ID']) || 'CMP' + Date.now(),
             source: getColumnValue(row, ['Source', 'source', 'Complaint Source']) || 'Other',
             status: getColumnValue(row, ['Status', 'status']) || 'Open',
-            trainNo: getColumnValue(row, ['Train No', 'trainno', 'Train Number']) || '',
+            trainNo: normalizeTrainNo(getColumnValue(row, ['Train No', 'trainno', 'Train Number']) || ''),
             trainName: getColumnValue(row, ['Train Name', 'trainname', 'Train']) || '',
             trainType: getColumnValue(row, ['Train Type', 'traintype']) || '',
             yard: getColumnValue(row, ['Yard', 'yard']) || appData.yards[0] || '',
@@ -4771,6 +5791,7 @@
             remarks: getColumnValue(row, ['Remarks', 'remarks']) || 'Imported from Excel'
           };
 
+          ensureYardExists(complaint.yard);
           if (complaint.date && complaint.trainName) { appData.complaints.push(complaint); imported++; }
         });
 
@@ -4784,6 +5805,7 @@
     }
 
     async function importCashExcel(input) {
+      if (!ensureEditable('import data')) { input.value = ''; return; }
       const file = input.files[0];
       if (!file) return;
 
@@ -4805,7 +5827,7 @@
             date: parseExcelDate(getColumnValue(row, ['Date', 'date'])),
             yard: getColumnValue(row, ['Yard', 'yard']) || appData.yards[0] || '',
             trainName: getColumnValue(row, ['Train Name', 'trainname', 'Train']) || '',
-            trainNumber: getColumnValue(row, ['Train Number', 'trainnumber', 'TrainNo']) || '',
+            trainNumber: normalizeTrainNo(getColumnValue(row, ['Train Number', 'trainnumber', 'TrainNo']) || ''),
             gpFromSales: gpFromSales,
             gpCollected: Math.round(Number(getColumnValue(row, ['GP Collected', 'gpcollected', 'CashCollected']))) || 0,
             cashDepositCounter: cashDepositCounter,
@@ -4815,6 +5837,7 @@
             remarks: getColumnValue(row, ['Remarks', 'remarks']) || 'Imported from Excel'
           };
 
+          ensureYardExists(entry.yard);
           if (entry.date && entry.yard) { appData.cash.push(entry); imported++; }
         });
 
@@ -4829,6 +5852,7 @@
     }
 
     async function importMasterExcel(input) {
+      if (!ensureEditable('import data')) { input.value = ''; return; }
       const file = input.files[0];
       if (!file) return;
 
@@ -4841,21 +5865,40 @@
         let imported = 0;
 
         rows.forEach(row => {
+          const validFrom = parseExcelDate(getColumnValue(row, ['Valid From', 'validfrom', 'Start Date', 'startdate'])) || '';
+          let validTo = parseExcelDate(getColumnValue(row, ['Valid To', 'validto', 'End Date', 'enddate'])) || '';
+          const validDays = Number(getColumnValue(row, ['Valid Days', 'validdays', 'No of Days', 'days'])) || 0;
+          if (!validTo && validFrom && validDays > 0) {
+            const d = new Date(validFrom);
+            d.setDate(d.getDate() + validDays - 1);
+            validTo = d.toISOString().split('T')[0];
+          }
           const train = {
             id: Date.now() + Math.random(),
             trainName: getColumnValue(row, ['Train Name', 'trainname', 'Train']) || '',
-            trainNumber: getColumnValue(row, ['Train Number', 'trainnumber', 'TrainNo']) || '',
+            trainNumber: normalizeTrainNo(getColumnValue(row, ['Train Number', 'trainnumber', 'TrainNo']) || ''),
             yard: getColumnValue(row, ['Yard', 'yard']) || appData.yards[0] || '',
             trainType: getColumnValue(row, ['Train Type', 'traintype']) || 'WCB',
             clusterManager: getColumnValue(row, ['Cluster Manager', 'clustermanager']) || '',
             trainManager: getColumnValue(row, ['Train Manager', 'trainmanager']) || '',
             rakeManager: getColumnValue(row, ['Rake Manager', 'rakemanager']) || '',
             salesTarget: Math.round(Number(getColumnValue(row, ['Sales Target', 'salestarget']))) || 0,
-            gpTarget: Math.round(Number(getColumnValue(row, ['GP Target', 'gptarget', 'GrossProfitTarget']))) || 0
+            gpTarget: Math.round(Number(getColumnValue(row, ['GP Target', 'gptarget', 'GrossProfitTarget']))) || 0,
+            validFrom: validFrom || '',
+            validTo: validTo || ''
           };
 
           if (train.trainName) {
-            const existing = appData.trainMasters.find(t => t.trainName === train.trainName && t.trainNumber === train.trainNumber);
+            ensureYardExists(train.yard);
+            if (train.trainManager && train.clusterManager) appData.trainManagerHierarchy[train.trainManager] = train.clusterManager;
+            if (train.rakeManager && train.trainManager) appData.rakeManagerHierarchy[train.rakeManager] = train.trainManager;
+            if (train.rakeManager && !appData.rakeManagers.includes(train.rakeManager)) appData.rakeManagers.push(train.rakeManager);
+
+            const existing = (appData.trainMasters || []).find(t =>
+              normalizeTrainNo(t.trainNumber) === train.trainNumber &&
+              (t.validFrom || '') === (train.validFrom || '') &&
+              (t.validTo || '') === (train.validTo || '')
+            );
             if (!existing) { appData.trainMasters.push(train); imported++; }
           }
         });
@@ -4954,6 +5997,9 @@
     }
 
     function downloadMasterSample() {
+      const start = new Date().toISOString().split('T')[0];
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + 29);
       const data = [{
         'Train Name': 'Sample Express',
         'Train Number': '12345',
@@ -4962,6 +6008,9 @@
         'Cluster Manager': 'Manager A',
         'Train Manager': 'Manager B',
         'Rake Manager': 'Rake M',
+        'Valid From': start,
+        'Valid To': endDate.toISOString().split('T')[0],
+        'Valid Days': 30,
         'Sales Target': 100000,
         'GP Target': 45000
       }];
@@ -5009,6 +6058,7 @@
     }
 
     function restoreBackup(input) {
+      if (!ensureEditable('restore backup')) { input.value = ''; return; }
       const file = input.files[0];
       if (!file) return;
 
@@ -5029,6 +6079,7 @@
     }
 
     async function resetAndImportSales(input) {
+      if (!ensureEditable('reset and import data')) { input.value = ''; return; }
       if (!confirm('This will DELETE ALL existing sales data and replace with the uploaded file. Continue?')) { input.value = ''; return; }
       appData.sales = [];
       await importSalesExcel(input);
@@ -5036,6 +6087,7 @@
 
     // ==================== FIREBASE SYNC FUNCTIONS ====================
     async function syncToCloud() {
+      if (!ensureEditable('sync data to cloud')) return;
       if (!firebaseInitialized) {
         // Try to initialize Firebase
         if (!initFirebase()) {
@@ -5150,6 +6202,7 @@
 
     // Make functions globally available
     window.handleLogin = handleLogin;
+    window.useDemoLogin = useDemoLogin;
     window.handleLogout = handleLogout;
     window.showPage = showPage;
     window.toggleSidebar = toggleSidebar;
@@ -5185,9 +6238,13 @@
     window.deleteCashEntry = deleteCashEntry;
     window.saveTrainMaster = saveTrainMaster;
     window.clearMasterForm = clearMasterForm;
+    window.editMasterRow = editMasterRow;
+    window.onMasterClusterChange = onMasterClusterChange;
+    window.onMasterTrainManagerChange = onMasterTrainManagerChange;
     window.addYard = addYard;
     window.addClusterManager = addClusterManager;
     window.addTrainManager = addTrainManager;
+    window.addRakeManager = addRakeManager;
     window.onRoleChange = onRoleChange;
     window.saveUser = saveUser;
     window.clearUserForm = clearUserForm;
@@ -5217,9 +6274,13 @@
     window.clearCashDashFilters = clearCashDashFilters;
     window.setDefaultDateRanges = setDefaultDateRanges;
     window.setDefaultCompDateRanges = setDefaultCompDateRanges;
+    window.handleSalesDateModeChange = handleSalesDateModeChange;
+    window.handleComplaintDateModeChange = handleComplaintDateModeChange;
     window.filterByBucket = filterByBucket;
+    window.applyChartFilter = applyChartFilter;
     window.clearChartFilter = clearChartFilter;
     window.clearCompChartFilter = clearCompChartFilter;
+    window.applyComplaintFilter = applyComplaintFilter;
     window.updateCashGPFromSales = updateCashGPFromSales;
     window.checkShortage = checkShortage;
   </script>
